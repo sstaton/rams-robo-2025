@@ -1,4 +1,4 @@
-import vex
+from vex import *
 import math
 
 
@@ -8,45 +8,45 @@ import math
 # unit or unit conversion
 
 # Conversions
-global RAD_TO_DEG
+# global RAD_TO_DEG
 RAD_TO_DEG = 57.29578
 
 # Wheel sizes
-global LARGE_OMNI_DIAM
+# global LARGE_OMNI_DIAM
 LARGE_OMNI_DIAM = 4.0
-global MEDIUM_OMNI_DIAM
+# global MEDIUM_OMNI_DIAM
 MEDIUM_OMNI_DIAM = 3.25
-global SMALL_OMNI_DIAM
+# global SMALL_OMNI_DIAM
 SMALL_OMNI_DIAM = 2.75
-global LARGE_WHEEL_DIAM
+# global LARGE_WHEEL_DIAM
 LARGE_WHEEL_DIAM = 5.0
-global MEDIUM_WHEEL_DIAM
+# global MEDIUM_WHEEL_DIAM
 MEDIUM_WHEEL_DIAM = 4.0
-global SMALL_WHEEL_DIAM
+# global SMALL_WHEEL_DIAM
 SMALL_WHEEL_DIAM = 2.75
-global TRACT_WHEEL_DIAM
+# global TRACT_WHEEL_DIAM
 TRACT_WHEEL_DIAM = 3.25
 
-global LARGE_OMNI_CIRC
+# global LARGE_OMNI_CIRC
 LARGE_OMNI_CIRC = LARGE_OMNI_DIAM * math.pi
-global MEDIUM_OMNI_CIRC
+# global MEDIUM_OMNI_CIRC
 MEDIUM_OMNI_CIRC = MEDIUM_OMNI_DIAM * math.pi
-global SMALL_OMNI_CIRC
+# global SMALL_OMNI_CIRC
 SMALL_OMNI_CIRC = SMALL_OMNI_DIAM * math.pi
-global LARGE_WHEEL_CIRC
+# global LARGE_WHEEL_CIRC
 LARGE_WHEEL_CIRC = LARGE_WHEEL_DIAM * math.pi
-global MEDIUM_WHEEL_CIRC
+# global MEDIUM_WHEEL_CIRC
 MEDIUM_WHEEL_CIRC = MEDIUM_WHEEL_DIAM * math.pi
-global SMALL_WHEEL_CIRC
+# global SMALL_WHEEL_CIRC
 SMALL_WHEEL_CIRC = SMALL_WHEEL_DIAM * math.pi
-global TRACT_WHEEL_CIRC
+# global TRACT_WHEEL_CIRC
 TRACT_WHEEL_CIRC = TRACT_WHEEL_DIAM * math.pi
 
 # Unit shorthand
-global REV
-REV = vex.RotationUnits.REV
-global DEG
-DEG = vex.RotationUnits.DEG
+# global REV
+REV = RotationUnits.REV
+# global DEG
+DEG = RotationUnits.DEG
 
 # Globally tracked things
 class TrackedGlobals:
@@ -63,61 +63,53 @@ class TrackedGlobals:
 
 # ./src/robot_config.py ---
 
-global brain
-brain = vex.Brain()
-global master
-master = vex.Controller()
+# global brain
+brain = Brain()
+# global master
+master = Controller()
 
 # Right Drive
-global drive_r1
-drive_r1 = vex.Motor(vex.Ports.PORT1, vex.GearSetting.RATIO_6_1, False)
-global drive_r2
-drive_r2 = vex.Motor(vex.Ports.PORT2, vex.GearSetting.RATIO_6_1, False)
-global drive_r3
-drive_r3 = vex.Motor(vex.Ports.PORT3, vex.GearSetting.RATIO_6_1, False)
-global drive_r4
-drive_r4 = vex.Motor(vex.Ports.PORT4, vex.GearSetting.RATIO_6_1, False)
+# global drive_r1
+drive_r1 = Motor(Ports.PORT5, GearSetting.RATIO_6_1, False)
+# global drive_r2
+drive_r2 = Motor(Ports.PORT6, GearSetting.RATIO_6_1, False)
 
-global drive_r
-drive_r = vex.MotorGroup(drive_r1, drive_r2, drive_r3, drive_r4);
+# global drive_r
+drive_r = MotorGroup(drive_r1, drive_r2)
 
 # Left Drive
-global drive_l1
-drive_l1 = vex.Motor(vex.Ports.PORT5, vex.GearSetting.RATIO_6_1, True)
-global drive_l2
-drive_l2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, True)
-global drive_l3
-drive_l3 = vex.Motor(vex.Ports.PORT7, vex.GearSetting.RATIO_6_1, True)
-global drive_l4
-drive_l4 = vex.Motor(vex.Ports.PORT8, vex.GearSetting.RATIO_6_1, True)
+# global drive_l1
+drive_l1 = Motor(Ports.PORT3, GearSetting.RATIO_6_1, True)
+# global drive_l2
+drive_l2 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, True)
 
-global drive_l
-drive_l = vex.MotorGroup(drive_l1, drive_l2, drive_l3, drive_l4);
+# global drive_l
+drive_l = MotorGroup(drive_l1, drive_l2)
 
 # Subsystem 3
-global intake
-intake = vex.Motor(vex.Ports.PORT9, vex.GearSetting.RATIO_18_1, False);
-global hang
-hang = vex.Motor(vex.Ports.PORT10, vex.GearSetting.RATIO_36_1, False);
+# global intake
+intake = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
+# global hang
+hang = Motor(Ports.PORT7, GearSetting.RATIO_36_1, False)
 
 # Cylinders
-global wing_r
-wing_r = vex.DigitalOut(brain.three_wire_port.a)
-global wing_l
-wing_l = vex.DigitalOut(brain.three_wire_port.b)
-global intake_fold
-intake_fold = vex.DigitalOut(brain.three_wire_port.c)
+# global wing_r
+wing_r = DigitalOut(brain.three_wire_port.a)
+# global wing_l
+wing_l = DigitalOut(brain.three_wire_port.b)
+# global intake_fold
+intake_fold = DigitalOut(brain.three_wire_port.c)
 
 # Sensors
-global imu
-imu = vex.Inertial(vex.Ports.PORT11)
-global clock
-clock = vex.Timer()
-global auton_selector
-auton_selector = vex.DigitalIn(brain.three_wire_port.h)
+# global imu
+imu = Inertial(Ports.PORT20)
+# global clock
+clock = Timer()
+# global auton_selector
+# auton_selector = DigitalIn(brain.three_wire_port.h)
 
 # Globals
-global all_globals
+# global all_globals
 all_globals = TrackedGlobals(0, 10.75, (3600 / 3593.6))
 
 
@@ -179,7 +171,7 @@ def within_range(value, base_value, range):
     return False
 
 # SHORTHAND
-global DRIVE_REV_TO_IN
+# global DRIVE_REV_TO_IN
 DRIVE_REV_TO_IN = MEDIUM_OMNI_CIRC * (36.0/48.0)
 
 def pos_drive_r():
@@ -187,9 +179,9 @@ def pos_drive_r():
 def pos_drive_l():
     return drive_l.position(REV) * DRIVE_REV_TO_IN
 def vel_drive_r():
-    return drive_r.velocity(vex.RPM) * DRIVE_REV_TO_IN
+    return drive_r.velocity(RPM) * DRIVE_REV_TO_IN
 def vel_drive_l():
-    return drive_l.velocity(vex.RPM) * DRIVE_REV_TO_IN
+    return drive_l.velocity(RPM) * DRIVE_REV_TO_IN
 
 def imu_rotation():
     return imu.rotation() * all_globals.imu_correction
@@ -287,7 +279,7 @@ class Pid:
 # takes inches, target inches per second (velocity),
 # inches per second squared (acceleration), and whether to decelerate
 def drive_straight(inches, target_ips, ipss, do_decel = True):
-    # Loop vex.wait times
+    # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
     MSEC_PER_TICK = 20   # ms per tick
 
@@ -303,8 +295,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     MULTIPLIER = 1.2        # not sure why I need this, but it makes it so that
     inches *= MULTIPLIER    # passing 4 inches actually moves 4 inches
 
-    drive_r.stop(vex.COAST)
-    drive_l.stop(vex.COAST)
+    drive_r.stop(COAST)
+    drive_l.stop(COAST)
 
     pid_drive_r = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
     pid_drive_l = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
@@ -341,20 +333,20 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
         vel_rpm = ips / DRIVE_REV_TO_IN * 60
         
-        drive_r.spin(vex.FORWARD, dir_mod * vel_rpm + adjustment_r - adjustment_dir, vex.RPM)
-        drive_l.spin(vex.FORWARD, dir_mod * vel_rpm + adjustment_l + adjustment_dir, vex.RPM)
+        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r - adjustment_dir, RPM)
+        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l + adjustment_dir, RPM)
 
-        vex.wait(MSEC_PER_TICK, vex.MSEC)
+        wait(MSEC_PER_TICK, MSEC)
         
     if do_decel:
-        drive_r.stop(vex.BRAKE)
-        drive_l.stop(vex.BRAKE)
+        drive_r.stop(BRAKE)
+        drive_l.stop(BRAKE)
     else:
-        drive_r.stop(vex.COAST)
-        drive_l.stop(vex.COAST)
+        drive_r.stop(COAST)
+        drive_l.stop(COAST)
 
 def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
-    # Loop vex.wait times
+    # Loop wait times
     TICK_PER_SEC = 50
     MSEC_PER_TICK = 20
 
@@ -409,27 +401,27 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
             adjustment_r = pid_drive_r.adjust(outer_displacement, displacement_r)
             adjustment_l = -1 * pid_drive_l.adjust(inner_displacement, displacement_l)
 
-            drive_r.spin(vex.FORWARD, outer_vel_rpm + adjustment_r, vex.RPM)
-            drive_l.spin(vex.FORWARD, inner_vel_rpm + adjustment_l, vex.RPM)
+            drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
+            drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
         else:                                                                           # right is inner side
             adjustment_r = -1 * pid_drive_r.adjust(inner_displacement, displacement_r)
             adjustment_l = pid_drive_l.adjust(outer_displacement, displacement_l)
 
-            drive_r.spin(vex.FORWARD, outer_vel_rpm + adjustment_r, vex.RPM)
-            drive_l.spin(vex.FORWARD, inner_vel_rpm + adjustment_l, vex.RPM)
+            drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
+            drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
 
         # Exit loop if we're past the desired angle
         if degrees_remaining * dir_mod < 0:
             break
 
-        vex.wait(MSEC_PER_TICK, vex.MSEC)
-    drive_r.stop(vex.BRAKE)
-    drive_l.stop(vex.BRAKE)
+        wait(MSEC_PER_TICK, MSEC)
+    drive_r.stop(BRAKE)
+    drive_l.stop(BRAKE)
 
 # slightly better drive_straight, in theory
 # broken right now
 def drive_linear(inches, max_ips, ipss, do_decel = True):
-    # Loop vex.wait times
+    # Loop wait times
     TICKS_PER_SEC = 50
     MSEC_PER_TICK = 20
 
@@ -476,17 +468,17 @@ def drive_linear(inches, max_ips, ipss, do_decel = True):
         l_vel_rpm = target_vel_l / DRIVE_REV_TO_IN  * 60
 
         # Move drive
-        drive_r.spin(vex.FORWARD, dir_mod * r_vel_rpm + adjustment_r + adjustment_dir, vex.RPM)
-        drive_l.spin(vex.FORWARD, dir_mod * l_vel_rpm + adjustment_l + adjustment_dir, vex.RPM)
+        drive_r.spin(FORWARD, dir_mod * r_vel_rpm + adjustment_r + adjustment_dir, RPM)
+        drive_l.spin(FORWARD, dir_mod * l_vel_rpm + adjustment_l + adjustment_dir, RPM)
 
-        vex.wait(MSEC_PER_TICK, vex.MSEC)
+        wait(MSEC_PER_TICK, MSEC)
 
     if do_decel:
-        drive_r.stop(vex.BRAKE)
-        drive_l.stop(vex.BRAKE)
+        drive_r.stop(BRAKE)
+        drive_l.stop(BRAKE)
     else:
-        drive_r.stop(vex.COAST)
-        drive_l.stop(vex.COAST)
+        drive_r.stop(COAST)
+        drive_l.stop(COAST)
 
 # *Much* faster drive_turn(), but less control over speed, etc.
 # Doesn't work well if arcing on full omni drives
@@ -524,9 +516,9 @@ def turn_pid(degrees, radius_ratio, direction):
         elif speed_r < -100 * abs(radius_ratio):
             speed_r = -100 * abs(radius_ratio)
 
-        drive_r.spin(vex.FORWARD, speed_l, vex.PERCENT)
-        drive_r.spin(vex.FORWARD, speed_l, vex.PERCENT)
-        vex.wait(MSEC_PER_TICK, vex.MSEC)
+        drive_r.spin(FORWARD, speed_l, PERCENT)
+        drive_r.spin(FORWARD, speed_l, PERCENT)
+        wait(MSEC_PER_TICK, MSEC)
 
 # Same idea as turn_pid(), but for drive_straight()
 def straight_pid(dist):
@@ -541,7 +533,7 @@ def preauton():
     imu.calibrate()
 
     while imu.is_calibrating():
-        vex.wait(20, vex.TimeUnits.MSEC)
+        wait(20, TimeUnits.MSEC)
 
 
 
@@ -568,15 +560,15 @@ def opcontrol():
     wing_l_switch = EdgeDetection(False)
 
     # Reset drive velocity
-    drive_l.stop(vex.COAST)
-    drive_r.stop(vex.COAST)
+    drive_l.stop(COAST)
+    drive_r.stop(COAST)
 
     while(True):
         # Drivetrain
         opdrive(TSA, 1.0, SENSITIVITY)
 
         # Elevation
-        hang.spin(vex.FORWARD, (btn_right() - btn_y()) * 100, vex.PERCENT)
+        hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
         # Set a "shift" key
         shifted = btn_l2()
@@ -584,7 +576,7 @@ def opcontrol():
         # Base layer
         if not shifted:
             # Intake
-            intake.spin(vex.FORWARD, (btn_r1() - btn_r2()) * 100, vex.PERCENT)
+            intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
             # Change intake height
             intake_fold.set(fold_switch.is_redge(btn_l1()))
 
@@ -594,21 +586,21 @@ def opcontrol():
             wing_l.set(wing_l_switch.is_redge(btn_l1()))
             wing_r.set(wing_r_switch.is_redge(btn_r1()))
 
-        vex.wait(20, vex.MSEC)
+        wait(20, MSEC)
 
 def opdrive(control_scheme, speed_mod, turn_mod):
     # Tank drive
     if control_scheme == TNK:
-        drive_r.spin(vex.FORWARD, axis_ry() * speed_mod, vex.PERCENT)
-        drive_l.spin(vex.FORWARD, axis_lx() * speed_mod, vex.PERCENT)
+        drive_r.spin(FORWARD, axis_ry() * speed_mod, PERCENT)
+        drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
     # Two stick arcade
     elif control_scheme == TSA:
-        drive_r.spin(vex.FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, vex.PERCENT)
-        drive_l.spin(vex.FORWARD, (axis_lx() + axis_rx() * turn_mod) * speed_mod, vex.PERCENT)
+        drive_r.spin(FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
+        drive_l.spin(FORWARD, (axis_lx() + axis_rx() * turn_mod) * speed_mod, PERCENT)
     # One stick arcade
     elif control_scheme == OSA:
-        drive_r.spin(vex.FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, vex.PERCENT)
-        drive_l.spin(vex.FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, vex.PERCENT)
+        drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
+        drive_l.spin(FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, PERCENT)
 
 
 
@@ -633,4 +625,4 @@ if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    field_controller = vex.Competition(opcontrol, opcontrol)
+    field_controller = Competition(opcontrol, opcontrol)
