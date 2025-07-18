@@ -27,8 +27,8 @@ drive_l = vex.MotorGroup(drive_l1, drive_l2)
 # Subsystem 3
 global intake
 intake = vex.Motor(vex.Ports.PORT1, vex.GearSetting.RATIO_18_1, False)
-global hang
-hang = vex.Motor(vex.Ports.PORT7, vex.GearSetting.RATIO_36_1, False)
+# global hang
+# hang = vex.Motor(vex.Ports.PORT7, vex.GearSetting.RATIO_36_1, False)
 
 # Cylinders
 global wing_r
