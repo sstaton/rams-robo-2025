@@ -8,18 +8,18 @@ master = vex.Controller()
 
 # Right Drive
 global drive_r1
-drive_r1 = vex.Motor(vex.Ports.PORT5, vex.GearSetting.RATIO_6_1, False)
-global drive_r2
-drive_r2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)
+drive_r1 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)``
+# global drive_r2
+# drive_r2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)
 
 global drive_r
 drive_r = vex.MotorGroup(drive_r1, drive_r2)
 
 # Left Drive
 global drive_l1
-drive_l1 = vex.Motor(vex.Ports.PORT3, vex.GearSetting.RATIO_6_1, True)
-global drive_l2
-drive_l2 = vex.Motor(vex.Ports.PORT4, vex.GearSetting.RATIO_6_1, True)
+drive_l1 = vex.Motor(vex.Ports.PORT4, vex.GearSetting.RATIO_6_1, True)
+# global drive_l2
+# drive_l2 = vex.Motor(vex.Ports.PORT4, vex.GearSetting.RATIO_6_1, True)
 
 global drive_l
 drive_l = vex.MotorGroup(drive_l1, drive_l2)
