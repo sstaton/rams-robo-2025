@@ -8,7 +8,7 @@ master = vex.Controller()
 
 # Right Drive
 global drive_r1
-drive_r1 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)``
+drive_r1 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)
 # global drive_r2
 # drive_r2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)
 
