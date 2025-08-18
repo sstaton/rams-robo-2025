@@ -626,3 +626,5 @@ if do_testing:
 else:
     print("start of main program")
     field_controller = Competition(opcontrol, opcontrol)
+
+    # shaun comment here
