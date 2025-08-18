@@ -1,52 +1,29 @@
-import vex
-from stddefs import *
 
-global brain
+# Initialize brain and controller
 brain = vex.Brain()
-global master
-master = vex.Controller()
+controller = vex.Controller()
 
-# Right Drive
-global drive_r1
-drive_r1 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)
-# global drive_r2
-# drive_r2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)
+# Initialize motor on port 5
+motor5 = vex.Motor(vex.Ports.PORT5)
 
-global drive_r
-drive_r = vex.MotorGroup(drive_r1, drive_r2)
+def check_r2_and_spin():
+    if controller.buttonR2.pressing():
+        motor5.spin(vex.DirectionType.FWD)
+    else:
+        motor5.stop()
 
-# Left Drive
-global drive_l1
-drive_l1 = vex.Motor(vex.Ports.PORT4, vex.GearSetting.RATIO_6_1, True)
-# global drive_l2
-# drive_l2 = vex.Motor(vex.Ports.PORT4, vex.GearSetting.RATIO_6_1, True)
+while True:
+    check_r2_and_spin()
+    # 💗✨ Sleep for 20 milliseconds to prevent CPU overload ✨💗
+    # 💗✨ Code to spin motor in port 5 forward when button r2 pressed ✨💗
+    # 💗✨ Motor spin prototype in python ✨💗
+     
+def check_l2_and_spin():
+    if controller.buttonL2.pressing():
+        motor6.spin(vex.DirectionType.FWD)
+    else:
+        motor6.stop()
 
-global drive_l
-drive_l = vex.MotorGroup(drive_l1, drive_l2)
-
-
-# Subsystem 3
-global intake
-intake = vex.Motor(vex.Ports.PORT1, vex.GearSetting.RATIO_18_1, False)
-# global hang
-# hang = vex.Motor(vex.Ports.PORT7, vex.GearSetting.RATIO_36_1, False)
-
-# Cylinders
-global wing_r
-wing_r = vex.DigitalOut(brain.three_wire_port.a)
-global wing_l
-wing_l = vex.DigitalOut(brain.three_wire_port.b)
-global intake_fold
-intake_fold = vex.DigitalOut(brain.three_wire_port.c)
-
-# Sensors
-global imu
-imu = vex.Inertial(vex.Ports.PORT20)
-global clock
-clock = vex.Timer()
-# global auton_selector
-# auton_selector = vex.DigitalIn(brain.three_wire_port.h)
-
-# Globals
-global all_globals
-all_globals = TrackedGlobals(0, 10.75, (3600 / 3593.6))
+while True:
+    check_L2_and_spin()
+    # 💗✨ Sleep for 20 milliseconds to prevent CPU overload ✨💗
