@@ -70,16 +70,16 @@ master = Controller()
 
 # Right Drive
 # global drive_r1
-drive_r1 = Motor(Ports.PORT5, GearSetting.RATIO_6_1, False)
-# global drive_r2
+
+drive_r1 = Motor(Ports.PORT7, GearSetting.RATIO_6_1, False)
+
 drive_r2 = Motor(Ports.PORT6, GearSetting.RATIO_6_1, False)
 
 # global drive_r
 drive_r = MotorGroup(drive_r1, drive_r2)
-
 # Left Drive
 # global drive_l1
-drive_l1 = Motor(Ports.PORT3, GearSetting.RATIO_6_1, True)
+drive_l1 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, True)
 # global drive_l2
 drive_l2 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, True)
 
@@ -88,9 +88,9 @@ drive_l = MotorGroup(drive_l1, drive_l2)
 
 # Subsystem 3
 # global intake
-intake = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
+intake = Motor(Ports.PORT7, GearSetting.RATIO_6_1, False)
 # global hang
-hang = Motor(Ports.PORT7, GearSetting.RATIO_36_1, False)
+hang = Motor(Ports.PORT1, GearSetting.RATIO_36_1, False)
 
 # Cylinders
 # global wing_r
