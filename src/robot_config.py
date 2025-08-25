@@ -5,6 +5,13 @@ controller = vex.Controller()
 
 # Initialize motor on port 5
 motor5 = vex.Motor(vex.Ports.PORT5)
+# SHAUN TEST COMMENT
+
+# Right Drive
+global drive_r1
+drive_r1 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)
+# global drive_r2
+# drive_r2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)
 
 def check_r2_and_spin():
     if controller.buttonR2.pressing():
