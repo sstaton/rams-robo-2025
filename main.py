@@ -88,9 +88,9 @@ drive_l = MotorGroup(drive_l1, drive_l2)
 
 # Subsystem 3
 # global intake
-intake = Motor(Ports.PORT7, GearSetting.RATIO_6_1, False)
+intake = Motor(Ports.PORT1, GearSetting.RATIO_6_1, False)
 # global hang
-hang = Motor(Ports.PORT1, GearSetting.RATIO_36_1, False)
+hang = Motor(Ports.PORT5, GearSetting.RATIO_36_1, False)
 
 # Cylinders
 # global wing_r
