@@ -11,11 +11,8 @@ from a set of files into one titled `main.py`.
 To use:  
 1. List all the source files _in order_, from top to bottom, in `all-files.txt`
 2. List all the standard libraries to include in `/include/imports.py`
-3. Make the script `python-concat.sh` executable with `chmod +x`
-4. Run the script `python-concat.sh`
-
-This script was made for macOS. If you use Linux, you may need to modify the 
-`sed` lines slightly. If you're on Windows, good luck.
+3. Make the script `concat.ps1` executable with `Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser`
+4. Run the script `./concat.ps1`
 
 Important Notes:  
 - Any user-defined modules must be imported with:
