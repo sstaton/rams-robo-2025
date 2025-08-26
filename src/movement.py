@@ -6,9 +6,9 @@ import vex
 # takes inches, target inches per second (velocity),
 # inches per second squared (acceleration), and whether to decelerate
 def drive_straight(inches, target_ips, ipss, do_decel = True):
-    # Loop vex.wait times
+    # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
-    MSEC_PER_TICK = 1000 / 20   # ms per tick
+    MSEC_PER_TICK = 20   # ms per tick
 
     # PID constants
     DRIVE_KP = 0.005
@@ -22,8 +22,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     MULTIPLIER = 1.2        # not sure why I need this, but it makes it so that
     inches *= MULTIPLIER    # passing 4 inches actually moves 4 inches
 
-    drive_r.stop(vex.COAST)
-    drive_l.stop(vex.COAST)
+    drive_r.stop(COAST)
+    drive_l.stop(COAST)
 
     pid_drive_r = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
     pid_drive_l = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
@@ -56,24 +56,24 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
         adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_r)
         adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_l)
-        adjustment_dir = pid_dir.adjust(all_globals.target_heading, imu_rotation)
+        adjustment_dir = pid_dir.adjust(all_globals.target_heading, displacement_l)
 
         vel_rpm = ips / DRIVE_REV_TO_IN * 60
         
-        drive_r.spin(vex.FORWARD, dir_mod * vel_rpm + adjustment_r - adjustment_dir, vex.RPM)
-        drive_l.spin(vex.FORWARD, dir_mod * vel_rpm + adjustment_l + adjustment_dir, vex.RPM)
+        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r - adjustment_dir, RPM)
+        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l + adjustment_dir, RPM)
 
-        vex.wait(MSEC_PER_TICK, vex.MSEC)
+        wait(MSEC_PER_TICK, MSEC)
         
     if do_decel:
-        drive_r.stop(vex.BRAKE)
-        drive_l.stop(vex.BRAKE)
+        drive_r.stop(BRAKE)
+        drive_l.stop(BRAKE)
     else:
-        drive_r.stop(vex.COAST)
-        drive_l.stop(vex.COAST)
+        drive_r.stop(COAST)
+        drive_l.stop(COAST)
 
 def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
-    # Loop vex.wait times
+    # Loop wait times
     TICK_PER_SEC = 50
     MSEC_PER_TICK = 20
 
@@ -128,27 +128,27 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
             adjustment_r = pid_drive_r.adjust(outer_displacement, displacement_r)
             adjustment_l = -1 * pid_drive_l.adjust(inner_displacement, displacement_l)
 
-            drive_r.spin(vex.FORWARD, outer_vel_rpm + adjustment_r, vex.RPM)
-            drive_l.spin(vex.FORWARD, inner_vel_rpm + adjustment_l, vex.RPM)
+            drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
+            drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
         else:                                                                           # right is inner side
             adjustment_r = -1 * pid_drive_r.adjust(inner_displacement, displacement_r)
             adjustment_l = pid_drive_l.adjust(outer_displacement, displacement_l)
 
-            drive_r.spin(vex.FORWARD, outer_vel_rpm + adjustment_r, vex.RPM)
-            drive_l.spin(vex.FORWARD, inner_vel_rpm + adjustment_l, vex.RPM)
+            drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
+            drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
 
         # Exit loop if we're past the desired angle
         if degrees_remaining * dir_mod < 0:
             break
 
-        vex.wait(MSEC_PER_TICK, vex.MSEC)
-    drive_r.stop(vex.BRAKE)
-    drive_l.stop(vex.BRAKE)
+        wait(MSEC_PER_TICK, MSEC)
+    drive_r.stop(BRAKE)
+    drive_l.stop(BRAKE)
 
 # slightly better drive_straight, in theory
 # broken right now
 def drive_linear(inches, max_ips, ipss, do_decel = True):
-    # Loop vex.wait times
+    # Loop wait times
     TICKS_PER_SEC = 50
     MSEC_PER_TICK = 20
 
@@ -195,17 +195,17 @@ def drive_linear(inches, max_ips, ipss, do_decel = True):
         l_vel_rpm = target_vel_l / DRIVE_REV_TO_IN  * 60
 
         # Move drive
-        drive_r.spin(vex.FORWARD, dir_mod * r_vel_rpm + adjustment_r + adjustment_dir, vex.RPM)
-        drive_l.spin(vex.FORWARD, dir_mod * l_vel_rpm + adjustment_l + adjustment_dir, vex.RPM)
+        drive_r.spin(FORWARD, dir_mod * r_vel_rpm + adjustment_r + adjustment_dir, RPM)
+        drive_l.spin(FORWARD, dir_mod * l_vel_rpm + adjustment_l + adjustment_dir, RPM)
 
-        vex.wait(MSEC_PER_TICK, vex.MSEC)
+        wait(MSEC_PER_TICK, MSEC)
 
     if do_decel:
-        drive_r.stop(vex.BRAKE)
-        drive_l.stop(vex.BRAKE)
+        drive_r.stop(BRAKE)
+        drive_l.stop(BRAKE)
     else:
-        drive_r.stop(vex.COAST)
-        drive_l.stop(vex.COAST)
+        drive_r.stop(COAST)
+        drive_l.stop(COAST)
 
 # *Much* faster drive_turn(), but less control over speed, etc.
 # Doesn't work well if arcing on full omni drives
@@ -243,9 +243,9 @@ def turn_pid(degrees, radius_ratio, direction):
         elif speed_r < -100 * abs(radius_ratio):
             speed_r = -100 * abs(radius_ratio)
 
-        drive_r.spin(vex.FORWARD, speed_l, vex.PERCENT)
-        drive_r.spin(vex.FORWARD, speed_l, vex.PERCENT)
-        vex.wait(MSEC_PER_TICK, vex.MSEC)
+        drive_r.spin(FORWARD, speed_l, PERCENT)
+        drive_r.spin(FORWARD, speed_l, PERCENT)
+        wait(MSEC_PER_TICK, MSEC)
 
 # Same idea as turn_pid(), but for drive_straight()
 def straight_pid(dist):

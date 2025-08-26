@@ -4,6 +4,7 @@ import math
 
 
 # ./src/stddefs.py ---
+
 # Transferred from stddefs.h, so incomplete. I've not made shorthand for every
 # unit or unit conversion
 
@@ -58,6 +59,7 @@ class TrackedGlobals:
         self.target_heading = value
     def inc_target_heading(self, value):
         self.target_heading += value
+
 
 
 
@@ -165,6 +167,7 @@ def handle_acceleration(position, distance, velocity, max_velocity, acceleration
         return velocity + acceleration * tick_rate
     return max_velocity
 
+
 def within_range(value, base_value, range):
     if value <= base_value + range and value >= base_value - range:
         return True
@@ -227,6 +230,7 @@ def btn_down():
 
 
 
+
 # ./src/pid.py ---
 
 class Pid:
@@ -271,6 +275,7 @@ class Pid:
         d_term = self.deriv * self.kd
 
         return p_term + i_term + d_term
+
 
 
 
@@ -526,6 +531,7 @@ def straight_pid(dist):
 
 
 
+
 # ./src/preauton.py ---
 
 def preauton():
@@ -537,10 +543,12 @@ def preauton():
 
 
 
+
 # ./src/auton.py ---
 
 def autonomous():
     brain.screen.clear_screen()
+
 
 
 
@@ -604,6 +612,7 @@ def opdrive(control_scheme, speed_mod, turn_mod):
 
 
 
+
 # ./src/main0.py ---
 # ---------------------------------------------------------------------------- #
 #                                                                              #
@@ -626,3 +635,4 @@ if do_testing:
 else:
     print("start of main program")
     field_controller = Competition(opcontrol, opcontrol)
+

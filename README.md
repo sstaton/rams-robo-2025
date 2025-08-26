@@ -13,6 +13,7 @@ To use:
 2. List all the standard libraries to include in `/include/imports.py`
 3. Make the script `concat.ps1` executable with `Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser`
 4. Run the script `./concat.ps1`
+5. Remove `import vex` at the top and replace with `from vex import *`
 
 Important Notes:  
 - Any user-defined modules must be imported with:
