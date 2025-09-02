@@ -51,11 +51,14 @@ def handle_acceleration(position, distance, velocity, max_velocity, acceleration
         return velocity + acceleration * tick_rate
     return max_velocity
 
+
 def within_range(value, base_value, range):
-    return value <= base_value + range and value >= base_value - range
+    if value <= base_value + range and value >= base_value - range:
+        return True
+    return False
 
 # SHORTHAND
-global DRIVE_REV_TO_IN
+# global DRIVE_REV_TO_IN
 DRIVE_REV_TO_IN = MEDIUM_OMNI_CIRC * (36.0/48.0)
 
 def pos_drive_r():
@@ -63,9 +66,9 @@ def pos_drive_r():
 def pos_drive_l():
     return drive_l.position(REV) * DRIVE_REV_TO_IN
 def vel_drive_r():
-    return drive_r.velocity(vex.RPM) * DRIVE_REV_TO_IN
+    return drive_r.velocity(RPM) * DRIVE_REV_TO_IN
 def vel_drive_l():
-    return drive_l.velocity(vex.RPM) * DRIVE_REV_TO_IN
+    return drive_l.velocity(RPM) * DRIVE_REV_TO_IN
 
 def imu_rotation():
     return imu.rotation() * all_globals.imu_correction

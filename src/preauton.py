@@ -6,4 +6,4 @@ def preauton():
     imu.calibrate()
 
     while imu.is_calibrating():
-        vex.wait(20, vex.TimeUnits.MSEC)
+        wait(20, TimeUnits.MSEC)

@@ -24,4 +24,4 @@ if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    field_controller = vex.Competition(opcontrol, opcontrol)
+    field_controller = Competition(opcontrol, opcontrol)

@@ -4,6 +4,7 @@ import math
 
 
 # ./src/stddefs.py ---
+
 # Transferred from stddefs.h, so incomplete. I've not made shorthand for every
 # unit or unit conversion
 
@@ -61,6 +62,7 @@ class TrackedGlobals:
 
 
 
+
 # ./src/robot_config.py ---
 
 # global brain
@@ -70,16 +72,16 @@ master = Controller()
 
 # Right Drive
 # global drive_r1
-drive_r1 = Motor(Ports.PORT5, GearSetting.RATIO_6_1, False)
-# global drive_r2
+
+drive_r1 = Motor(Ports.PORT7, GearSetting.RATIO_6_1, False)
+
 drive_r2 = Motor(Ports.PORT6, GearSetting.RATIO_6_1, False)
 
 # global drive_r
 drive_r = MotorGroup(drive_r1, drive_r2)
-
 # Left Drive
 # global drive_l1
-drive_l1 = Motor(Ports.PORT3, GearSetting.RATIO_6_1, True)
+drive_l1 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, True)
 # global drive_l2
 drive_l2 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, True)
 
@@ -88,9 +90,9 @@ drive_l = MotorGroup(drive_l1, drive_l2)
 
 # Subsystem 3
 # global intake
-intake = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
+intake = Motor(Ports.PORT7, GearSetting.RATIO_6_1, False)
 # global hang
-hang = Motor(Ports.PORT7, GearSetting.RATIO_36_1, False)
+hang = Motor(Ports.PORT1, GearSetting.RATIO_36_1, False)
 
 # Cylinders
 # global wing_r
@@ -165,6 +167,7 @@ def handle_acceleration(position, distance, velocity, max_velocity, acceleration
         return velocity + acceleration * tick_rate
     return max_velocity
 
+
 def within_range(value, base_value, range):
     if value <= base_value + range and value >= base_value - range:
         return True
@@ -227,6 +230,7 @@ def btn_down():
 
 
 
+
 # ./src/pid.py ---
 
 class Pid:
@@ -271,6 +275,7 @@ class Pid:
         d_term = self.deriv * self.kd
 
         return p_term + i_term + d_term
+
 
 
 
@@ -526,6 +531,7 @@ def straight_pid(dist):
 
 
 
+
 # ./src/preauton.py ---
 
 def preauton():
@@ -537,10 +543,12 @@ def preauton():
 
 
 
+
 # ./src/auton.py ---
 
 def autonomous():
     brain.screen.clear_screen()
+
 
 
 
@@ -604,6 +612,7 @@ def opdrive(control_scheme, speed_mod, turn_mod):
 
 
 
+
 # ./src/main0.py ---
 # ---------------------------------------------------------------------------- #
 #                                                                              #
@@ -626,3 +635,4 @@ if do_testing:
 else:
     print("start of main program")
     field_controller = Competition(opcontrol, opcontrol)
+
