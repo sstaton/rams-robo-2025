@@ -93,18 +93,17 @@ drivetrain = MotorGroup(drive_r1, drive_r2, drive_l1, drive_l2)
 # global intake
 intake_1 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False)
 
-# global hang
 intake_2 = Motor(Ports.PORT7, GearSetting.RATIO_18_1, True)
 
 intake_3 = Motor(Ports.PORT13, GearSetting.RATIO_6_1, False)
 
-intake_4 = Motor(Ports.PORT12, GearSetting.RATIO_6_1, True)
+# Ballshooter
+extake = Motor(Ports.PORT12, GearSetting.RATIO_6_1, True)
 
-intake_5 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
+extake_2 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
 
 intakegroup = MotorGroup(intake_1, intake_2, intake_3)
 
-intakegroup_2 = MotorGroup(intake_4, intake_5)
 
 # drivetrain.set_turn_velocity(75, PERCENT)
 
@@ -584,6 +583,8 @@ def opcontrol():
     # Reset drive velocity
     drive_l.stop(COAST)
     drive_r.stop(COAST)
+    
+    run_extake = False
 
     while(True):
         # Drivetrain
@@ -592,8 +593,16 @@ def opcontrol():
         # Elevation
         intakegroup.spin(FORWARD, (btn_r2() - btn_r1()) * 100, PERCENT)
 
-        intakegroup_2.spin(FORWARD, (btn_l2()) * 100, PERCENT)
-
+        extake_2.spin(FORWARD, (btn_l2()) * 100, PERCENT)
+        
+        if btn_a():
+            run_extake = True
+            
+        if btn_b():
+            run_extake = False
+            
+        if run_extake:
+            extake.spin(FORWARD, 100, PERCENT)
         # Set a "shift" key
         # shifted = btn_l2()
 
@@ -610,7 +619,7 @@ def opcontrol():
             # wing_l.set(wing_l_switch.is_redge(btn_l1()))
             # wing_r.set(wing_r_switch.is_redge(btn_r1()))
 
-        # wait(20, MSEC)
+        wait(20, MSEC)
 
 def opdrive(control_scheme, speed_mod, turn_mod):
     # Tank drive
