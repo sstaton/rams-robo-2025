@@ -23,24 +23,24 @@ def opcontrol():
         # Drivetrain
         opdrive(TSA, 1.0, SENSITIVITY)
 
-        # Elevation
-        hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
+        # Elevation NO HANG THIS YEAR
+        #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
         # Set a "shift" key
         shifted = btn_l2()
 
-        # Base layer
-        if not shifted:
-            # Intake
-            intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-            # Change intake height
-            intake_fold.set(fold_switch.is_redge(btn_l1()))
+        # # Base layer
+        # if not shifted:
+        #     # Intake
+        #     intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+        #     # Change intake height
+        #     intake_fold.set(fold_switch.is_redge(btn_l1()))
 
-        # Shifted layer
-        if shifted:
-            # Wings
-            wing_l.set(wing_l_switch.is_redge(btn_l1()))
-            wing_r.set(wing_r_switch.is_redge(btn_r1()))
+        # # Shifted layer
+        # if shifted:
+        #     # Wings
+        #     wing_l.set(wing_l_switch.is_redge(btn_l1()))
+        #     wing_r.set(wing_r_switch.is_redge(btn_r1()))
 
         wait(20, MSEC)
 

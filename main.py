@@ -67,50 +67,53 @@ class TrackedGlobals:
 
 
 global brain
-brain = vex.Brain()
+brain = Brain()
 global master
-master = vex.Controller()
+master = Controller()
 
 # Right Drive
 global drive_r1
-drive_r1 = vex.Motor(vex.Ports.PORT9, vex.GearSetting.RATIO_6_1, True)
+drive_r1 = Motor(Ports.PORT9, GearSetting.RATIO_6_1, True)
 global drive_r2
-drive_r2 = vex.Motor(vex.Ports.PORT1, vex.GearSetting.RATIO_6_1, False)
+drive_r2 = Motor(Ports.PORT1, GearSetting.RATIO_6_1, True)
 
 global drive_r
-drive_r = vex.MotorGroup(drive_r1, drive_r2)
+drive_r = MotorGroup(drive_r1, drive_r2)
 
 # Left Drive
 global drive_l1
-drive_l1 = vex.Motor(vex.Ports.PORT10, vex.GearSetting.RATIO_6_1, True) 
+drive_l1 = Motor(Ports.PORT10, GearSetting.RATIO_6_1, False) 
 global drive_l2
-drive_l2 = vex.Motor(vex.Ports.PORT2, vex.GearSetting.RATIO_6_1, False)
+drive_l2 = Motor(Ports.PORT2, GearSetting.RATIO_6_1, False)
 
 global drive_l
-drive_l = vex.MotorGroup(drive_l1, drive_l2)
+drive_l = MotorGroup(drive_l1, drive_l2)
 
 
 # Subsystem 3
 global intake1
-intake1 = vex.Motor(vex.Ports.PORT8, vex.GearSetting.RATIO_18_1, True)
+intake1 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, True)
 global intake2
-intake2 = vex.Motor(vex.Ports.PORT3, vex.GearSetting.RATIO_18_1, False)
+intake2 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 
+global intake
+intake = MotorGroup(intake1, intake2)
+intake.set_velocity(300, RPM)
 # Cylinders
 #global wing_r
-#wing_r = vex.DigitalOut(brain.three_wire_port.a)
+#wing_r = DigitalOut(brain.three_wire_port.a)
 #global wing_l
-#wing_l = vex.DigitalOut(brain.three_wire_port.b)
+#wing_l = DigitalOut(brain.three_wire_port.b)
 #global intake_fold
-#intake_fold = vex.DigitalOut(brain.three_wire_port.c)
+#intake_fold = DigitalOut(brain.three_wire_port.c)
 
 # Sensors
-#global imu
-#imu = vex.Inertial(vex.Ports.PORT20)
+global imu
+imu = Inertial(Ports.PORT20)
 #global clock
-#clock = vex.Timer()
+#clock = Timer()
 # global auton_selector
-# auton_selector = vex.DigitalIn(brain.three_wire_port.h)
+# auton_selector = DigitalIn(brain.three_wire_port.h)
 
 # Globals
 global all_globals
@@ -123,7 +126,7 @@ all_globals = TrackedGlobals(0, 10.75, (3600 / 3593.6))
 
 # Top of file is new functions
 # Bottom of file is making shorthand for long function names, like:
-# src.robot_config.drive_r.position(vex.RotationUnits.REV)
+# src.robot_config.drive_r.position(RotationUnits.REV)
 
 # UTILITY FUNCTIONS
 
@@ -578,24 +581,24 @@ def opcontrol():
         # Drivetrain
         opdrive(TSA, 1.0, SENSITIVITY)
 
-        # Elevation
-        hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
+        # Elevation NO HANG THIS YEAR
+        #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
         # Set a "shift" key
         shifted = btn_l2()
 
-        # Base layer
-        if not shifted:
-            # Intake
-            intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-            # Change intake height
-            intake_fold.set(fold_switch.is_redge(btn_l1()))
+        # # Base layer
+        # if not shifted:
+        #     # Intake
+        #     intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+        #     # Change intake height
+        #     intake_fold.set(fold_switch.is_redge(btn_l1()))
 
-        # Shifted layer
-        if shifted:
-            # Wings
-            wing_l.set(wing_l_switch.is_redge(btn_l1()))
-            wing_r.set(wing_r_switch.is_redge(btn_r1()))
+        # # Shifted layer
+        # if shifted:
+        #     # Wings
+        #     wing_l.set(wing_l_switch.is_redge(btn_l1()))
+        #     wing_r.set(wing_r_switch.is_redge(btn_r1()))
 
         wait(20, MSEC)
 
