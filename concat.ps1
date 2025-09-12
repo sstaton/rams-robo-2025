@@ -21,7 +21,7 @@ Get-Content -Path $filesList | ForEach-Object {
 }
 
 # Read the temporary file, remove import lines, and store in a variable
-$content = Get-Content -Path $tmpFile | Where-Object { $_ -notmatch "^from " -and $_ -notmatch "^import " }
+$content = Get-Content -Path $tmpFile | Where-Object { $_ -notmatch "^from " -and $_ -notmatch "^import " } | ForEach-Object { $_ -replace "vex\." , "" }
 
 # Write the stdlib imports to the final output file
 Get-Content -Path $importsFile | Set-Content -Path $outputFile

@@ -1,3 +1,4 @@
+# import vex
 from vex import *
 import math
 
@@ -120,7 +121,7 @@ all_globals = TrackedGlobals(0, 10.75, (3600 / 3593.6))
 
 # Top of file is new functions
 # Bottom of file is making shorthand for long function names, like:
-# src.robot_config.drive_r.position(vex.RotationUnits.REV)
+# src.robot_config.drive_r.position(RotationUnits.REV)
 
 # UTILITY FUNCTIONS
 
