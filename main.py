@@ -104,6 +104,15 @@ extake_2 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
 
 intakegroup = MotorGroup(intake_1, intake_2, intake_3)
 
+vision_SIG_1 = Signature(1, 5687, 10417, 8052,-901, -309, -605,2.5, 0)
+vision_SIG_2 = Signature(2, -3465, -2573, -3019,97, 10023, 5060,2.5, 0)
+# colorsensor = Vision(Ports.PORT5, 50, vision__SIG_1, vision__SIG_2)
+
+# vision_SIG_1.take_snapshot(SIGNATURE)
+
+# vision_SIG_2.take_snapshot(SIGNATURE)
+
+
 
 # drivetrain.set_turn_velocity(75, PERCENT)
 
@@ -593,19 +602,18 @@ def opcontrol():
         # Elevation
         intakegroup.spin(FORWARD, (btn_r2() - btn_r1()) * 100, PERCENT)
 
-        extake_2.spin(FORWARD, (btn_l2()) * 100, PERCENT)
+        extake_2.spin(FORWARD, (btn_l2() - btn_l1()) * 100, PERCENT)
         
         if btn_a():
             run_extake = True
             
         if btn_b():
-            run_extake = False
+            extake.stop()
             
         if run_extake:
             extake.spin(FORWARD, 100, PERCENT)
         # Set a "shift" key
         # shifted = btn_l2()
-
         # Base layer
 #         if not shifted:
 #             Intake
