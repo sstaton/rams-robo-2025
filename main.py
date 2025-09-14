@@ -109,7 +109,7 @@ intake.set_velocity(300, RPM)
 
 # Sensors
 global imu
-imu = Inertial(Ports.PORT20)
+imu = Inertial(Ports.PORT21)
 #global clock
 #clock = Timer()
 # global auton_selector

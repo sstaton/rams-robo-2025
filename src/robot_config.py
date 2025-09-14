@@ -45,7 +45,7 @@ intake.set_velocity(300, RPM)
 
 # Sensors
 global imu
-imu = vex.Inertial(vex.Ports.PORT20)
+imu = vex.Inertial(vex.Ports.PORT21)
 #global clock
 #clock = vex.Timer()
 # global auton_selector
