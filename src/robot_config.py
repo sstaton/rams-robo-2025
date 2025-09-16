@@ -48,9 +48,19 @@ global imu
 imu = vex.Inertial(vex.Ports.PORT21)
 #global clock
 #clock = vex.Timer()
-# global auton_selector
+#  global auton_selector
 # auton_selector = vex.DigitalIn(brain.three_wire_port.h)
+vision__RED_BOX = Signature(1, 14779, 15299, 15039,685, 1137, 911,2.5, 0)
+vision__BLUE_BOX = Signature(2, -2397, -2067, -2232,7599, 8117, 7858,2.5, 0)
+vision__RED2 = Signature(3, 6085, 9305, 7695,-2073, -763, -1418,2.5, 0)
+vision__RED3 = Signature(4, 6517, 7831, 7174,-1867, -353, -1110,2.5, 0)
+vision__RED4 = Signature(5, 7439, 9649, 8544,-1747, -183, -965,2.5, 0)
+vision__RED5 = Signature(6, 5335, 8245, 6790,-1365, 309, -528,2.5, 0)
+#vision = Vision(Ports.PORT11, 50, vision__RED_BOX, vision__BLUE_BOX)
+vision = Vision(Ports.PORT11, 50, vision__RED_BOX, vision__BLUE_BOX, vision__RED2, vision__RED3, vision__RED4, vision__RED5)
 
 # Globals
 global all_globals
 all_globals = TrackedGlobals(0, 10.75, (3600 / 3593.6))
+
+

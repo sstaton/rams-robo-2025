@@ -19,6 +19,9 @@ def opcontrol():
     drive_l.stop(COAST)
     drive_r.stop(COAST)
 
+    brain.screen.set_cursor(1, 1)
+    brain.screen.print("opcontrol Start")
+
     while(True):
         # Drivetrain
         opdrive(TSA, 1.0, SENSITIVITY)
@@ -28,6 +31,16 @@ def opcontrol():
 
         # Set a "shift" key
         shifted = btn_l2()
+
+        found_red_box = findredbox()
+
+        if found_red_box:
+            print ("Found RED Box")
+            brain.screen.set_cursor(3, 4)
+            brain.screen.print("Found RED Box")
+        else:
+            brain.screen.set_cursor(3, 4)
+            brain.screen.print("No RED Box")
 
         # # Base layer
         # if not shifted:
