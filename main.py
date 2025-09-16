@@ -79,19 +79,22 @@ drive_r2 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, True)
 
 # global drive_r
 drive_r = MotorGroup(drive_r1, drive_r2)
+
 # Left Drive
 # global drive_l1
 drive_l1 = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 # global drive_l2
 drive_l2 = Motor(Ports.PORT9, GearSetting.RATIO_18_1, False)
 
+drive_l = MotorGroup(drive_l1, drive_l2)
+
 # global drive_l
 drivetrain = MotorGroup(drive_r1, drive_r2, drive_l1, drive_l2)
 
 # Subsystem 3
-# global intake
+
 intake_1 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False)
-# global hang
+
 intake_2 = Motor(Ports.PORT7, GearSetting.RATIO_18_1, True)
 
 intake_3 = Motor(Ports.PORT13, GearSetting.RATIO_6_1, False)
@@ -581,30 +584,30 @@ def opcontrol():
 
     # Reset drive velocity
     drive_l.stop(COAST)
-    drive_r.stop(COAST)
+    drive_r.stop(COAST) 
 
     while(True):
         # Drivetrain
         opdrive(TSA, 1.0, SENSITIVITY)
 
-        # Elevation
-        hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
+        # # Elevation
+        # RENAME_ME.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
         # Set a "shift" key
         shifted = btn_l2()
 
         # Base layer
-        if not shifted:
-            # Intake
-            intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-            # Change intake height
-            intake_fold.set(fold_switch.is_redge(btn_l1()))
+        # if not shifted:
+        #     # Intake
+        #     intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+        #     # Change intake height
+        #     intake_fold.set(fold_switch.is_redge(btn_l1()))
 
         # Shifted layer
-        if shifted:
-            # Wings
-            wing_l.set(wing_l_switch.is_redge(btn_l1()))
-            wing_r.set(wing_r_switch.is_redge(btn_r1()))
+        # if shifted:
+        #     # Wings
+        #     wing_l.set(wing_l_switch.is_redge(btn_l1()))
+        #     wing_r.set(wing_r_switch.is_redge(btn_r1()))
 
         wait(20, MSEC)
 

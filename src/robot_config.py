@@ -23,9 +23,9 @@ drive_l2 = Motor(Ports.PORT9F, GearSetting.RATIO_18_1, False)
 # drivetrain = MotorGroup(drive_r1, drive_r2, drive_l1, drive_l2)
 
 # Subsystem 3
-# global intake
+
 intake_1 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False)
-# global hang
+
 intake_2 = Motor(Ports.PORT7, GearSetting.RATIO_18_1, True)
 
 intake_3 = Motor(Ports.PORT13, Gearsetting.RATIO_6_1, False)
