@@ -8,7 +8,7 @@ TSA = 1
 OSA = 2
 
 def opcontrol():
-    SENSITIVITY = 0.85
+    SENSITIVITY = 0.65
 
     # Set up edge detection
     fold_switch = EdgeDetection(False)

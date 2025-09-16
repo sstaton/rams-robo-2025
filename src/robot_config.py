@@ -1,4 +1,4 @@
-
+# ./.
 # global brain
 brain = Brain()
 # global master
@@ -20,7 +20,7 @@ drive_l1 = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
 drive_l2 = Motor(Ports.PORT9F, GearSetting.RATIO_18_1, False)
 
 # global drive_l
-drivetrain = MotorGroup(drive_r1, drive_r2, drive_l1, drive_l2)
+# drivetrain = MotorGroup(drive_r1, drive_r2, drive_l1, drive_l2)
 
 # Subsystem 3
 # global intake
