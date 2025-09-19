@@ -73,18 +73,18 @@ master = Controller()
 # Right Drive
 # global drive_r1
 
-drive_r1 = Motor(Ports.PORT19, GearSetting.RATIO_18_1, True)
+drive_r1 = Motor(Ports.PORT19, GearSetting.RATIO_18_1, False)
 
-drive_r2 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, True)
+drive_r2 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
 
 # global drive_r
 drive_r = MotorGroup(drive_r1, drive_r2)
 
 # Left Drive
 # global drive_l1
-drive_l1 = Motor(Ports.PORT20, GearSetting.RATIO_18_1, False)
+drive_l1 = Motor(Ports.PORT20, GearSetting.RATIO_18_1, True)
 # global drive_l2
-drive_l2 = Motor(Ports.PORT9, GearSetting.RATIO_18_1, False)
+drive_l2 = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
 
 drive_l = MotorGroup(drive_l1, drive_l2)
 
