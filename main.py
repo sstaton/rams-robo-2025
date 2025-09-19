@@ -574,6 +574,8 @@ TNK = 0
 TSA = 1
 OSA = 2
 
+
+
 def opcontrol():
     SENSITIVITY = 0.65
 
@@ -593,6 +595,10 @@ def opcontrol():
         # # Elevation
         # RENAME_ME.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
+        intakegroup.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+        
+        intakegroup_2.spin(FORWARD, (btn_l1() - btn_l2()) * 100, PERCENT)
+        
         # Set a "shift" key
         shifted = btn_l2()
 
