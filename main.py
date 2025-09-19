@@ -585,8 +585,8 @@ def opcontrol():
     wing_l_switch = EdgeDetection(False)
 
     # Reset drive velocity
-    drive_l.stop(COAST)
-    drive_r.stop(COAST) 
+    drive_l.stop(BRAKE)
+    drive_r.stop(BRAKE) 
 
     while(True):
         # Drivetrain
