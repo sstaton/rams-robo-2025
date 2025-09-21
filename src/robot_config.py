@@ -8,33 +8,39 @@ global master
 master = vex.Controller()
 
 # Right Drive
+# Back Right Motor looking towards the front
 global drive_r1
 drive_r1 = vex.Motor(vex.Ports.PORT9, vex.GearSetting.RATIO_6_1, True)
+# Front Right Motor looking towards the front
 global drive_r2
 drive_r2 = vex.Motor(vex.Ports.PORT1, vex.GearSetting.RATIO_6_1, True)
-
 global drive_r
 drive_r = vex.MotorGroup(drive_r1, drive_r2)
 
+
 # Left Drive
+# Back Left Motor looking towards the front
 global drive_l1
 drive_l1 = vex.Motor(vex.Ports.PORT10, vex.GearSetting.RATIO_6_1, False) 
+# Front Left Motor looking towards the front
 global drive_l2
 drive_l2 = vex.Motor(vex.Ports.PORT2, vex.GearSetting.RATIO_6_1, False)
-
 global drive_l
 drive_l = vex.MotorGroup(drive_l1, drive_l2)
 
 
 # Subsystem 3
+# Left Intake looking towards the front
 global intake1
 intake1 = vex.Motor(vex.Ports.PORT8, vex.GearSetting.RATIO_18_1, True)
+# Right Intake looking towards the front
 global intake2
 intake2 = vex.Motor(vex.Ports.PORT3, vex.GearSetting.RATIO_18_1, False)
-
 global intake
 intake = vex.MotorGroup(intake1, intake2)
 intake.set_velocity(300, RPM)
+
+
 # Cylinders
 #global wing_r
 #wing_r = vex.DigitalOut(brain.three_wire_port.a)

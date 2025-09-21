@@ -16,15 +16,15 @@ def opcontrol():
     wing_l_switch = EdgeDetection(False)
 
     # Reset drive velocity
-    drive_l.stop(COAST)
-    drive_r.stop(COAST)
+    drive_l.stop(BRAKE)
+    drive_r.stop(BRAKE)
 
     brain.screen.set_cursor(1, 1)
     brain.screen.print("opcontrol Start")
 
     while(True):
         # Drivetrain
-        opdrive(TSA, 1.0, SENSITIVITY)
+        opdrive(TNK, 1.0, SENSITIVITY)
 
         # Elevation NO HANG THIS YEAR
         #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
@@ -69,8 +69,8 @@ def opcontrol():
 def opdrive(control_scheme, speed_mod, turn_mod):
     # Tank drive
     if control_scheme == TNK:
-        drive_r.spin(FORWARD, axis_ry() * speed_mod, PERCENT)
-        drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
+        drive_r.spin(REVERSE, axis_ry() * speed_mod, PERCENT)
+        drive_l.spin(REVERSE, axis_lx() * speed_mod, PERCENT)
     # Two stick arcade
     elif control_scheme == TSA:
         drive_r.spin(FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
