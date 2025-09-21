@@ -105,8 +105,6 @@ intake_5 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
 
 intakegroup = MotorGroup(intake_1, intake_2, intake_3)
 
-intakegroup_2 = MotorGroup(intake_4, intake_5)
-
 # drive_1.set_turn_velocity(75, PERCENT)
 
 # Cylinders
@@ -597,8 +595,9 @@ def opcontrol():
 
         intakegroup.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         
-        intakegroup_2.spin(FORWARD, (btn_l1() - btn_l2()) * 100, PERCENT)
+        intake_5.spin(FORWARD, (btn_l1() - btn_l2()) * 100, PERCENT)
         
+        intake_4.spin(REVERSE, (btn_y()) * 100, PERCENT)      
         # Set a "shift" key
         shifted = btn_l2()
 
