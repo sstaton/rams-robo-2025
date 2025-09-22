@@ -99,7 +99,7 @@ intake_2 = Motor(Ports.PORT7, GearSetting.RATIO_18_1, True)
 
 intake_3 = Motor(Ports.PORT13, GearSetting.RATIO_6_1, False)
 
-intake_4 = Motor(Ports.PORT12, GearSetting.RATIO_6_1, False)
+intake_4 = Motor(Ports.PORT12, GearSetting.RATIO_6_1, True)
 
 intake_5 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
 
@@ -313,8 +313,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     MULTIPLIER = 1.2        # not sure why I need this, but it makes it so that
     inches *= MULTIPLIER    # passing 4 inches actually moves 4 inches
 
-    drive_r.stop(COAST)
-    drive_l.stop(COAST)
+    drive_r.stop(BRAKE)
+    drive_l.stop(BRAKE)
 
     pid_drive_r = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
     pid_drive_l = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
@@ -360,8 +360,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         drive_r.stop(BRAKE)
         drive_l.stop(BRAKE)
     else:
-        drive_r.stop(COAST)
-        drive_l.stop(COAST)
+        drive_r.stop(BRAKE)
+        drive_l.stop(BRAKE)
 
 def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     # Loop wait times
@@ -495,8 +495,8 @@ def drive_linear(inches, max_ips, ipss, do_decel = True):
         drive_r.stop(BRAKE)
         drive_l.stop(BRAKE)
     else:
-        drive_r.stop(COAST)
-        drive_l.stop(COAST)
+        drive_r.stop(BRAKE)
+        drive_l.stop(BRAKE)
 
 # *Much* faster drive_turn(), but less control over speed, etc.
 # Doesn't work well if arcing on full omni drives
@@ -597,12 +597,13 @@ def opcontrol():
         
         intake_5.spin(FORWARD, (btn_l1() - btn_l2()) * 100, PERCENT)
         
-        intake_4.spin(REVERSE, (btn_y()) * 100, PERCENT)      
+        intake_4.spin(FORWARD, (btn_a()) * 100, PERCENT)      
         # Set a "shift" key
+            
         shifted = btn_l2()
 
         # Base layer
-        # if not shifted:
+        # if not shifted
         #     # Intake
         #     intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         #     # Change intake height
