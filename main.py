@@ -97,13 +97,15 @@ intake_1 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False)
 
 intake_2 = Motor(Ports.PORT7, GearSetting.RATIO_18_1, True)
 
-intake_3 = Motor(Ports.PORT13, GearSetting.RATIO_6_1, False)
+block_sorter = Motor(Ports.PORT13, GearSetting.RATIO_6_1, False)
 
-intake_4 = Motor(Ports.PORT12, GearSetting.RATIO_6_1, True)
+extake_4 = Motor(Ports.PORT12, GearSetting.RATIO_6_1, True)
 
-intake_5 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
+extake_5 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
 
-intakegroup = MotorGroup(intake_1, intake_2, intake_3)
+intakegroup = MotorGroup(intake_1, intake_2,)
+
+optical = Optical(Ports.PORT1)
 
 # drive_1.set_turn_velocity(75, PERCENT)
 
@@ -542,7 +544,8 @@ def turn_pid(degrees, radius_ratio, direction):
 def straight_pid(dist):
     print("WIP")
 
-
+def detectcolor():
+    return optical.color()
 
 
 # ./src/preauton.py ---
@@ -585,6 +588,7 @@ def opcontrol():
     # Reset drive velocity
     drive_l.stop(BRAKE)
     drive_r.stop(BRAKE) 
+    run_extake = False
 
     while(True):
         # Drivetrain
@@ -595,9 +599,29 @@ def opcontrol():
 
         intakegroup.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         
-        intake_5.spin(FORWARD, (btn_l1() - btn_l2()) * 100, PERCENT)
+        extake_5.spin(FORWARD, (btn_l1() - btn_l2()) * 100, PERCENT)
         
-        intake_4.spin(FORWARD, (btn_a()) * 100, PERCENT)      
+        if btn_a():
+           run_extake = True
+           
+        if btn_b():
+            run_extake = False
+        
+        if run_extake:
+            extake_4.spin(FORWARD, 100, PERCENT)
+        else:
+            extake_4.stop()
+        
+        
+        if detectcolor() == Color.RED:
+            brain.screen.clear_row(3)
+            brain.screen.set_cursor(3, 4)
+            brain.screen.print("Red Object")
+        else:
+            brain.screen.clear_row(3)
+            brain.screen.set_cursor(3, 4)
+            brain.screen.print("No Red Object")
+        
         # Set a "shift" key
             
         shifted = btn_l2()
@@ -655,5 +679,4 @@ if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    field_controller = Competition(opcontrol, opcontrol)
-
+    field_controller = Competition(opcontrol, autonomous)
