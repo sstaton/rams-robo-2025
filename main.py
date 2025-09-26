@@ -107,6 +107,8 @@ intakegroup = MotorGroup(intake_1, intake_2,)
 
 optical = Optical(Ports.PORT1)
 
+
+
 # drive_1.set_turn_velocity(75, PERCENT)
 
 # Cylinders
@@ -612,15 +614,28 @@ def opcontrol():
         else:
             extake_4.stop()
         
-        
-        if detectcolor() == Color.RED:
+         
+        if detectcolor() == Color.BLUE:
+            block_sorter.spin(FORWARD, 100, PERCENT)
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
-            brain.screen.print("Red Object")
+            brain.screen.print("Blue Object")
         else:
+            block_sorter.stop()
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
-            brain.screen.print("No Red Object")
+            brain.screen.print("No Blue Object")
+            
+        # if detectcolor() == Color.RED:
+        #     block_sorter.spin(FORWARD, 100, PERCENT)
+        #     brain.screen.clear_row(3)
+        #     brain.screen.set_cursor(3, 4)
+        #     brain.screen.print("Red Object")
+        # else:
+        #     block_sorter.stop()
+        #     brain.screen.clear_row(3)
+        #     brain.screen.set_cursor(3, 4)
+        #     brain.screen.print("No Red Object")
         
         # Set a "shift" key
             
