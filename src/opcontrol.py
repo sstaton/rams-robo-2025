@@ -29,27 +29,51 @@ def opcontrol():
         # Elevation NO HANG THIS YEAR
         #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
         #new_thang.spin(FORWARD, btn_right() * 100, PERCENT)
-        intake.spin(FORWARD, btn_l1() * 100, PERCENT)
-        # Set a "shift" key
-        shifted = btn_l2()
-
-        found_red_box = findredbox()
-
-        if found_red_box:
-            # print ("Found RED Box")
-            brain.screen.set_cursor(3, 4)
-            brain.screen.print("Found RED Box")
-
-            # # if it picks up gears as red boxes, try this
-            # if found_red_box.height > 50:
-            #     pneumatic_separator.set(True)
-        
+        if btn_l2():
+          intake.spin(FORWARD, btn_l2() * 100, PERCENT)
+        elif btn_l1():
+          intake.spin(REVERSE, btn_l1() * 100, PERCENT)
         else:
-            brain.screen.set_cursor(3, 4)
-            brain.screen.print("No RED Box")
+          intake.stop(BRAKE)
+
+        if btn_r2():
+          outtake.spin(FORWARD, btn_r2() * 100, PERCENT)
+        elif btn_r1():
+          outtake.spin(REVERSE, btn_r1() * 100, PERCENT)
+        else:
+          outtake.stop(BRAKE)
+
+        # # Set a "shift" key
+        # shifted = btn_l2()
+
+        #found_color = findcolor()
+
+        if findcolor() == Color.RED:
+          brain.screen.clear_row(3)
+          brain.screen.set_cursor(3, 4)  
+          brain.screen.print("Red Object")
+        else:
+          brain.screen.clear_row(3)
+          brain.screen.set_cursor(3, 4)  
+          brain.screen.print("No Red Object")
+         
+        # found_red_box = findredbox()
+
+        #  if found_red_box:
+        #     # print ("Found RED Box")
+        #     brain.screen.set_cursor(3, 4)
+        #     brain.screen.print("Found RED Box")
+
+        #     # # if it picks up gears as red boxes, try this
+        #     # if found_red_box.height > 50:
+        #     #     pneumatic_separator.set(True)
+        
+        # else:
+        #     brain.screen.set_cursor(3, 4)
+        #     brain.screen.print("No RED Box")
             
-            # if found_blue_box.height > 50:
-            #     pneumatic_separator.set(True)
+        #     # if found_blue_box.height > 50:
+        #     #     pneumatic_separator.set(True)
 
         # # Base layer
         # if not shifted:

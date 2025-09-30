@@ -72,33 +72,53 @@ global master
 master = Controller()
 
 # Right Drive
+# Back Right Motor looking towards the front
 global drive_r1
-drive_r1 = Motor(Ports.PORT9, GearSetting.RATIO_6_1, True)
+drive_r1 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, True)
+# Front Right Motor looking towards the front
 global drive_r2
-drive_r2 = Motor(Ports.PORT1, GearSetting.RATIO_6_1, True)
-
+drive_r2 = Motor(Ports.PORT3, GearSetting.RATIO_6_1, True)
+# Right Drive Motor Group
 global drive_r
 drive_r = MotorGroup(drive_r1, drive_r2)
 
-# Left Drive
-global drive_l1
-drive_l1 = Motor(Ports.PORT10, GearSetting.RATIO_6_1, False) 
-global drive_l2
-drive_l2 = Motor(Ports.PORT2, GearSetting.RATIO_6_1, False)
 
+# Left Drive
+# Back Left Motor looking towards the front
+global drive_l1
+drive_l1 = Motor(Ports.PORT2, GearSetting.RATIO_6_1, False) 
+# Front Left Motor looking towards the front
+global drive_l2
+drive_l2 = Motor(Ports.PORT1, GearSetting.RATIO_6_1, False)
+# Left Drive Motor Group
 global drive_l
 drive_l = MotorGroup(drive_l1, drive_l2)
 
 
-# Subsystem 3
+# Intake System
+# Left Intake looking towards the front
 global intake1
-intake1 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, True)
+intake1 = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
+# Right Intake looking towards the front
 global intake2
-intake2 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
-
+intake2 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, True)
+# Intake Motor Group
 global intake
 intake = MotorGroup(intake1, intake2)
 intake.set_velocity(300, RPM)
+
+# Outtake System
+# Top Outtake 
+global outtake1
+outtake1 = Motor(Ports.PORT5, GearSetting.RATIO_18_1, False)
+# Bottom Outtake
+global outtake2
+outtake2 = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
+# Outtake Motor Group
+global outtake
+outtake = MotorGroup(outtake1, outtake2)
+outtake.set_velocity(300, RPM)
+
 # Cylinders
 #global wing_r
 #wing_r = DigitalOut(brain.three_wire_port.a)
@@ -110,18 +130,23 @@ intake.set_velocity(300, RPM)
 # Sensors
 global imu
 imu = Inertial(Ports.PORT21)
+
+optical = Optical(Ports.PORT11)
+
 #global clock
 #clock = Timer()
 #  global auton_selector
 # auton_selector = DigitalIn(brain.three_wire_port.h)
-vision__RED_BOX = Signature(1, 14779, 15299, 15039,685, 1137, 911,2.5, 0)
-vision__BLUE_BOX = Signature(2, -2397, -2067, -2232,7599, 8117, 7858,2.5, 0)
-vision__RED2 = Signature(3, 6085, 9305, 7695,-2073, -763, -1418,2.5, 0)
-vision__RED3 = Signature(4, 6517, 7831, 7174,-1867, -353, -1110,2.5, 0)
-vision__RED4 = Signature(5, 7439, 9649, 8544,-1747, -183, -965,2.5, 0)
-vision__RED5 = Signature(6, 5335, 8245, 6790,-1365, 309, -528,2.5, 0)
-#vision = Vision(Ports.PORT11, 50, vision__RED_BOX, vision__BLUE_BOX)
-vision = Vision(Ports.PORT11, 50, vision__RED_BOX, vision__BLUE_BOX, vision__RED2, vision__RED3, vision__RED4, vision__RED5)
+
+# vision__RED_BOX = Signature(1, 14779, 15299, 15039,685, 1137, 911,2.5, 0)
+# vision__BLUE_BOX = Signature(2, -2397, -2067, -2232,7599, 8117, 7858,2.5, 0)
+# vision__RED2 = Signature(3, 6085, 9305, 7695,-2073, -763, -1418,2.5, 0)
+# vision__RED3 = Signature(4, 6517, 7831, 7174,-1867, -353, -1110,2.5, 0)
+# vision__RED4 = Signature(5, 7439, 9649, 8544,-1747, -183, -965,2.5, 0)
+# vision__RED5 = Signature(6, 5335, 8245, 6790,-1365, 309, -528,2.5, 0)
+# #vision = Vision(Ports.PORT11, 50, vision__RED_BOX, vision__BLUE_BOX)
+# vision = Vision(Ports.PORT11, 50, vision__RED_BOX, vision__BLUE_BOX, vision__RED2, vision__RED3, vision__RED4, vision__RED5)
+
 
 # Globals
 global all_globals
@@ -245,9 +270,14 @@ def btn_down():
     return master.buttonDown.pressing()
 
 
-def findredbox():
-    return vision.take_snapshot(vision__RED_BOX) or vision.take_snapshot(vision__RED2) or vision.take_snapshot(vision__RED3) or vision.take_snapshot(vision__RED4) or vision.take_snapshot(vision__RED5)
+#def findredbox():
+#    return vision.take_snapshot(vision__RED_BOX) or vision.take_snapshot(vision__RED2) or vision.take_snapshot(vision__RED3) or vision.take_snapshot(vision__RED4) or vision.take_snapshot(vision__RED5)
 
+def findcolor():
+    return optical.color()
+
+
+  
 
 
 
@@ -603,27 +633,51 @@ def opcontrol():
         # Elevation NO HANG THIS YEAR
         #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
         #new_thang.spin(FORWARD, btn_right() * 100, PERCENT)
-        intake.spin(FORWARD, btn_l1() * 100, PERCENT)
-        # Set a "shift" key
-        shifted = btn_l2()
-
-        found_red_box = findredbox()
-
-        if found_red_box:
-            # print ("Found RED Box")
-            brain.screen.set_cursor(3, 4)
-            brain.screen.print("Found RED Box")
-
-            # # if it picks up gears as red boxes, try this
-            # if found_red_box.height > 50:
-            #     pneumatic_separator.set(True)
-        
+        if btn_l2():
+          intake.spin(FORWARD, btn_l2() * 100, PERCENT)
+        elif btn_l1():
+          intake.spin(REVERSE, btn_l1() * 100, PERCENT)
         else:
-            brain.screen.set_cursor(3, 4)
-            brain.screen.print("No RED Box")
+          intake.stop(BRAKE)
+
+        if btn_r2():
+          outtake.spin(FORWARD, btn_r2() * 100, PERCENT)
+        elif btn_r1():
+          outtake.spin(REVERSE, btn_r1() * 100, PERCENT)
+        else:
+          outtake.stop(BRAKE)
+
+        # # Set a "shift" key
+        # shifted = btn_l2()
+
+        #found_color = findcolor()
+
+        if findcolor() == Color.RED:
+          brain.screen.clear_row(3)
+          brain.screen.set_cursor(3, 4)  
+          brain.screen.print("Red Object")
+        else:
+          brain.screen.clear_row(3)
+          brain.screen.set_cursor(3, 4)  
+          brain.screen.print("No Red Object")
+         
+        # found_red_box = findredbox()
+
+        #  if found_red_box:
+        #     # print ("Found RED Box")
+        #     brain.screen.set_cursor(3, 4)
+        #     brain.screen.print("Found RED Box")
+
+        #     # # if it picks up gears as red boxes, try this
+        #     # if found_red_box.height > 50:
+        #     #     pneumatic_separator.set(True)
+        
+        # else:
+        #     brain.screen.set_cursor(3, 4)
+        #     brain.screen.print("No RED Box")
             
-            # if found_blue_box.height > 50:
-            #     pneumatic_separator.set(True)
+        #     # if found_blue_box.height > 50:
+        #     #     pneumatic_separator.set(True)
 
         # # Base layer
         # if not shifted:

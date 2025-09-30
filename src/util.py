@@ -113,5 +113,11 @@ def btn_down():
     return master.buttonDown.pressing()
 
 
-def findredbox():
-    return vision.take_snapshot(vision__RED_BOX) or vision.take_snapshot(vision__RED2) or vision.take_snapshot(vision__RED3) or vision.take_snapshot(vision__RED4) or vision.take_snapshot(vision__RED5)
+#def findredbox():
+#    return vision.take_snapshot(vision__RED_BOX) or vision.take_snapshot(vision__RED2) or vision.take_snapshot(vision__RED3) or vision.take_snapshot(vision__RED4) or vision.take_snapshot(vision__RED5)
+
+def findcolor():
+    return optical.color()
+
+
+  
