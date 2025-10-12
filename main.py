@@ -98,26 +98,27 @@ drive_l = MotorGroup(drive_l1, drive_l2)
 # Intake System
 # Left Intake looking towards the front
 global intake1
-intake1 = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
+intake1 = Motor(Ports.PORT7, GearSetting.RATIO_18_1, True)
 # Right Intake looking towards the front
 global intake2
-intake2 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, True)
-# Intake Motor Group
-global intake
-intake = MotorGroup(intake1, intake2)
-intake.set_velocity(300, RPM)
-
-# Outtake System
+intake2 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False)
 # Top Outtake 
 global outtake1
-outtake1 = Motor(Ports.PORT5, GearSetting.RATIO_18_1, False)
+outtake1 = Motor(Ports.PORT5, GearSetting.RATIO_18_1, True)
+# Intake Motor Group
+global intake
+intake = MotorGroup(intake1, intake2, outtake1)
+intake.set_velocity(300, RPM)
+outtake1.set_velocity(400, RPM)
 # Bottom Outtake
 global outtake2
 outtake2 = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
-# Outtake Motor Group
-global outtake
-outtake = MotorGroup(outtake1, outtake2)
-outtake.set_velocity(300, RPM)
+outtake2.set_velocity(300, RPM)
+
+# Pneumatic System
+pneum1 = DigitalOut(brain.three_wire_port.a)
+pneum2 = DigitalOut(brain.three_wire_port.b)
+splitter = DigitalOut(brain.three_wire_port.c)
 
 # Cylinders
 #global wing_r
@@ -129,9 +130,13 @@ outtake.set_velocity(300, RPM)
 
 # Sensors
 global imu
-imu = Inertial(Ports.PORT21)
+imu = Inertial(Ports.PORT20)
 
 optical = Optical(Ports.PORT11)
+
+# Rotation Sensors
+turnr = Rotation(Ports.PORT12)
+onbackr= Rotation(Ports.PORT13)
 
 #global clock
 #clock = Timer()
@@ -275,6 +280,8 @@ def btn_down():
 
 def findcolor():
     return optical.color()
+
+
 
 
   
@@ -590,7 +597,7 @@ def preauton():
 
     while imu.is_calibrating():
         wait(20, TimeUnits.MSEC)
-
+ 
 
 
 
@@ -610,6 +617,7 @@ def autonomous():
 TNK = 0
 TSA = 1
 OSA = 2
+RTNK = 3
 
 def opcontrol():
     SENSITIVITY = 0.85
@@ -628,7 +636,11 @@ def opcontrol():
 
     while(True):
         # Drivetrain
-        opdrive(TNK, 1.0, SENSITIVITY)
+        if btn_up():
+          opdrive(TNK, 1.0, SENSITIVITY)
+        else:
+          opdrive(RTNK, 1.0, SENSITIVITY)
+        
 
         # Elevation NO HANG THIS YEAR
         #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
@@ -640,12 +652,11 @@ def opcontrol():
         else:
           intake.stop(BRAKE)
 
-        if btn_r2():
-          outtake.spin(FORWARD, btn_r2() * 100, PERCENT)
-        elif btn_r1():
-          outtake.spin(REVERSE, btn_r1() * 100, PERCENT)
-        else:
-          outtake.stop(BRAKE)
+        outtake2.spin(FORWARD, btn_r1() * 100, PERCENT)
+
+        
+
+
 
         # # Set a "shift" key
         # shifted = btn_l2()
@@ -653,13 +664,16 @@ def opcontrol():
         #found_color = findcolor()
 
         if findcolor() == Color.RED:
-          brain.screen.clear_row(3)
-          brain.screen.set_cursor(3, 4)  
-          brain.screen.print("Red Object")
+          # brain.screen.clear_row(3)
+          # brain.screen.set_cursor(3, 4)  
+          # brain.screen.print("Red Object")
+          splitter.set(True)
         else:
-          brain.screen.clear_row(3)
-          brain.screen.set_cursor(3, 4)  
-          brain.screen.print("No Red Object")
+          # brain.screen.clear_row(3)
+          # brain.screen.set_cursor(3, 4)  
+          # brain.screen.print("No Red Object")
+          wait(100, MSEC)
+          splitter.set(False)
          
         # found_red_box = findredbox()
 
@@ -697,8 +711,12 @@ def opcontrol():
 def opdrive(control_scheme, speed_mod, turn_mod):
     # Tank drive
     if control_scheme == TNK:
+        drive_r.spin(FORWARD, axis_ry() * speed_mod, PERCENT)
+        drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
+    # Reverse Tank drive    
+    elif control_scheme == RTNK:
         drive_r.spin(REVERSE, axis_ry() * speed_mod, PERCENT)
-        drive_l.spin(REVERSE, axis_lx() * speed_mod, PERCENT)
+        drive_l.spin(REVERSE, axis_lx() * speed_mod, PERCENT) 
     # Two stick arcade
     elif control_scheme == TSA:
         drive_r.spin(FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
