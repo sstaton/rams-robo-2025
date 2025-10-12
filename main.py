@@ -82,7 +82,6 @@ drive_r2 = Motor(Ports.PORT3, GearSetting.RATIO_6_1, True)
 global drive_r
 drive_r = MotorGroup(drive_r1, drive_r2)
 
-
 # Left Drive
 # Back Left Motor looking towards the front
 global drive_l1
@@ -93,6 +92,10 @@ drive_l2 = Motor(Ports.PORT1, GearSetting.RATIO_6_1, False)
 # Left Drive Motor Group
 global drive_l
 drive_l = MotorGroup(drive_l1, drive_l2)
+
+# Drivetrain
+# Not used in driving; Only for auton
+drive1 = DriveTrain(drive_l, drive_r, 3.25, 12, 4, INCHES, 0.75)
 
 
 # Intake System
@@ -607,6 +610,9 @@ def autonomous():
     brain.screen.clear_screen()
     
     brain.screen.print("auton Start")
+    drive1.drive_for(REVERSE, 31.0, INCHES)
+    drive1.turn_for(RIGHT, 90, DEGREES)
+    intake.spin(FORWARD)
 
 
 

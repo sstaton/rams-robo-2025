@@ -18,7 +18,6 @@ drive_r2 = vex.Motor(vex.Ports.PORT3, vex.GearSetting.RATIO_6_1, True)
 global drive_r
 drive_r = vex.MotorGroup(drive_r1, drive_r2)
 
-
 # Left Drive
 # Back Left Motor looking towards the front
 global drive_l1
@@ -29,6 +28,10 @@ drive_l2 = vex.Motor(vex.Ports.PORT1, vex.GearSetting.RATIO_6_1, False)
 # Left Drive Motor Group
 global drive_l
 drive_l = vex.MotorGroup(drive_l1, drive_l2)
+
+# Drivetrain
+# Not used in driving; Only for auton
+drive1 = DriveTrain(drive_l, drive_r, 3.25, 12, 4, INCHES, 0.75)
 
 
 # Intake System
