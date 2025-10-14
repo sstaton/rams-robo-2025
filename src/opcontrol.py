@@ -24,7 +24,7 @@ def opcontrol():
         opdrive(TSA, 1.0, SENSITIVITY)
 
         # Elevation
-        hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
+        
 
         # Set a "shift" key
         shifted = btn_l2()

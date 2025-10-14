@@ -107,7 +107,7 @@ intakegroup = MotorGroup(intake_1, intake_2,)
 
 optical = Optical(Ports.PORT1)
 
-
+lifter = Pneumatic(Ports.PortXXX)
 
 # drive_1.set_turn_velocity(75, PERCENT)
 
@@ -614,7 +614,11 @@ def opcontrol():
         else:
             extake_4.stop()
         
-         
+        if btn_x():
+            lifter.set(True)
+        if btn_y():
+            lifter.set(False) 
+        
         if detectcolor() == Color.BLUE:
             block_sorter.spin(FORWARD, 100, PERCENT)
             brain.screen.clear_row(3)
@@ -636,6 +640,19 @@ def opcontrol():
         #     brain.screen.clear_row(3)
         #     brain.screen.set_cursor(3, 4)
         #     brain.screen.print("No Red Object")
+        
+        optical.set_light_power(100)
+        brain.screen.clear_row(4)
+        brain.screen.set_cursor(4, 4)
+        brain.screen.print("rgb: " + str(optical.rgb()))
+    
+        brain.screen.clear_row(5)
+        brain.screen.set_cursor(5, 4)
+        brain.screen.print("hue: " + str(optical.hue()))
+        
+        brain.screen.clear_row(6)
+        brain.screen.set_cursor(6, 4)
+        brain.screen.print("brightness: " + str(optical.brightness()))
         
         # Set a "shift" key
             
