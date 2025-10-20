@@ -107,17 +107,17 @@ intakegroup = MotorGroup(intake_1, intake_2,)
 
 optical = Optical(Ports.PORT1)
 
-lifter = Pneumatic(Ports.PortXXX)
+#lifter = Pneumatic(Ports.PortXXX)
 
 # drive_1.set_turn_velocity(75, PERCENT)
 
 # Cylinders
 # global wing_r
-wing_r = DigitalOut(brain.three_wire_port.a)
+lifter = DigitalOut(brain.three_wire_port.a)
 # global wing_l
-wing_l = DigitalOut(brain.three_wire_port.b)
+#wing_l = DigitalOut(brain.three_wire_port.b)
 # global intake_fold
-intake_fold = DigitalOut(brain.three_wire_port.c)
+#intake_fold = DigitalOut(brain.three_wire_port.c)
 
 # Sensors
 # global imu
@@ -625,6 +625,7 @@ def opcontrol():
             brain.screen.set_cursor(3, 4)
             brain.screen.print("Blue Object")
         else:
+            
             block_sorter.stop()
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
