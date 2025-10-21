@@ -114,6 +114,7 @@ optical = Optical(Ports.PORT1)
 # Cylinders
 # global wing_r
 lifter = DigitalOut(brain.three_wire_port.a)
+puncher = DigitalOut(brain.three_wire_port.b)
 # global wing_l
 #wing_l = DigitalOut(brain.three_wire_port.b)
 # global intake_fold
@@ -615,8 +616,13 @@ def opcontrol():
             extake_4.stop()
         
         if btn_x():
-            lifter.set(True)
+            puncher.set(True)
         if btn_y():
+            puncher.set(False) 
+        
+        if btn_up():
+            lifter.set(True)
+        if btn_down():
             lifter.set(False) 
         
         if detectcolor() == Color.BLUE:
@@ -624,8 +630,8 @@ def opcontrol():
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
             brain.screen.print("Blue Object")
+            wait(500, MSEC)
         else:
-            
             block_sorter.stop()
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
