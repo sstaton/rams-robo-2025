@@ -71,34 +71,38 @@ master = Controller()
 # Right Drive
 # global drive_r1
 
-drive_r1 = Motor(Ports.PORT7, GearSetting.RATIO_6_1, False)
-
-drive_r2 = Motor(Ports.PORT6, GearSetting.RATIO_6_1, False)
-
+drive_r1 = Motor(Ports.PORT12, GearSetting.RATIO_6_1, False)
+drive_r2 = Motor(Ports.PORT13, GearSetting.RATIO_6_1, True)
 # global drive_r
-drive_r = MotorGroup(drive_r1, drive_r2)
+drive_r = MotorGroup(drive_r1, drive_r2) 
 # Left Drive
 # global drive_l1
-drive_l1 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, True)
-# global drive_l2
-drive_l2 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, True)
+
+drive_l1 = Motor(Ports.PORT19, GearSetting.RATIO_6_1, True)
+
+drive_l2 = Motor(Ports.PORT20, GearSetting.RATIO_6_1, True)
 
 # global drive_l
 drive_l = MotorGroup(drive_l1, drive_l2)
 
 # Subsystem 3
 # global intake
-intake = Motor(Ports.PORT1, GearSetting.RATIO_6_1, False)
-# global hang
-hang = Motor(Ports.PORT5, GearSetting.RATIO_36_1, False)
+intake1 = Motor(Ports.PORT10, GearSetting.RATIO_36_1, False)
+
+intake2 = Motor(Ports.PORT1, GearSetting.RATIO_36_1, True)
+
+intake = MotorGroup(intake1, intake2)
+# global ramp
+ramp = Motor(Ports.PORT3, GearSetting.RATIO_36_1, False)
 
 # Cylinders
 # global wing_r
-wing_r = DigitalOut(brain.three_wire_port.a)
+# This is the pneumatic 
+pneum1 = DigitalOut(brain.three_wire_port.a)
 # global wing_l
-wing_l = DigitalOut(brain.three_wire_port.b)
+#wing_l = DigitalOut(brain.three_wire_port.b)
 # global intake_fold
-intake_fold = DigitalOut(brain.three_wire_port.c)
+#intake_fold = DigitalOut(brain.three_wire_port.c)
 
 # Sensors
 # global imu
@@ -542,6 +546,8 @@ def preauton():
 def autonomous():
     brain.screen.clear_screen()
 
+    drive_straight(10, 25, 25)
+
 
 
 # ./src/opcontrol.py ---
@@ -568,39 +574,36 @@ def opcontrol():
         opdrive(TSA, 1.0, SENSITIVITY)
 
         # Elevation
-        hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
+        ramp.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
-        # Set a "shift" key
+        Set a "shift" key
         shifted = btn_l2()
-
-        # Base layer
-        if not shifted:
-            # Intake
-            intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-            # Change intake height
-            intake_fold.set(fold_switch.is_redge(btn_l1()))
-
+        
+        # Pneumatics code; should work I believe
+        # Replace btn_xxx() with actual buttons 
+        if btn_xxx():
+            pneum1.set(True)
+        elif btn_xxx():
+            pneum1.set(False)
+        
+        intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+           
         # Shifted layer
-        if shifted:
-            # Wings
-            wing_l.set(wing_l_switch.is_redge(btn_l1()))
-            wing_r.set(wing_r_switch.is_redge(btn_r1()))
+#         if shifted:
 
-        wait(20, MSEC)
-
-def opdrive(control_scheme, speed_mod, turn_mod):
-    # Tank drive
-    if control_scheme == TNK:
-        drive_r.spin(FORWARD, axis_ry() * speed_mod, PERCENT)
-        drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
-    # Two stick arcade
-    elif control_scheme == TSA:
-        drive_r.spin(FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
-        drive_l.spin(FORWARD, (axis_lx() + axis_rx() * turn_mod) * speed_mod, PERCENT)
-    # One stick arcade
-    elif control_scheme == OSA:
-        drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
-        drive_l.spin(FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, PERCENT)
+# # def opdrive(control_scheme, speed_mod, turn_mod):
+#     Tank drive
+#     # if control_scheme == TNK:
+#         drive_r.spin(FORWARD, axis_ry() * speed_mod, PERCENT)
+#         drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
+#     # Two stick arcade
+#     elif control_scheme == TSA:
+#         drive_r.spin(FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
+#         drive_l.spin(FORWARD, (axis_lx() + axis_rx() * turn_mod) * speed_mod, PERCENT)
+#     # One stick arcade
+#     elif control_scheme == OSA:
+#         drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
+#         drive_l.spin(FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, PERCENT)
 
 
 
@@ -625,4 +628,4 @@ if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    field_controller = Competition(opcontrol, opcontrol)
+    field_controller = Competition(opcontrol, autonomous)
