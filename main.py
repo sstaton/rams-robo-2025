@@ -605,7 +605,7 @@ def opcontrol():
 #         drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
 #         drive_l.spin(FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, PERCENT)
 
-
++
 
 # ./src/main0.py ---
 # ---------------------------------------------------------------------------- #
@@ -615,11 +615,11 @@ def opcontrol():
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 
-# Library imports
-# from vex import *
+#  Library imports
+#  from vex import
 
-# from robot_config import *
-# import auton
+#  from robot_config import
+#  import auton
 
 preauton()
 
