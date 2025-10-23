@@ -576,7 +576,7 @@ def opcontrol():
         # Elevation
         ramp.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
-        Set a "shift" key
+        # Set a "shift" key
         shifted = btn_l2()
         
         # Pneumatics code; should work I believe
