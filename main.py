@@ -577,13 +577,13 @@ def opcontrol():
         ramp.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
         # Set a "shift" key
-        shifted = btn_l2()
+        # shifted = btn_l2()
         
         # Pneumatics code; should work I believe
         # Replace btn_xxx() with actual buttons 
-        if btn_xxx():
+        if btn_l2():
             pneum1.set(True)
-        elif btn_xxx():
+        elif btn_l1():
             pneum1.set(False)
         
         intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
@@ -591,21 +591,20 @@ def opcontrol():
         # Shifted layer
 #         if shifted:
 
-# # def opdrive(control_scheme, speed_mod, turn_mod):
-#     Tank drive
-#     # if control_scheme == TNK:
-#         drive_r.spin(FORWARD, axis_ry() * speed_mod, PERCENT)
-#         drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
-#     # Two stick arcade
-#     elif control_scheme == TSA:
-#         drive_r.spin(FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
-#         drive_l.spin(FORWARD, (axis_lx() + axis_rx() * turn_mod) * speed_mod, PERCENT)
-#     # One stick arcade
-#     elif control_scheme == OSA:
-#         drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
-#         drive_l.spin(FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, PERCENT)
+def opdrive(control_scheme, speed_mod, turn_mod):
+    # Tank drive
+    if control_scheme == TNK:
+        drive_r.spin(FORWARD, axis_ry() * speed_mod, PERCENT)
+        drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
+    # Two stick arcade
+    elif control_scheme == TSA:
+        drive_r.spin(FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
+        drive_l.spin(FORWARD, (axis_lx() + axis_rx() * turn_mod) * speed_mod, PERCENT)
+    # One stick arcade
+    elif control_scheme == OSA:
+        drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
+        drive_l.spin(FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, PERCENT)
 
-+
 
 # ./src/main0.py ---
 # ---------------------------------------------------------------------------- #
