@@ -56,9 +56,9 @@ outtake2.set_velocity(300, RPM)
 
 # Pneumatic System
 pneum1 = DigitalOut(brain.three_wire_port.a)
-pneum2 = DigitalOut(brain.three_wire_port.b)
+unloader = DigitalOut(brain.three_wire_port.b)
 splitter = DigitalOut(brain.three_wire_port.c)
-
+# pneumenoultramicroscopicsillicavolcaniconiosis 
 # Cylinders
 #global wing_r
 #wing_r = vex.DigitalOut(brain.three_wire_port.a)
@@ -72,6 +72,7 @@ global imu
 imu = vex.Inertial(vex.Ports.PORT20)
 
 optical = Optical(Ports.PORT11)
+#optical2 = Optical(Ports.PORT11)
 
 # Rotation Sensors
 turnr = Rotation(Ports.PORT12)

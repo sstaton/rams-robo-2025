@@ -120,9 +120,9 @@ outtake2.set_velocity(300, RPM)
 
 # Pneumatic System
 pneum1 = DigitalOut(brain.three_wire_port.a)
-pneum2 = DigitalOut(brain.three_wire_port.b)
+unloader = DigitalOut(brain.three_wire_port.b)
 splitter = DigitalOut(brain.three_wire_port.c)
-
+# pneumenoultramicroscopicsillicavolcaniconiosis 
 # Cylinders
 #global wing_r
 #wing_r = DigitalOut(brain.three_wire_port.a)
@@ -136,6 +136,7 @@ global imu
 imu = Inertial(Ports.PORT20)
 
 optical = Optical(Ports.PORT11)
+#optical2 = Optical(Ports.PORT11)
 
 # Rotation Sensors
 turnr = Rotation(Ports.PORT12)
@@ -282,7 +283,9 @@ def btn_down():
 #    return vision.take_snapshot(vision__RED_BOX) or vision.take_snapshot(vision__RED2) or vision.take_snapshot(vision__RED3) or vision.take_snapshot(vision__RED4) or vision.take_snapshot(vision__RED5)
 
 def findcolor():
+    #optical.set_light_power(100)
     return optical.color()
+
 
 
 
@@ -610,9 +613,13 @@ def autonomous():
     brain.screen.clear_screen()
     
     brain.screen.print("auton Start")
+    # NOT CORRECT
     drive1.drive_for(REVERSE, 31.0, INCHES)
-    drive1.turn_for(RIGHT, 90, DEGREES)
-    intake.spin(FORWARD)
+    # drive1.turn_for(RIGHT, 90, DEGREES)
+    # drive1.drive_for(FORWARD, 6.0, INCHES)
+    # intake.spin(FORWARD)
+    # drive1.drive_for(REVERSE, 25.0, INCHES)
+    #drive1.drive_straight(31.0,)
 
 
 
@@ -639,86 +646,113 @@ def opcontrol():
 
     brain.screen.set_cursor(1, 1)
     brain.screen.print("opcontrol Start")
-
+    last_seen_color = "none"
+    unloaderpos = "up"
+    drive_mode = "RTNK"
     while(True):
-        # Drivetrain
-        if btn_up():
-          opdrive(TNK, 1.0, SENSITIVITY)
-        else:
-          opdrive(RTNK, 1.0, SENSITIVITY)
+      # Drivetrain
+      if btn_up():
+        if drive_mode == "RTNK":
+          drive_mode = "TNK"
+        elif drive_mode == "TNK":
+          drive_mode = "RTNK"
+        wait(500, MSEC)
+      
+      if drive_mode == "RTNK":
+        opdrive(RTNK, 1.0, SENSITIVITY)
+      elif drive_mode == "TNK":
+        opdrive(TNK, 1.0, SENSITIVITY)
+
+      brain.screen.clear_row(2)
+      brain.screen.set_cursor(2, 1)
+      brain.screen.print(drive_mode)
+      # Elevation NO HANG THIS YEAR
+      #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
+      #new_thang.spin(FORWARD, btn_right() * 100, PERCENT)
+
+      if btn_left():
+        if unloaderpos == "up":
+          unloaderpos = "down"
+        elif unloaderpos == "down":
+          unloaderpos = "up"
+        wait(250, MSEC)
+      
+      if unloaderpos == "up":
+        unloader.set(False)
+      elif unloaderpos == "down":
+        unloader.set(True)
+
+      if btn_l2():
+        intake.spin(FORWARD, btn_l2() * 100, PERCENT)
+      elif btn_l1():
+        intake.spin(REVERSE, btn_l1() * 100, PERCENT)
+      else:
+        intake.stop(BRAKE)
+
+      outtake2.spin(FORWARD, btn_r1() * 100, PERCENT)
+      # brain.screen.print(findcolor())
+     
+
+      # # Set a "shift" key
+      # shifted = btn_l2()
+      found_color = "none"
+      found_color = findcolor()
+    
+      if found_color == Color.RED:
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Red Object")
+        last_seen_color = "Red"
+      elif findcolor() == Color.BLUE:
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Blue Object")
+        last_seen_color = "Blue"
+
+      if last_seen_color == "Red":
+        splitter.set(True)
+      elif last_seen_color == "Blue":
+        splitter.set(False)
+      
         
+      # found_red_box = findredbox()
 
-        # Elevation NO HANG THIS YEAR
-        #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
-        #new_thang.spin(FORWARD, btn_right() * 100, PERCENT)
-        if btn_l2():
-          intake.spin(FORWARD, btn_l2() * 100, PERCENT)
-        elif btn_l1():
-          intake.spin(REVERSE, btn_l1() * 100, PERCENT)
-        else:
-          intake.stop(BRAKE)
+      #  if found_red_box:
+      #     # print ("Found RED Box")
+      #     brain.screen.set_cursor(3, 4)
+      #     brain.screen.print("Found RED Box")
 
-        outtake2.spin(FORWARD, btn_r1() * 100, PERCENT)
+      #     # # if it picks up gears as red boxes, try this
+      #     # if found_red_box.height > 50:
+      #     #     pneumatic_separator.set(True)
+      
+      # else:
+      #     brain.screen.set_cursor(3, 4)
+      #     brain.screen.print("No RED Box")
+          
+      #     # if found_blue_box.height > 50:
+      #     #     pneumatic_separator.set(True)
 
-        
+      # # Base layer
+      # if not shifted:
+      #     # Intake
+      #     intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+      #     # Change intake height
+      #     intake_fold.set(fold_switch.is_redge(btn_l1()))
 
+      # # Shifted layer
+      # if shifted:
+      #     # Wings
+      #     wing_l.set(wing_l_switch.is_redge(btn_l1()))
+      #     wing_r.set(wing_r_switch.is_redge(btn_r1()))
 
-
-        # # Set a "shift" key
-        # shifted = btn_l2()
-
-        #found_color = findcolor()
-
-        if findcolor() == Color.RED:
-          # brain.screen.clear_row(3)
-          # brain.screen.set_cursor(3, 4)  
-          # brain.screen.print("Red Object")
-          splitter.set(True)
-        else:
-          # brain.screen.clear_row(3)
-          # brain.screen.set_cursor(3, 4)  
-          # brain.screen.print("No Red Object")
-          wait(100, MSEC)
-          splitter.set(False)
-         
-        # found_red_box = findredbox()
-
-        #  if found_red_box:
-        #     # print ("Found RED Box")
-        #     brain.screen.set_cursor(3, 4)
-        #     brain.screen.print("Found RED Box")
-
-        #     # # if it picks up gears as red boxes, try this
-        #     # if found_red_box.height > 50:
-        #     #     pneumatic_separator.set(True)
-        
-        # else:
-        #     brain.screen.set_cursor(3, 4)
-        #     brain.screen.print("No RED Box")
-            
-        #     # if found_blue_box.height > 50:
-        #     #     pneumatic_separator.set(True)
-
-        # # Base layer
-        # if not shifted:
-        #     # Intake
-        #     intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-        #     # Change intake height
-        #     intake_fold.set(fold_switch.is_redge(btn_l1()))
-
-        # # Shifted layer
-        # if shifted:
-        #     # Wings
-        #     wing_l.set(wing_l_switch.is_redge(btn_l1()))
-        #     wing_r.set(wing_r_switch.is_redge(btn_r1()))
-
-        wait(20, MSEC)
+      wait(20, MSEC)
 
 def opdrive(control_scheme, speed_mod, turn_mod):
     # Tank drive
     if control_scheme == TNK:
-        drive_r.spin(FORWARD, axis_ry() * speed_mod, PERCENT)
-        drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
+        drive_r.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
+        drive_l.spin(FORWARD, axis_ry() * speed_mod, PERCENT)
     # Reverse Tank drive    
     elif control_scheme == RTNK:
         drive_r.spin(REVERSE, axis_ry() * speed_mod, PERCENT)
