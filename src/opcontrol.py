@@ -71,15 +71,47 @@ def opcontrol():
 
       # # Set a "shift" key
       # shifted = btn_l2()
+      # JOSHUA LIAM SHEPPARD'S (BUM) IDEA DID NOT WORK
+      # Variables for current colors
       found_color = "none"
-      found_color = findcolor()
+  
+      # Sets optical sensor variables based on optical sensor functions
+      if findcolor1() == Color.RED:
+        found_color = "Red"
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Both optical Red")
+      elif findcolor1() == Color.BLUE:
+        found_color = "Blue"
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Both optical Blue")
+
+      ## Optical code using BOTH sensors; not current
+      # if findcolor1() == Color.RED and findcolor2() == Color.RED:
+      #   found_color = "Red"
+      #   brain.screen.clear_row(3)
+      #   brain.screen.set_cursor(3, 4)  
+      #   brain.screen.print("Both optical Red")
+      # elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+      #   found_color = "Blue"
+      #   brain.screen.clear_row(3)
+      #   brain.screen.set_cursor(3, 4)  
+      #   brain.screen.print("Both optical Blue")
+      # if findcolor2() == Color.RED:
+      #   foundcolor2 + 50
+      # elif findcolor2() == Color.BLUE:
+      #   foundcolor2 - 50
+
+      #found_color = findcolor()
     
-      if found_color == Color.RED:
+      # Checks the optical sensor variable
+      if found_color == "Red":
         brain.screen.clear_row(3)
         brain.screen.set_cursor(3, 4)  
         brain.screen.print("Red Object")
         last_seen_color = "Red"
-      elif findcolor() == Color.BLUE:
+      elif found_color == "Blue":
         brain.screen.clear_row(3)
         brain.screen.set_cursor(3, 4)  
         brain.screen.print("Blue Object")
@@ -87,9 +119,18 @@ def opcontrol():
 
       if last_seen_color == "Red":
         splitter.set(True)
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Splitter moved for Red")
       elif last_seen_color == "Blue":
         splitter.set(False)
-      
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Splitter moved for Blue")
+        
+
+     
+
         
       # found_red_box = findredbox()
 

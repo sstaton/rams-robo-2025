@@ -135,8 +135,8 @@ splitter = DigitalOut(brain.three_wire_port.c)
 global imu
 imu = Inertial(Ports.PORT20)
 
-optical = Optical(Ports.PORT11)
-#optical2 = Optical(Ports.PORT11)
+optical1 = Optical(Ports.PORT11)
+optical2 = Optical(Ports.PORT14)
 
 # Rotation Sensors
 turnr = Rotation(Ports.PORT12)
@@ -282,11 +282,16 @@ def btn_down():
 #def findredbox():
 #    return vision.take_snapshot(vision__RED_BOX) or vision.take_snapshot(vision__RED2) or vision.take_snapshot(vision__RED3) or vision.take_snapshot(vision__RED4) or vision.take_snapshot(vision__RED5)
 
-def findcolor():
+def findcolor1():
     #optical.set_light_power(100)
-    return optical.color()
+    return optical1.color()
 
+def findcolor2():
+    #optical.set_light_power(100)
+    return optical2.color()
 
+#def findrotations():
+#    return 
 
 
 
@@ -608,13 +613,25 @@ def preauton():
 
 
 # ./src/auton.py ---
+# 1. At least seven (7) Blocks of the Alliance’s color are Scored.
+# 2. At least three (3) different Goals include at least one (1) Scored Block of the Alliance’s color.
+# 3. At least three (3) Blocks of the Alliance’s color have been removed from Loaders adjacent to the
+# Alliance’s Alliance Station.
+# 4. Neither Robot is contacting the Park Zone barrier
 
+## 28 in (37-9 because robot turns about a point, back to pivot point = 9) forward
+## 90 degrees couclockwise
+## 4 in () forward
+## 24 in () reversed
+## outtake spin () amount of time
+## drive1.drive_straight(28, 15, 15, False)
 def autonomous():
     brain.screen.clear_screen()
     
     brain.screen.print("auton Start")
     # NOT CORRECT
-    drive1.drive_for(REVERSE, 31.0, INCHES)
+    #drive1.drive_straight(28, 15, 15, False)
+    #drive1.drive_for(REVERSE, 31.0, INCHES)
     # drive1.turn_for(RIGHT, 90, DEGREES)
     # drive1.drive_for(FORWARD, 6.0, INCHES)
     # intake.spin(FORWARD)
@@ -691,19 +708,51 @@ def opcontrol():
 
       outtake2.spin(FORWARD, btn_r1() * 100, PERCENT)
       # brain.screen.print(findcolor())
-     
+
 
       # # Set a "shift" key
       # shifted = btn_l2()
+      # JOSHUA LIAM SHEPPARD'S (BUM) IDEA DID NOT WORK
+      # Variables for current colors
       found_color = "none"
-      found_color = findcolor()
+  
+      # Sets optical sensor variables based on optical sensor functions
+      if findcolor1() == Color.RED:
+        found_color = "Red"
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Both optical Red")
+      elif findcolor1() == Color.BLUE:
+        found_color = "Blue"
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Both optical Blue")
+
+      ## Optical code using BOTH sensors; not current
+      # if findcolor1() == Color.RED and findcolor2() == Color.RED:
+      #   found_color = "Red"
+      #   brain.screen.clear_row(3)
+      #   brain.screen.set_cursor(3, 4)  
+      #   brain.screen.print("Both optical Red")
+      # elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+      #   found_color = "Blue"
+      #   brain.screen.clear_row(3)
+      #   brain.screen.set_cursor(3, 4)  
+      #   brain.screen.print("Both optical Blue")
+      # if findcolor2() == Color.RED:
+      #   foundcolor2 + 50
+      # elif findcolor2() == Color.BLUE:
+      #   foundcolor2 - 50
+
+      #found_color = findcolor()
     
-      if found_color == Color.RED:
+      # Checks the optical sensor variable
+      if found_color == "Red":
         brain.screen.clear_row(3)
         brain.screen.set_cursor(3, 4)  
         brain.screen.print("Red Object")
         last_seen_color = "Red"
-      elif findcolor() == Color.BLUE:
+      elif found_color == "Blue":
         brain.screen.clear_row(3)
         brain.screen.set_cursor(3, 4)  
         brain.screen.print("Blue Object")
@@ -711,9 +760,18 @@ def opcontrol():
 
       if last_seen_color == "Red":
         splitter.set(True)
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Splitter moved for Red")
       elif last_seen_color == "Blue":
         splitter.set(False)
-      
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print("Splitter moved for Blue")
+        
+
+     
+
         
       # found_red_box = findredbox()
 

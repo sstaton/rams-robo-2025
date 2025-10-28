@@ -71,8 +71,8 @@ splitter = DigitalOut(brain.three_wire_port.c)
 global imu
 imu = vex.Inertial(vex.Ports.PORT20)
 
-optical = Optical(Ports.PORT11)
-#optical2 = Optical(Ports.PORT11)
+optical1 = Optical(Ports.PORT11)
+optical2 = Optical(Ports.PORT14)
 
 # Rotation Sensors
 turnr = Rotation(Ports.PORT12)
