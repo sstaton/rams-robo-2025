@@ -93,7 +93,6 @@ intake2 = Motor(Ports.PORT1, GearSetting.RATIO_36_1, True)
 
 intake = MotorGroup(intake1, intake2)
 # global ramp
-ramp = Motor(Ports.PORT3, GearSetting.RATIO_36_1, False)
 
 # Cylinders
 # global wing_r
@@ -574,7 +573,7 @@ def opcontrol():
         opdrive(TSA, 1.0, SENSITIVITY)
 
         # Elevation
-        ramp.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
+        # ramp.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
         # Set a "shift" key
         # shifted = btn_l2()
