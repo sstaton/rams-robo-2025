@@ -584,9 +584,9 @@ def opcontrol():
             pneum1.set(True)
         elif btn_l1():
             pneum1.set(False)
-        
+            wait(20, MSEC)
         intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-             wait(20, MSEC)
+            #  wait(20, MSEC)
  # Shifted layer
  # if shifted:
 
