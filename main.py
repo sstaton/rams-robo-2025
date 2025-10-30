@@ -586,9 +586,7 @@ def opcontrol():
             pneum1.set(False)
         
         intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-           
-           
-            wait(20, MSEC)
+             wait(20, MSEC)
  # Shifted layer
  # if shifted:
 
@@ -606,7 +604,6 @@ def opdrive(control_scheme, speed_mod, turn_mod):
         drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
         drive_l.spin(FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, PERCENT)
        
-        wait(20, MSEC)
 
 # ./src/main0.py ---
 # ---------------------------------------------------------------------------- #
