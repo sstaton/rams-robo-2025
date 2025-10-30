@@ -107,14 +107,9 @@ intakegroup = MotorGroup(intake_1, intake_2,)
 
 optical = Optical(Ports.PORT1)
 
-#lifter = Pneumatic(Ports.PortXXX)
-
-# drive_1.set_turn_velocity(75, PERCENT)
-
-# Cylinders
-# global wing_r
 lifter = DigitalOut(brain.three_wire_port.a)
 puncher = DigitalOut(brain.three_wire_port.b)
+
 # global wing_l
 #wing_l = DigitalOut(brain.three_wire_port.b)
 # global intake_fold
@@ -567,7 +562,7 @@ def preauton():
 
 def autonomous():
     brain.screen.clear_screen()
-
+driver_1.drive_for()
 
 
 
@@ -615,22 +610,22 @@ def opcontrol():
         else:
             extake_4.stop()
         
-        if btn_x():
+        if btn_right():
             puncher.set(True)
-        if btn_y():
-            puncher.set(False) 
+        if btn_left():
+            puncher.set(False)
         
-        if btn_up():
+        if btn_x():
             lifter.set(True)
-        if btn_down():
-            lifter.set(False) 
+        if btn_y():
+            lifter.set(False)
         
         if detectcolor() == Color.BLUE:
             block_sorter.spin(FORWARD, 100, PERCENT)
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
             brain.screen.print("Blue Object")
-            wait(500, MSEC)
+            wait(1200, MSEC)
         else:
             block_sorter.stop()
             brain.screen.clear_row(3)
