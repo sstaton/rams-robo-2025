@@ -562,8 +562,10 @@ def preauton():
 
 def autonomous():
     brain.screen.clear_screen()
-driver_1.drive_for()
-
+    drivertrain.drive_for(1000, MSEC)
+    drive_l.drive_for(10, MSEC)
+    
+    
 
 
 # ./src/opcontrol.py ---
