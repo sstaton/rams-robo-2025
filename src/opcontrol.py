@@ -25,8 +25,10 @@ def opcontrol():
     last_seen_color = "none"
     unloaderpos = "up"
     drive_mode = "RTNK"
+    onbackr.set_position(0, DEGREES)
     while(True):
       # Drivetrain
+      #splitter.set(True)
       if btn_up():
         if drive_mode == "RTNK":
           drive_mode = "TNK"
@@ -76,62 +78,69 @@ def opcontrol():
       found_color = "none"
   
       # Sets optical sensor variables based on optical sensor functions
-      if findcolor1() == Color.RED:
-        found_color = "Red"
-        brain.screen.clear_row(3)
-        brain.screen.set_cursor(3, 4)  
-        brain.screen.print("Both optical Red")
-      elif findcolor1() == Color.BLUE:
-        found_color = "Blue"
-        brain.screen.clear_row(3)
-        brain.screen.set_cursor(3, 4)  
-        brain.screen.print("Both optical Blue")
-
-      ## Optical code using BOTH sensors; not current
-      # if findcolor1() == Color.RED and findcolor2() == Color.RED:
+      # if findcolor1() == Color.RED:
       #   found_color = "Red"
       #   brain.screen.clear_row(3)
       #   brain.screen.set_cursor(3, 4)  
       #   brain.screen.print("Both optical Red")
-      # elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+      # elif findcolor1() == Color.BLUE:
       #   found_color = "Blue"
       #   brain.screen.clear_row(3)
       #   brain.screen.set_cursor(3, 4)  
       #   brain.screen.print("Both optical Blue")
-      # if findcolor2() == Color.RED:
-      #   foundcolor2 + 50
-      # elif findcolor2() == Color.BLUE:
-      #   foundcolor2 - 50
+
+      # Optical code using BOTH sensors; not current
+      if findcolor1() == Color.RED and findcolor2() == Color.RED:
+        found_color = "Red"
+      elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+        found_color = "Blue"
+       
+      
 
       #found_color = findcolor()
     
       # Checks the optical sensor variable
       if found_color == "Red":
-        brain.screen.clear_row(3)
-        brain.screen.set_cursor(3, 4)  
-        brain.screen.print("Red Object")
+        # brain.screen.clear_row(3)
+        # brain.screen.set_cursor(3, 4)  
+        # brain.screen.print("Red Object")
         last_seen_color = "Red"
       elif found_color == "Blue":
-        brain.screen.clear_row(3)
-        brain.screen.set_cursor(3, 4)  
-        brain.screen.print("Blue Object")
+        # brain.screen.clear_row(3)
+        # brain.screen.set_cursor(3, 4)  
+        # brain.screen.print("Blue Object")
         last_seen_color = "Blue"
 
       if last_seen_color == "Red":
         splitter.set(True)
-        brain.screen.clear_row(3)
-        brain.screen.set_cursor(3, 4)  
-        brain.screen.print("Splitter moved for Red")
+        wait(5, MSEC)
+        # brain.screen.clear_row(3)
+        # brain.screen.set_cursor(3, 4)  
+        # brain.screen.print("Splitter moved for Red")
       elif last_seen_color == "Blue":
         splitter.set(False)
+        wait(5, MSEC)
+        # brain.screen.clear_row(3)
+        # brain.screen.set_cursor(3, 4)  
+        # brain.screen.print("Splitter moved for Blue")
+        
+
+      rotpos = rotationalpos()
+      turnrpos = turnpos()
+      
+      if btn_a():
         brain.screen.clear_row(3)
         brain.screen.set_cursor(3, 4)  
-        brain.screen.print("Splitter moved for Blue")
-        
+        brain.screen.print(rotpos)
 
-     
+      if btn_x():
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 4)  
+        brain.screen.print(turnrpos)
 
-        
+      # from 7.55 to 253.82
+      # from 318.42 to 163.3
+      # from 229.65 to 243.28
       # found_red_box = findredbox()
 
       #  if found_red_box:

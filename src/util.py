@@ -117,12 +117,20 @@ def btn_down():
 #    return vision.take_snapshot(vision__RED_BOX) or vision.take_snapshot(vision__RED2) or vision.take_snapshot(vision__RED3) or vision.take_snapshot(vision__RED4) or vision.take_snapshot(vision__RED5)
 
 def findcolor1():
-    #optical.set_light_power(100)
+    optical1.integration_time(20)
+    optical1.set_light_power(100)
     return optical1.color()
 
 def findcolor2():
-    #optical.set_light_power(100)
+    optical2.integration_time(20)
+    optical2.set_light_power(100)
     return optical2.color()
+
+def rotationalpos():
+    return onbackr.angle()
+
+def turnpos():
+    return turnr.angle()
 
 #def findrotations():
 #    return 

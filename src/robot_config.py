@@ -31,7 +31,7 @@ drive_l = vex.MotorGroup(drive_l1, drive_l2)
 
 # Drivetrain
 # Not used in driving; Only for auton
-drive1 = DriveTrain(drive_l, drive_r, 3.25, 12, 4, INCHES, 0.75)
+drive1 = DriveTrain(drive_l, drive_r, 311.15, 260.34, 0.75)
 
 
 # Intake System
