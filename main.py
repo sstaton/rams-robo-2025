@@ -561,10 +561,8 @@ def preauton():
 # ./src/auton.py ---
 
 def autonomous():
-    brain.screen.clear_screen()
-    drivertrain.drive_for(1000, MSEC)
-    drive_l.drive_for(10, MSEC)
-    
+# brain.screen.clear_row()
+# drivetrain.drive_for(1000, MSEC)
     
 
 
@@ -580,6 +578,14 @@ OSA = 2
 def opcontrol():
     SENSITIVITY = 0.65
 
+    brain.screen.clear_row(7)
+    brain.screen.set_cursor(7, 4)
+    brain.screen.print("67104B")
+   
+    brain.screen.clear_row(8)
+    brain.screen.set_cursor(8, 4)
+    brain.screen.print("Lord_Powertools_and_The_Screws")
+    
     # Set up edge detection
     fold_switch = EdgeDetection(False)
     wing_r_switch = EdgeDetection(False)
