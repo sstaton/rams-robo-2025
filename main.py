@@ -562,9 +562,10 @@ def preauton():
 
 def autonomous():
     brain.screen.clear_row()
-    drivetrain.drive_for(1000, MSEC)
-
-
+    lifter.set(True)
+    drivetrain.set_velocity(75, PERCENT)
+    drivetrain.spin_for(FORWARD, 900)
+    drive_r.spin_for(FORWARD, 1000)
 # ./src/opcontrol.py ---
 
 # Constants
@@ -627,28 +628,28 @@ def opcontrol():
         if btn_y():
             lifter.set(False)
         
-        # if detectcolor() == Color.BLUE:
-        #     block_sorter.spin(FORWARD, 100, PERCENT)
-        #     brain.screen.clear_row(3)
-        #     brain.screen.set_cursor(3, 4)
-        #     brain.screen.print("Blue Object")
-        #     wait(1200, MSEC)
-        # else:
-        #     block_sorter.stop()
-        #     brain.screen.clear_row(3)
-        #     brain.screen.set_cursor(3, 4)
-        #     brain.screen.print("No Blue Object")
-            
-        if detectcolor() == Color.RED:
+        if detectcolor() == Color.BLUE:
             block_sorter.spin(FORWARD, 100, PERCENT)
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
-            brain.screen.print("Red Object")
+            brain.screen.print("Blue Object")
+            wait(1200, MSEC)
         else:
             block_sorter.stop()
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
-            brain.screen.print("No Red Object")
+            brain.screen.print("No Blue Object")
+            
+        # if detectcolor() == Color.RED:
+        #     block_sorter.spin(FORWARD, 100, PERCENT)
+        #     brain.screen.clear_row(3)
+        #     brain.screen.set_cursor(3, 4)
+        #     brain.screen.print("Red Object")
+        # else:
+        #     block_sorter.stop()
+        #     brain.screen.clear_row(3)
+        #     brain.screen.set_cursor(3, 4)
+        #     brain.screen.print("No Red Object")
         
         optical.set_light_power(100)
         brain.screen.clear_row(4)
