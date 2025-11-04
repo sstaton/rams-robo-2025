@@ -14,31 +14,36 @@ from movement import *
 ## drive1.drive_straight(28, 15, 15, False)
 def autonomous():
     brain.screen.clear_screen()
-    found_color = "none"
-    last_seen_color = "none"
-    if findcolor1() == Color.RED and findcolor2() == Color.RED:
-        found_color = "Red"
-        brain.screen.clear_row(3)
-        brain.screen.set_cursor(3, 4)  
-        brain.screen.print("Both optical Red")
-    elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
-        found_color = "Blue"
-        
-    if found_color == "Red":
-        last_seen_color = "Red"
+    found_colora = "none"
+    last_seen_colora = "none"
+    optical_loop = "Off"
     
-    elif found_color == "Blue":
-        last_seen_color = "Blue"
 
-    if last_seen_color == "Red":
-        splitter.set(True)
-        wait(5, MSEC)
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Splitter moved for Red")
-    elif last_seen_color == "Blue":
-        splitter.set(False)
-        wait(5, MSEC)
+    # while(optical_loop == "On")
+    #     if findcolor1() == Color.RED and findcolor2() == Color.RED:
+    #         found_colora = "Red"
+    #         brain.screen.clear_row(3)
+    #         brain.screen.set_cursor(3, 4)  
+    #         brain.screen.print("Both optical Red")
+    #     elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+    #         found_colora = "Blue"
+        
+    #     if found_colora == "Red":
+    #         last_seen_colora = "Red"
+    
+    #     elif found_colora == "Blue":
+    #         last_seen_colora = "Blue"
+
+    #     # if last_seen_colora == "Red":
+    #     #     splitter.set(True)
+    #     #     wait(5, MSEC)
+    #     #     # brain.screen.clear_row(3)
+    #     #     # brain.screen.set_cursor(3, 4)  
+    #     #     # brain.screen.print("Splitter moved for Red")
+    #     # elif last_seen_colora == "Blue":
+    #     #     splitter.set(False)
+    #     #     wait(5, MSEC)
+    #     wait(20, MSEC)
     
     rotpos2 = rotationalpos()
     turnrpos2 = turnpos()
@@ -48,8 +53,13 @@ def autonomous():
     imu.calibrate()
     onbackr.set_position(0, DEGREES)
     turnr.set_position(0, DEGREES)
+    optical1.integration_time(20)
+    optical1.set_light_power(100)
+    optical2.integration_time(20)
+    optical2.set_light_power(100)
     drive1.set_drive_velocity(300, RPM)
     drive1.set_turn_velocity(300, RPM)
+    optical_loopa = "On"
     unloader.set(True)
     drive1.drive_for(FORWARD, 56, INCHES)
     wait(500, MSEC)
@@ -57,12 +67,11 @@ def autonomous():
     wait(200, MSEC)
     drive1.drive_for(FORWARD, 14, INCHES)
     intake.spin(REVERSE)
-    # splitter.set(True)
-    # wait(1800, MSEC)
-    # splitter.set(False)
-    # wait(1300, MSEC)
-    wait(3000, MSEC)
-    intake.stop()
+    splitter.set(True)
+    wait(1800, MSEC)
+    splitter.set(False)
+    wait(1300, MSEC)
+    #wait(3000, MSEC)
     drive1.drive_for(REVERSE, 32, INCHES)
     wait(200, MSEC)
     drive1.turn_for(RIGHT, 190, DEGREES)
@@ -71,6 +80,7 @@ def autonomous():
     drive1.turn_for(LEFT, 185, DEGREES)
     drive1.drive_for(REVERSE, 22, INCHES)
     outtake2.spin(FORWARD)
+    optical_loopa = "Off"
     #drive1.turn_for(LEFT, 90, DEGREES)
     #unloader.set(True)
     #drive1.drive_straight(-1, 2, 2, False)
@@ -81,3 +91,11 @@ def autonomous():
     # intake.spin(FORWARD)
     # drive1.drive_for(REVERSE, 25.0, INCHES)
     #drive1.drive_straight(31.0,)
+
+
+    while(True):
+        # drive forward a little
+        drive1.drive_for(FORWARD, 6, INCHES)
+        # drive backward a little
+        drive1.drive_for(REVERSE, 6, INCHES)
+        wait(20)

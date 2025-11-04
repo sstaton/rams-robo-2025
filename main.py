@@ -118,6 +118,9 @@ global outtake2
 outtake2 = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
 outtake2.set_velocity(300, RPM)
 
+global outtakeauton
+outtakeauton = MotorGroup(intake, outtake2)
+
 # Pneumatic System
 pneum1 = DigitalOut(brain.three_wire_port.a)
 unloader = DigitalOut(brain.three_wire_port.b)
@@ -635,31 +638,36 @@ def preauton():
 ## drive1.drive_straight(28, 15, 15, False)
 def autonomous():
     brain.screen.clear_screen()
-    found_color = "none"
-    last_seen_color = "none"
-    if findcolor1() == Color.RED and findcolor2() == Color.RED:
-        found_color = "Red"
-        brain.screen.clear_row(3)
-        brain.screen.set_cursor(3, 4)  
-        brain.screen.print("Both optical Red")
-    elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
-        found_color = "Blue"
-        
-    if found_color == "Red":
-        last_seen_color = "Red"
+    found_colora = "none"
+    last_seen_colora = "none"
+    optical_loop = "Off"
     
-    elif found_color == "Blue":
-        last_seen_color = "Blue"
 
-    if last_seen_color == "Red":
-        splitter.set(True)
-        wait(5, MSEC)
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Splitter moved for Red")
-    elif last_seen_color == "Blue":
-        splitter.set(False)
-        wait(5, MSEC)
+    # while(optical_loop == "On")
+    #     if findcolor1() == Color.RED and findcolor2() == Color.RED:
+    #         found_colora = "Red"
+    #         brain.screen.clear_row(3)
+    #         brain.screen.set_cursor(3, 4)  
+    #         brain.screen.print("Both optical Red")
+    #     elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+    #         found_colora = "Blue"
+        
+    #     if found_colora == "Red":
+    #         last_seen_colora = "Red"
+    
+    #     elif found_colora == "Blue":
+    #         last_seen_colora = "Blue"
+
+    #     # if last_seen_colora == "Red":
+    #     #     splitter.set(True)
+    #     #     wait(5, MSEC)
+    #     #     # brain.screen.clear_row(3)
+    #     #     # brain.screen.set_cursor(3, 4)  
+    #     #     # brain.screen.print("Splitter moved for Red")
+    #     # elif last_seen_colora == "Blue":
+    #     #     splitter.set(False)
+    #     #     wait(5, MSEC)
+    #     wait(20, MSEC)
     
     rotpos2 = rotationalpos()
     turnrpos2 = turnpos()
@@ -669,8 +677,13 @@ def autonomous():
     imu.calibrate()
     onbackr.set_position(0, DEGREES)
     turnr.set_position(0, DEGREES)
+    optical1.integration_time(20)
+    optical1.set_light_power(100)
+    optical2.integration_time(20)
+    optical2.set_light_power(100)
     drive1.set_drive_velocity(300, RPM)
     drive1.set_turn_velocity(300, RPM)
+    optical_loopa = "On"
     unloader.set(True)
     drive1.drive_for(FORWARD, 56, INCHES)
     wait(500, MSEC)
@@ -678,12 +691,11 @@ def autonomous():
     wait(200, MSEC)
     drive1.drive_for(FORWARD, 14, INCHES)
     intake.spin(REVERSE)
-    # splitter.set(True)
-    # wait(1800, MSEC)
-    # splitter.set(False)
-    # wait(1300, MSEC)
-    wait(3000, MSEC)
-    intake.stop()
+    splitter.set(True)
+    wait(1800, MSEC)
+    splitter.set(False)
+    wait(1300, MSEC)
+    #wait(3000, MSEC)
     drive1.drive_for(REVERSE, 32, INCHES)
     wait(200, MSEC)
     drive1.turn_for(RIGHT, 190, DEGREES)
@@ -692,6 +704,7 @@ def autonomous():
     drive1.turn_for(LEFT, 185, DEGREES)
     drive1.drive_for(REVERSE, 22, INCHES)
     outtake2.spin(FORWARD)
+    optical_loopa = "Off"
     #drive1.turn_for(LEFT, 90, DEGREES)
     #unloader.set(True)
     #drive1.drive_straight(-1, 2, 2, False)
@@ -729,8 +742,9 @@ def opcontrol():
     brain.screen.set_cursor(1, 1)
     brain.screen.print("opcontrol Start")
     last_seen_color = "none"
-    unloaderpos = "up"
-    drive_mode = "RTNK"
+    unloaderpos = "down"
+    drive_mode = "TNK"
+    splitterpos = "False"
     onbackr.set_position(0, DEGREES)
     while(True):
       # Drivetrain
@@ -740,7 +754,7 @@ def opcontrol():
           drive_mode = "TNK"
         elif drive_mode == "TNK":
           drive_mode = "RTNK"
-        wait(500, MSEC)
+        wait(250, MSEC)
       
       if drive_mode == "RTNK":
         opdrive(RTNK, 1.0, SENSITIVITY)
@@ -774,8 +788,9 @@ def opcontrol():
         intake.stop(BRAKE)
 
       outtake2.spin(FORWARD, btn_r1() * 100, PERCENT)
+      
       # brain.screen.print(findcolor())
-
+      
 
       # # Set a "shift" key
       # shifted = btn_l2()
@@ -817,32 +832,51 @@ def opcontrol():
         # brain.screen.print("Blue Object")
         last_seen_color = "Blue"
 
-      # # if last_seen_color == "Red":
-      # #   splitter.set(True)
-      # #   wait(5, MSEC)
-      # #   # brain.screen.clear_row(3)
-      # #   # brain.screen.set_cursor(3, 4)  
-      # #   # brain.screen.print("Splitter moved for Red")
-      # # elif last_seen_color == "Blue":
-      # #   splitter.set(False)
-      # #   wait(5, MSEC)
+      if last_seen_color == "Blue":
+        splitter.set(True)
+        splitterpos = ("True")
+        wait(5, MSEC)
+        # brain.screen.clear_row(3)
+        # brain.screen.set_cursor(3, 4)  
+        # brain.screen.print("Splitter moved for Red")
+      elif last_seen_color == "Red":
+        splitter.set(False)
+        spltterpos = ("False")
+        wait(5, MSEC)
         # brain.screen.clear_row(3)
         # brain.screen.set_cursor(3, 4)  
         # brain.screen.print("Splitter moved for Blue")
         
+      if btn_x():
+        if splitterpos == "True":
+          optical1.set_light_power(0)
+          optical2.set_light_power(0)
+          splitter.set(False)
+          wait(1000, MSEC)
+          splitter.set(True)
+          optical1.set_light_power(100)
+          optical2.set_light_power(100)
+        elif splitterpos == "False":
+          optical1.set_light_power(0)
+          optical2.set_light_power(0)
+          splitter.set(True)
+          wait(1000, MSEC)
+          splitter.set(False)
+          optical1.set_light_power(100)
+          optical2.set_light_power(100)
 
       rotpos = rotationalpos()
       turnrpos = turnpos()
       
-      if btn_a():
-        brain.screen.clear_row(3)
-        brain.screen.set_cursor(3, 4)  
-        brain.screen.print(rotpos)
+      # if btn_a():
+      #   brain.screen.clear_row(3)
+      #   brain.screen.set_cursor(3, 4)  
+      #   brain.screen.print(rotpos)
 
-      if btn_x():
-        brain.screen.clear_row(3)
-        brain.screen.set_cursor(3, 4)  
-        brain.screen.print(turnrpos)
+      # if btn_x():
+      #   brain.screen.clear_row(3)
+      #   brain.screen.set_cursor(3, 4)  
+      #   brain.screen.print(turnrpos)
 
       # from 7.55 to 253.82
       # from 318.42 to 163.3

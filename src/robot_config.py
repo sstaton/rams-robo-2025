@@ -54,6 +54,9 @@ global outtake2
 outtake2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_18_1, False)
 outtake2.set_velocity(300, RPM)
 
+global outtakeauton
+outtakeauton = vex.MotorGroup(intake, outtake2)
+
 # Pneumatic System
 pneum1 = DigitalOut(brain.three_wire_port.a)
 unloader = DigitalOut(brain.three_wire_port.b)
