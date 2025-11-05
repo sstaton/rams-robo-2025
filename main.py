@@ -566,6 +566,14 @@ def autonomous():
     drivetrain.set_velocity(75, PERCENT)
     drivetrain.spin_for(FORWARD, 900)
     drive_r.spin_for(FORWARD, 1000)
+    drivetrain.spin(REVERSE, 200)
+    lifter.set(False)
+    while intakegroup.spin(FORWARD)
+     drivetrain.spin_for(FORWARD, 500)
+     drivetrain.spin_for(REVERSE, 500)
+     drivetrain.spin_for(FORWARD, 500)
+     drivetrain.spin_for(REVERSE, 500)
+     intakegroup.spin
 # ./src/opcontrol.py ---
 
 # Constants
