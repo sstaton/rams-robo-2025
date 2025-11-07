@@ -85,14 +85,46 @@ drive_l2 = Motor(Ports.PORT20, GearSetting.RATIO_6_1, True)
 # global drive_l
 drive_l = MotorGroup(drive_l1, drive_l2)
 
+drivetrain = DriveTrain(drive_l, drive_r, 219.44, 279.4, 317.5, 1)
+# Set drive velocity to 100% and turn velocity to 100%
+drivetrain.set_drive_velocity(1000, PERCENT)
+drivetrain.set_turn_velocity(1000, PERCENT)
+
 # Subsystem 3
 # global intake
-intake1 = Motor(Ports.PORT10, GearSetting.RATIO_36_1, False)
+intake1 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
 
-intake2 = Motor(Ports.PORT1, GearSetting.RATIO_36_1, True)
+intake2 = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
 
 intake = MotorGroup(intake1, intake2)
-# global ramp
+intake.set_velocity(1200, RPM)
+
+# Guide to help score better in the goals
+guide = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
+def spin_guide(value, *args):
+    # Accepts percentage (-100..100) or RPM (larger magnitudes); additional args ignored for compatibility
+    if abs(value) <= 100:
+        guide.spin(FORWARD, value, PERCENT)
+    else:
+        guide.spin(FORWARD, value, RPM)
+
+def stop_guide(brake_mode=BRAKE):
+    guide.stop(brake_mode)
+
+# Helper functions for intake used by autonomous routines
+def spin_intake(value, *args):
+    # Accepts percentage (-100..100) or RPM (larger magnitudes); additional args ignored for compatibility
+    if abs(value) <= 100:
+        intake.spin(FORWARD, value, PERCENT)
+    else:
+        intake.spin(FORWARD, value, RPM)
+
+def stop_intake(brake_mode=BRAKE):
+    intake.stop(brake_mode)
+
+
+
+
 
 # Cylinders
 # global wing_r
@@ -105,7 +137,7 @@ pneum1 = DigitalOut(brain.three_wire_port.a)
 
 # Sensors
 # global imu
-imu = Inertial(Ports.PORT20)
+imu = Inertial(Ports.PORT7)
 # global clock
 clock = Timer()
 # global auton_selector
@@ -114,7 +146,6 @@ clock = Timer()
 # Globals
 # global all_globals
 all_globals = TrackedGlobals(0, 10.75, (3600 / 3593.6))
-
 
 
 # ./src/util.py ---
@@ -538,14 +569,20 @@ def preauton():
     while imu.is_calibrating():
         wait(20, TimeUnits.MSEC)
 
-
+ # baseline the target heading to the current IMU reading, then add 50°
+    all_globals.set_target_heading(imu_rotation())
 
 # ./src/auton.py ---
 
 def autonomous():
     brain.screen.clear_screen()
 
-    drive_straight(10, 25, 25)
+    #Test Code
+    spin_intake(100)
+    drive_straight(24, 100, 100)
+    stop_intake()
+    # drive_turn(100, -15, 100, 100, True)
+    turn_pid(100, 1, 1)
 
 
 
@@ -584,11 +621,10 @@ def opcontrol():
             pneum1.set(True)
         elif btn_l1():
             pneum1.set(False)
-            wait(20, MSEC)
+
         intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-            #  wait(20, MSEC)
- # Shifted layer
- # if shifted:
+        wait(20, MSEC)
+
 
 def opdrive(control_scheme, speed_mod, turn_mod):
     # Tank drive
@@ -627,3 +663,4 @@ if do_testing:
 else:
     print("start of main program")
     field_controller = Competition(opcontrol, autonomous)
+   
