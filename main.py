@@ -624,7 +624,9 @@ def opcontrol():
 
         intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         if btn_x():
-            spin_guide(100)
+            spin_guide(100, PERCENT)
+            elif btn_b():
+            spin_guide(-100, PERCENT)
         else:
             stop_guide()
         wait(20, MSEC)
