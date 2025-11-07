@@ -623,6 +623,10 @@ def opcontrol():
             pneum1.set(False)
 
         intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+        if button x:
+            spin_guide(FORWARD, 100, PERCENT)
+        else:
+            stop_guide()
         wait(20, MSEC)
 
 
