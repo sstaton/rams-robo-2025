@@ -562,18 +562,30 @@ def preauton():
 
 def autonomous():
     brain.screen.clear_row()
-    lifter.set(True)
+    extake_4.set_velocity(100, PERCENT)
+    extake_5.set_velocity(100, PERCENT)
+    intakegroup.set_velocity(100, PERCENT)
     drivetrain.set_velocity(75, PERCENT)
-    drivetrain.spin_for(FORWARD, 900)
-    drive_r.spin_for(FORWARD, 1000)
+    drivetrain.spin_for(FORWARD, 1100)
+    lifter.set(True)
+    drive_l.spin(REVERSE)
+    drive_r.spin(FORWARD)
+    wait(560, MSEC)
+    drive_l.stop
+    drive_r.stop
     drivetrain.spin(REVERSE, 200)
-    lifter.set(False)
-    while intakegroup.spin(FORWARD)
-     drivetrain.spin_for(FORWARD, 500)
-     drivetrain.spin_for(REVERSE, 500)
-     drivetrain.spin_for(FORWARD, 500)
-     drivetrain.spin_for(REVERSE, 500)
-     intakegroup.spin
+    intakegroup.spin(FORWARD)
+    drivetrain.spin_for(FORWARD, 500)
+    wait(500, MSEC)
+    drivetrain.spin_for(REVERSE, 500)
+    wait(500, MSEC)
+    drivetrain.spin_for(FORWARD, 500)
+    wait(500, MSEC)
+    drivetrain.spin_for(REVERSE, 500)
+    intakegroup.stop
+    drivetrain.spin_for(REVERSE, 300)
+    extake_4.spin(REVERSE)
+    extake_5.spin(FORWARD)
 # ./src/opcontrol.py ---
 
 # Constants
