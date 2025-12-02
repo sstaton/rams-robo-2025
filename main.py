@@ -89,7 +89,7 @@ drive_l2 = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
 drive_l = MotorGroup(drive_l1, drive_l2)
 
 # global drive_l
-drivetrain = MotorGroup(drive_r1, drive_r2, drive_l1, drive_l2)
+drivetrain = DriveTrain(drive_l, drive_r)
 
 # Subsystem 3
 
@@ -565,30 +565,30 @@ def autonomous():
     extake_4.set_velocity(100, PERCENT)
     extake_5.set_velocity(100, PERCENT)
     intakegroup.set_velocity(100, PERCENT)
-    drivetrain.set_velocity(75, PERCENT)
-    drivetrain.spin_for(FORWARD, 1000)
+    drivetrain.set_drive_velocity(75, PERCENT)
+    drivetrain.drive_for(FORWARD, 22)
     lifter.set(True)
-    drive_l.spin(FORWARD)
-    drive_r.spin(REVERSE)
+    drive_l.spin(REVERSE)
+    drive_r.spin(FORWARD)
     wait(530, MSEC)
     drive_l.stop
     drive_r.stop
-    drivetrain.spin(REVERSE, 200)
+    drivetrain.drive_for(FORWARD, 17)
     intakegroup.spin(REVERSE)
-    drivetrain.spin_for(FORWARD, 500)
-    wait(500, MSEC)
-    drivetrain.spin_for(REVERSE, 500)
-    wait(500, MSEC)
-    drivetrain.spin_for(FORWARD, 500)
-    wait(500, MSEC)
-    drivetrain.spin_for(REVERSE, 500)
-    # drivetrain.spin_for(FORWARD, 500)
+    # drivetrain.drive_for(FORWARD, 500)
     # wait(500, MSEC)
-    # drivetrain.spin_for(REVERSE, 500)
-    intakegroup.stop
-    drivetrain.spin_for(REVERSE, 350)
-    extake_4.spin(FORWARD)
-    extake_5.spin(FORWARD)
+    # drivetrain.drive_for(REVERSE, 500)
+    # wait(500, MSEC)
+    # drivetrain.drive_for(FORWARD, 500)
+    # wait(500, MSEC)
+    # drivetrain.drive_for(REVERSE, 500)
+    # # drivetrain.spin_for(FORWARD, 500)
+    # # wait(500, MSEC)
+    # # drivetrain.spin_for(REVERSE, 500)
+    # intakegroup.stop
+    # drivetrain.drive_for(REVERSE, 350)
+    # extake_4.spin(FORWARD)
+    # extake_5.spin(FORWARD)
 # ./src/opcontrol.py ---
 
 # Constants
