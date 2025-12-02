@@ -43,19 +43,17 @@ global intake2
 intake2 = vex.Motor(vex.Ports.PORT8, vex.GearSetting.RATIO_18_1, False)
 # Top Outtake 
 global outtake1
-outtake1 = vex.Motor(vex.Ports.PORT5, vex.GearSetting.RATIO_18_1, True)
+outtake1 = vex.Motor(vex.Ports.PORT5, vex.GearSetting.RATIO_6_1, True)
 # Intake Motor Group
 global intake
 intake = vex.MotorGroup(intake1, intake2, outtake1)
 intake.set_velocity(300, RPM)
-outtake1.set_velocity(400, RPM)
+outtake1.set_velocity(600, RPM)
 # Bottom Outtake
 global outtake2
 outtake2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_18_1, False)
-outtake2.set_velocity(300, RPM)
+outtake2.set_velocity(400, RPM)
 
-global outtakeauton
-outtakeauton = vex.MotorGroup(intake, outtake2)
 
 # Pneumatic System
 pneum1 = DigitalOut(brain.three_wire_port.a)

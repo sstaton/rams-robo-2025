@@ -1,5 +1,6 @@
 from vex import *
 import math
+import time
 
 
 
@@ -107,19 +108,17 @@ global intake2
 intake2 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False)
 # Top Outtake 
 global outtake1
-outtake1 = Motor(Ports.PORT5, GearSetting.RATIO_18_1, True)
+outtake1 = Motor(Ports.PORT5, GearSetting.RATIO_6_1, True)
 # Intake Motor Group
 global intake
 intake = MotorGroup(intake1, intake2, outtake1)
 intake.set_velocity(300, RPM)
-outtake1.set_velocity(400, RPM)
+outtake1.set_velocity(600, RPM)
 # Bottom Outtake
 global outtake2
 outtake2 = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
-outtake2.set_velocity(300, RPM)
+outtake2.set_velocity(400, RPM)
 
-global outtakeauton
-outtakeauton = MotorGroup(intake, outtake2)
 
 # Pneumatic System
 pneum1 = DigitalOut(brain.three_wire_port.a)
@@ -624,56 +623,17 @@ def preauton():
 
 
 # ./src/auton.py ---
-# 1. At least seven (7) Blocks of the Alliance’s color are Scored.
-# 2. At least three (3) different Goals include at least one (1) Scored Block of the Alliance’s color.
-# 3. At least three (3) Blocks of the Alliance’s color have been removed from Loaders adjacent to the
-# Alliance’s Alliance Station.
-# 4. Neither Robot is contacting the Park Zone barrier
 
-## 28 in (37-9 because robot turns about a point, back to pivot point = 9) forward
-## 90 degrees couclockwise
-## 4 in () forward
-## 24 in () reversed
-## outtake spin () amount of time
-## drive1.drive_straight(28, 15, 15, False)
 def autonomous():
     brain.screen.clear_screen()
     found_colora = "none"
     last_seen_colora = "none"
-    optical_loop = "Off"
-    
-
-    # while(optical_loop == "On")
-    #     if findcolor1() == Color.RED and findcolor2() == Color.RED:
-    #         found_colora = "Red"
-    #         brain.screen.clear_row(3)
-    #         brain.screen.set_cursor(3, 4)  
-    #         brain.screen.print("Both optical Red")
-    #     elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
-    #         found_colora = "Blue"
-        
-    #     if found_colora == "Red":
-    #         last_seen_colora = "Red"
-    
-    #     elif found_colora == "Blue":
-    #         last_seen_colora = "Blue"
-
-    #     # if last_seen_colora == "Red":
-    #     #     splitter.set(True)
-    #     #     wait(5, MSEC)
-    #     #     # brain.screen.clear_row(3)
-    #     #     # brain.screen.set_cursor(3, 4)  
-    #     #     # brain.screen.print("Splitter moved for Red")
-    #     # elif last_seen_colora == "Blue":
-    #     #     splitter.set(False)
-    #     #     wait(5, MSEC)
-    #     wait(20, MSEC)
-    
     rotpos2 = rotationalpos()
     turnrpos2 = turnpos()
 
     brain.screen.print("auton Start")
     # NOT CORRECT
+    # NVM
     imu.calibrate()
     onbackr.set_position(0, DEGREES)
     turnr.set_position(0, DEGREES)
@@ -683,28 +643,159 @@ def autonomous():
     optical2.set_light_power(100)
     drive1.set_drive_velocity(300, RPM)
     drive1.set_turn_velocity(300, RPM)
-    optical_loopa = "On"
     unloader.set(True)
-    drive1.drive_for(FORWARD, 56, INCHES)
+
+    # Red Left Side
+    drive1.drive_for(FORWARD, 52, INCHES)
     wait(500, MSEC)
-    drive1.turn_for(RIGHT, 183, DEGREES)
+    drive1.turn_for(RIGHT, 199, DEGREES)
     wait(200, MSEC)
-    drive1.drive_for(FORWARD, 14, INCHES)
+    drive1.drive_for(FORWARD, 17, INCHES)
     intake.spin(REVERSE)
     splitter.set(True)
-    wait(1800, MSEC)
-    splitter.set(False)
-    wait(1300, MSEC)
-    #wait(3000, MSEC)
+    start_time = time.time()
+    time_now = time.time()
+    while(time_now < start_time + 4):
+        if findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+            found_colora = "Blue"
+        if found_colora == "Blue":
+            last_seen_colora = "Blue"
+        if last_seen_colora == "Blue":
+            wait(50, MSEC)
+            splitter.set(False)
+            wait(50, MSEC)
+        drive1.drive_for(FORWARD, 1, INCHES)
+        wait(20, MSEC)
+        time_now = time.time()
     drive1.drive_for(REVERSE, 32, INCHES)
     wait(200, MSEC)
     drive1.turn_for(RIGHT, 190, DEGREES)
-    drive1.drive_for(REVERSE, 14, INCHES)
     wait(200, MSEC)
-    drive1.turn_for(LEFT, 185, DEGREES)
-    drive1.drive_for(REVERSE, 22, INCHES)
+    drive1.drive_for(REVERSE, 15, INCHES)
+    wait(200, MSEC)
+    drive1.turn_for(LEFT, 189, DEGREES)
+    wait(200, MSEC)
+    drive1.drive_for(REVERSE, 19, INCHES)
     outtake2.spin(FORWARD)
-    optical_loopa = "Off"
+
+    # Red Right side
+    # drive1.drive_for(FORWARD, 52, INCHES)
+    # wait(500, MSEC)
+    # drive1.turn_for(LEFT, 189, DEGREES)
+    # wait(200, MSEC)
+    # drive1.drive_for(FORWARD, 14, INCHES)
+    # intake.spin(REVERSE)
+    # splitter.set(True)
+    # start_time = time.time()
+    # time_now = time.time()
+    # while(time_now < start_time + 4):
+    #     if findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+    #         found_colora = "Blue"
+    #     if found_colora == "Blue":
+    #         last_seen_colora = "Blue"
+    #     if last_seen_colora == "Blue":
+    #         splitter.set(False)
+    #         wait(50, MSEC)
+    #     drive1.drive_for(FORWARD, 1, INCHES)
+    #     wait(20, MSEC)
+    #     time_now = time.time()
+    # drive1.drive_for(REVERSE, 32, INCHES)
+    # wait(200, MSEC)
+    # drive1.turn_for(RIGHT, 190, DEGREES)
+    # drive1.drive_for(REVERSE, 13, INCHES)
+    # wait(200, MSEC)
+    # drive1.turn_for(LEFT, 185, DEGREES)
+    # drive1.drive_for(REVERSE, 20, INCHES)
+    # outtake2.spin(FORWARD)
+
+    # Blue Left Side
+    # drive1.drive_for(FORWARD, 52, INCHES)
+    # wait(500, MSEC)
+    # drive1.turn_for(RIGHT, 195, DEGREES)
+    # wait(200, MSEC)
+    # drive1.drive_for(FORWARD, 17, INCHES)
+    # intake.spin(REVERSE)
+    # splitter.set(True)
+    # start_time = time.time()
+    # time_now = time.time()
+
+    # while(time_now < start_time + 4):
+    #     if findcolor1() == Color.RED and findcolor2() == Color.RED:
+    #         found_colora = "Red"
+    #     if found_colora == "Red":
+    #         last_seen_colora = "Red"
+    #     if last_seen_colora == "Red":
+    #         splitter.set(False)
+    #         wait(50, MSEC)
+    #     drive1.drive_for(FORWARD, 1, INCHES)
+    #     wait(20, MSEC)
+    #     time_now = time.time()
+    # drive1.drive_for(REVERSE, 32, INCHES)
+    # wait(200, MSEC)
+    # drive1.turn_for(RIGHT, 190, DEGREES)
+    # drive1.drive_for(REVERSE, 14, INCHES)
+    # wait(200, MSEC)
+    # drive1.turn_for(LEFT, 185, DEGREES)
+    # drive1.drive_for(REVERSE, 22, INCHES)
+    # outtake2.spin(FORWARD)
+
+    # Blue right Side
+    # drive1.drive_for(FORWARD, 52, INCHES)
+    # wait(500, MSEC)
+    # drive1.turn_for(LEFT, 189, DEGREES)
+    # wait(200, MSEC)
+    # drive1.drive_for(FORWARD, 17, INCHES)
+    # intake.spin(REVERSE)
+    # splitter.set(True)
+    # start_time = time.time()
+    # time_now = time.time()
+
+    # while(time_now < start_time + 4):
+    #     if findcolor1() == Color.RED and findcolor2() == Color.RED:
+    #         found_colora = "Red"
+    #     if found_colora == "Red":
+    #         last_seen_colora = "Red"
+    #     if last_seen_colora == "Red":
+    #         splitter.set(False)
+    #         wait(50, MSEC)
+    #     drive1.drive_for(FORWARD, 1, INCHES)
+    #     wait(20, MSEC)
+    #     time_now = time.time()
+    # drive1.drive_for(REVERSE, 32, INCHES)
+    # wait(200, MSEC)
+    # drive1.turn_for(RIGHT, 190, DEGREES)
+    # drive1.drive_for(REVERSE, 14, INCHES)
+    # wait(200, MSEC)
+    # drive1.turn_for(LEFT, 185, DEGREES)
+    # drive1.drive_for(REVERSE, 22, INCHES)
+    # outtake2.spin(FORWARD)
+
+
+    # Skills Auton
+    # drive1.drive_for(FORWARD, 52, INCHES)
+    # wait(500, MSEC)
+    # drive1.turn_for(RIGHT, 189, DEGREES)
+    # wait(200, MSEC)
+    # drive1.drive_for(FORWARD, 17, INCHES)
+    # intake.spin(REVERSE)
+    # splitter.set(True)
+    # start_time = time.time()
+    # time_now = time.time()
+
+    # while(time_now < start_time + 4):
+    #     drive1.drive_for(FORWARD, 1, INCHES)
+    #     wait(20, MSEC)
+    #     time_now = time.time()
+    # drive1.drive_for(REVERSE, 32, INCHES)
+    # wait(200, MSEC)
+    # drive1.turn_for(RIGHT, 190, DEGREES)
+    # drive1.drive_for(REVERSE, 14, INCHES)
+    # wait(200, MSEC)
+    # drive1.turn_for(LEFT, 185, DEGREES)
+    # drive1.drive_for(REVERSE, 22, INCHES)
+    # outtake2.spin(FORWARD)
+    
+    
     #drive1.turn_for(LEFT, 90, DEGREES)
     #unloader.set(True)
     #drive1.drive_straight(-1, 2, 2, False)
@@ -716,6 +807,30 @@ def autonomous():
     # drive1.drive_for(REVERSE, 25.0, INCHES)
     #drive1.drive_straight(31.0,)
 
+
+    # while(True):
+    #     # drive forward a little
+    #     drive1.drive_for(FORWARD, 6, INCHES)
+    #     # drive backward a little
+    #     drive1.drive_for(REVERSE, 6, INCHES)
+    #     wait(20, MSEC)
+    # if findcolor1() == Color.RED and findcolor2() == Color.RED:
+    #         found_colora = "Red"
+    #     elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+    #         found_colora = "Blue"
+        
+    #     if found_colora == "Red":
+    #         last_seen_colora = "Red"
+    
+    #     elif found_colora == "Blue":
+    #         last_seen_colora = "Blue"
+    #     if last_seen_colora == "Red":
+    #         splitter.set(True)
+    #         wait(5, MSEC)
+    #     elif last_seen_colora == "Blue":
+    #         splitter.set(False)
+    #         wait(5, MSEC)
+    #     wait(20, MSEC)
 
 
 
@@ -741,6 +856,7 @@ def opcontrol():
 
     brain.screen.set_cursor(1, 1)
     brain.screen.print("opcontrol Start")
+    found_color = "none"
     last_seen_color = "none"
     unloaderpos = "down"
     drive_mode = "TNK"
@@ -748,7 +864,8 @@ def opcontrol():
     onbackr.set_position(0, DEGREES)
     while(True):
       # Drivetrain
-      splitter.set(True)
+      splitter.set(False)
+
       if btn_up():
         if drive_mode == "RTNK":
           drive_mode = "TNK"
@@ -796,7 +913,7 @@ def opcontrol():
       # shifted = btn_l2()
       # JOSHUA LIAM SHEPPARD'S (BUM) IDEA DID NOT WORK
       # Variables for current colors
-      found_color = "none"
+    
   
       # Sets optical sensor variables based on optical sensor functions
       # if findcolor1() == Color.RED:
@@ -810,42 +927,29 @@ def opcontrol():
       #   brain.screen.set_cursor(3, 4)  
       #   brain.screen.print("Both optical Blue")
 
-      # Optical code using BOTH sensors; not current
+      # Checks Optical values; Sets to a variable
       if findcolor1() == Color.RED and findcolor2() == Color.RED:
         found_color = "Red"
       elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
         found_color = "Blue"
        
-      
-
       #found_color = findcolor()
     
       # Checks the optical sensor variable
       if found_color == "Red":
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Red Object")
         last_seen_color = "Red"
       elif found_color == "Blue":
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Blue Object")
         last_seen_color = "Blue"
 
-      if last_seen_color == "Blue":
+      # Moves Splitter pneumatic according to Optical variable
+      if last_seen_color == "Red":
         splitter.set(True)
         splitterpos = ("True")
-        wait(5, MSEC)
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Splitter moved for Red")
-      elif last_seen_color == "Red":
+        wait(10, MSEC)
+      elif last_seen_color == "Blue":
         splitter.set(False)
         spltterpos = ("False")
-        wait(5, MSEC)
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Splitter moved for Blue")
+        wait(10, MSEC)
         
       if btn_x():
         if splitterpos == "True":

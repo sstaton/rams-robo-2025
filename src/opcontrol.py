@@ -22,6 +22,7 @@ def opcontrol():
 
     brain.screen.set_cursor(1, 1)
     brain.screen.print("opcontrol Start")
+    found_color = "none"
     last_seen_color = "none"
     unloaderpos = "down"
     drive_mode = "TNK"
@@ -29,7 +30,8 @@ def opcontrol():
     onbackr.set_position(0, DEGREES)
     while(True):
       # Drivetrain
-      splitter.set(True)
+      splitter.set(False)
+
       if btn_up():
         if drive_mode == "RTNK":
           drive_mode = "TNK"
@@ -77,7 +79,7 @@ def opcontrol():
       # shifted = btn_l2()
       # JOSHUA LIAM SHEPPARD'S (BUM) IDEA DID NOT WORK
       # Variables for current colors
-      found_color = "none"
+    
   
       # Sets optical sensor variables based on optical sensor functions
       # if findcolor1() == Color.RED:
@@ -91,42 +93,29 @@ def opcontrol():
       #   brain.screen.set_cursor(3, 4)  
       #   brain.screen.print("Both optical Blue")
 
-      # Optical code using BOTH sensors; not current
+      # Checks Optical values; Sets to a variable
       if findcolor1() == Color.RED and findcolor2() == Color.RED:
         found_color = "Red"
       elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
         found_color = "Blue"
        
-      
-
       #found_color = findcolor()
     
       # Checks the optical sensor variable
       if found_color == "Red":
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Red Object")
         last_seen_color = "Red"
       elif found_color == "Blue":
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Blue Object")
         last_seen_color = "Blue"
 
-      if last_seen_color == "Blue":
+      # Moves Splitter pneumatic according to Optical variable
+      if last_seen_color == "Red":
         splitter.set(True)
         splitterpos = ("True")
-        wait(5, MSEC)
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Splitter moved for Red")
-      elif last_seen_color == "Red":
+        wait(10, MSEC)
+      elif last_seen_color == "Blue":
         splitter.set(False)
         spltterpos = ("False")
-        wait(5, MSEC)
-        # brain.screen.clear_row(3)
-        # brain.screen.set_cursor(3, 4)  
-        # brain.screen.print("Splitter moved for Blue")
+        wait(10, MSEC)
         
       if btn_x():
         if splitterpos == "True":
