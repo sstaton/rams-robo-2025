@@ -6,6 +6,7 @@ import vex
 # takes inches, target inches per second (velocity),
 # inches per second squared (acceleration), and whether to decelerate
 def drive_straight(inches, target_ips, ipss, do_decel = True):
+    pos_start_x = pos_odom_x()
     # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
     MSEC_PER_TICK = 20   # ms per tick
@@ -22,8 +23,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     MULTIPLIER = 1.2        # not sure why I need this, but it makes it so that
     inches *= MULTIPLIER    # passing 4 inches actually moves 4 inches
 
-    drive_r.stop(COAST)
-    drive_l.stop(COAST)
+    drive_r.stop(BRAKE)
+    drive_l.stop(BRAKE)
 
     pid_drive_r = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
     pid_drive_l = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
@@ -38,7 +39,10 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     dir_mod = 1 if inches < 0 else -1
 
     # While speed is positive and we haven't gone further than `inches`
-    while ips >= 0 and abs(pos_drive_l() - pos_start_l) < abs(inches):
+    while ips >= 0:
+        current_pos_x = pos_odom_x()
+        if abs(current_pos_x - pos_start_x) >= abs(inches):
+            break
         # Handle acceleration
         if abs(expected_displacement) + stop_distance(ips, ipss) >= abs(inches) and do_decel:
             ips -= ipss / TICK_PER_SEC           # decel
@@ -51,17 +55,26 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         expected_displacement += ips / TICK_PER_SEC * dir_mod      # dir_mod adjusts for moving fwd/bwd
 
         # Find actual position
-        displacement_l = pos_drive_l() - pos_start_l
-        displacement_r = pos_drive_r() - pos_start_r
+        displacement_x = pos_odom_x() - pos_start_x
+        # displacement_l = pos_drive_l() - pos_start_l
+        # displacement_r = pos_drive_r() - pos_start_r
 
-        adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_r)
-        adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_l)
-        adjustment_dir = pid_dir.adjust(all_globals.target_heading, displacement_l)
+        adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_x)
+        adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_x)
+        avg_displacement = displacement_x
+        # adjustment_dir = pid_dir.adjust(all_globals.target_heading, avg_displacement)
 
         vel_rpm = ips / DRIVE_REV_TO_IN * 60
         
-        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r - adjustment_dir, RPM)
-        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l + adjustment_dir, RPM)
+        brain.screen.clear_row(2)
+        brain.screen.set_cursor(2, 1)
+        brain.screen.print(pos_start_x)
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 1)
+        brain.screen.print(pos_odom_x())
+
+        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r, RPM)
+        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l, RPM)
 
         wait(MSEC_PER_TICK, MSEC)
         
@@ -73,6 +86,7 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         drive_l.stop(COAST)
 
 def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
+    pos_start_y = pos_odom_y()
     # Loop wait times
     TICK_PER_SEC = 50
     MSEC_PER_TICK = 20
@@ -101,8 +115,9 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
 
     while ips >= 0:
         # Find distance travelled since function call
-        displacement_r = pos_drive_r() - pos_start_r
-        displacement_l = pos_drive_l() - pos_start_l
+        displacement_y = pos_odom_y() - pos_start_y
+        # displacement_r = pos_drive_r() - pos_start_r
+        # displacement_l = pos_drive_l() - pos_start_l
 
         # Degrees remaining to complete turn
         degrees_remaining = all_globals.target_heading - imu_rotation()

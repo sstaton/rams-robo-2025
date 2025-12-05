@@ -28,6 +28,8 @@ MEDIUM_WHEEL_DIAM = 4.0
 SMALL_WHEEL_DIAM = 2.75
 # global TRACT_WHEEL_DIAM
 TRACT_WHEEL_DIAM = 3.25
+# Odometry Wheel Diameter
+ODOM_WHEEL_DIAM = 2.0
 
 # global LARGE_OMNI_CIRC
 LARGE_OMNI_CIRC = LARGE_OMNI_DIAM * math.pi
@@ -43,6 +45,8 @@ MEDIUM_WHEEL_CIRC = MEDIUM_WHEEL_DIAM * math.pi
 SMALL_WHEEL_CIRC = SMALL_WHEEL_DIAM * math.pi
 # global TRACT_WHEEL_CIRC
 TRACT_WHEEL_CIRC = TRACT_WHEEL_DIAM * math.pi
+# Odometry Wheel Circumference 
+ODOM_WHEEL_CIRC = ODOM_WHEEL_DIAM * math.pi
 
 # Unit shorthand
 # global REV
@@ -141,8 +145,8 @@ optical1 = Optical(Ports.PORT11)
 optical2 = Optical(Ports.PORT14)
 
 # Rotation Sensors
-turnr = Rotation(Ports.PORT12)
-onbackr= Rotation(Ports.PORT13)
+turnr = Rotation(Ports.PORT12) 
+linearr= Rotation(Ports.PORT13) #Forward and back X
 
 #global clock
 #clock = Timer()
@@ -238,6 +242,11 @@ def vel_drive_r():
 def vel_drive_l():
     return drive_l.velocity(RPM) * DRIVE_REV_TO_IN
 
+def pos_odom_y():
+    return turnr.position(REV) * ODOM_WHEEL_CIRC
+def pos_odom_x():
+    return linearr.position(REV) * ODOM_WHEEL_CIRC
+
 def imu_rotation():
     return imu.rotation() * all_globals.imu_correction
 
@@ -295,7 +304,7 @@ def findcolor2():
     return optical2.color()
 
 def rotationalpos():
-    return onbackr.angle()
+    return linearr.angle()
 
 def turnpos():
     return turnr.angle()
@@ -362,6 +371,7 @@ class Pid:
 # takes inches, target inches per second (velocity),
 # inches per second squared (acceleration), and whether to decelerate
 def drive_straight(inches, target_ips, ipss, do_decel = True):
+    pos_start_x = pos_odom_x()
     # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
     MSEC_PER_TICK = 20   # ms per tick
@@ -378,8 +388,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     MULTIPLIER = 1.2        # not sure why I need this, but it makes it so that
     inches *= MULTIPLIER    # passing 4 inches actually moves 4 inches
 
-    drive_r.stop(COAST)
-    drive_l.stop(COAST)
+    drive_r.stop(BRAKE)
+    drive_l.stop(BRAKE)
 
     pid_drive_r = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
     pid_drive_l = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
@@ -394,7 +404,10 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     dir_mod = 1 if inches < 0 else -1
 
     # While speed is positive and we haven't gone further than `inches`
-    while ips >= 0 and abs(pos_drive_l() - pos_start_l) < abs(inches):
+    while ips >= 0:
+        current_pos_x = pos_odom_x()
+        if abs(current_pos_x - pos_start_x) >= abs(inches):
+            break
         # Handle acceleration
         if abs(expected_displacement) + stop_distance(ips, ipss) >= abs(inches) and do_decel:
             ips -= ipss / TICK_PER_SEC           # decel
@@ -407,17 +420,26 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         expected_displacement += ips / TICK_PER_SEC * dir_mod      # dir_mod adjusts for moving fwd/bwd
 
         # Find actual position
-        displacement_l = pos_drive_l() - pos_start_l
-        displacement_r = pos_drive_r() - pos_start_r
+        displacement_x = pos_odom_x() - pos_start_x
+        # displacement_l = pos_drive_l() - pos_start_l
+        # displacement_r = pos_drive_r() - pos_start_r
 
-        adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_r)
-        adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_l)
-        adjustment_dir = pid_dir.adjust(all_globals.target_heading, displacement_l)
+        adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_x)
+        adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_x)
+        avg_displacement = displacement_x
+        # adjustment_dir = pid_dir.adjust(all_globals.target_heading, avg_displacement)
 
         vel_rpm = ips / DRIVE_REV_TO_IN * 60
         
-        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r - adjustment_dir, RPM)
-        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l + adjustment_dir, RPM)
+        brain.screen.clear_row(2)
+        brain.screen.set_cursor(2, 1)
+        brain.screen.print(pos_start_x)
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 1)
+        brain.screen.print(pos_odom_x())
+
+        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r, RPM)
+        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l, RPM)
 
         wait(MSEC_PER_TICK, MSEC)
         
@@ -615,7 +637,8 @@ def straight_pid(dist):
 def preauton():
     brain.screen.clear_screen()
     imu.calibrate()
-
+    linearr.reset_position()
+    turnr.reset_position()
     while imu.is_calibrating():
         wait(20, TimeUnits.MSEC)
  
@@ -635,8 +658,6 @@ def autonomous():
     # NOT CORRECT
     # NVM
     imu.calibrate()
-    onbackr.set_position(0, DEGREES)
-    turnr.set_position(0, DEGREES)
     optical1.integration_time(20)
     optical1.set_light_power(100)
     optical2.integration_time(20)
@@ -645,45 +666,13 @@ def autonomous():
     drive1.set_turn_velocity(300, RPM)
     unloader.set(True)
 
+    drive_straight(-27, 54, 40)
     # Red Left Side
-    drive1.drive_for(FORWARD, 52, INCHES)
-    wait(500, MSEC)
-    drive1.turn_for(RIGHT, 199, DEGREES)
-    wait(200, MSEC)
-    drive1.drive_for(FORWARD, 17, INCHES)
-    intake.spin(REVERSE)
-    splitter.set(True)
-    start_time = time.time()
-    time_now = time.time()
-    while(time_now < start_time + 4):
-        if findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
-            found_colora = "Blue"
-        if found_colora == "Blue":
-            last_seen_colora = "Blue"
-        if last_seen_colora == "Blue":
-            wait(50, MSEC)
-            splitter.set(False)
-            wait(50, MSEC)
-        drive1.drive_for(FORWARD, 1, INCHES)
-        wait(20, MSEC)
-        time_now = time.time()
-    drive1.drive_for(REVERSE, 32, INCHES)
-    wait(200, MSEC)
-    drive1.turn_for(RIGHT, 190, DEGREES)
-    wait(200, MSEC)
-    drive1.drive_for(REVERSE, 15, INCHES)
-    wait(200, MSEC)
-    drive1.turn_for(LEFT, 189, DEGREES)
-    wait(200, MSEC)
-    drive1.drive_for(REVERSE, 19, INCHES)
-    outtake2.spin(FORWARD)
-
-    # Red Right side
     # drive1.drive_for(FORWARD, 52, INCHES)
     # wait(500, MSEC)
-    # drive1.turn_for(LEFT, 189, DEGREES)
+    # drive1.turn_for(RIGHT, 199, DEGREES)
     # wait(200, MSEC)
-    # drive1.drive_for(FORWARD, 14, INCHES)
+    # drive1.drive_for(FORWARD, 17, INCHES)
     # intake.spin(REVERSE)
     # splitter.set(True)
     # start_time = time.time()
@@ -694,6 +683,7 @@ def autonomous():
     #     if found_colora == "Blue":
     #         last_seen_colora = "Blue"
     #     if last_seen_colora == "Blue":
+    #         wait(50, MSEC)
     #         splitter.set(False)
     #         wait(50, MSEC)
     #     drive1.drive_for(FORWARD, 1, INCHES)
@@ -702,135 +692,14 @@ def autonomous():
     # drive1.drive_for(REVERSE, 32, INCHES)
     # wait(200, MSEC)
     # drive1.turn_for(RIGHT, 190, DEGREES)
-    # drive1.drive_for(REVERSE, 13, INCHES)
     # wait(200, MSEC)
-    # drive1.turn_for(LEFT, 185, DEGREES)
-    # drive1.drive_for(REVERSE, 20, INCHES)
-    # outtake2.spin(FORWARD)
-
-    # Blue Left Side
-    # drive1.drive_for(FORWARD, 52, INCHES)
-    # wait(500, MSEC)
-    # drive1.turn_for(RIGHT, 195, DEGREES)
+    # drive1.drive_for(REVERSE, 15, INCHES)
     # wait(200, MSEC)
-    # drive1.drive_for(FORWARD, 17, INCHES)
-    # intake.spin(REVERSE)
-    # splitter.set(True)
-    # start_time = time.time()
-    # time_now = time.time()
-
-    # while(time_now < start_time + 4):
-    #     if findcolor1() == Color.RED and findcolor2() == Color.RED:
-    #         found_colora = "Red"
-    #     if found_colora == "Red":
-    #         last_seen_colora = "Red"
-    #     if last_seen_colora == "Red":
-    #         splitter.set(False)
-    #         wait(50, MSEC)
-    #     drive1.drive_for(FORWARD, 1, INCHES)
-    #     wait(20, MSEC)
-    #     time_now = time.time()
-    # drive1.drive_for(REVERSE, 32, INCHES)
-    # wait(200, MSEC)
-    # drive1.turn_for(RIGHT, 190, DEGREES)
-    # drive1.drive_for(REVERSE, 14, INCHES)
-    # wait(200, MSEC)
-    # drive1.turn_for(LEFT, 185, DEGREES)
-    # drive1.drive_for(REVERSE, 22, INCHES)
-    # outtake2.spin(FORWARD)
-
-    # Blue right Side
-    # drive1.drive_for(FORWARD, 52, INCHES)
-    # wait(500, MSEC)
     # drive1.turn_for(LEFT, 189, DEGREES)
     # wait(200, MSEC)
-    # drive1.drive_for(FORWARD, 17, INCHES)
-    # intake.spin(REVERSE)
-    # splitter.set(True)
-    # start_time = time.time()
-    # time_now = time.time()
-
-    # while(time_now < start_time + 4):
-    #     if findcolor1() == Color.RED and findcolor2() == Color.RED:
-    #         found_colora = "Red"
-    #     if found_colora == "Red":
-    #         last_seen_colora = "Red"
-    #     if last_seen_colora == "Red":
-    #         splitter.set(False)
-    #         wait(50, MSEC)
-    #     drive1.drive_for(FORWARD, 1, INCHES)
-    #     wait(20, MSEC)
-    #     time_now = time.time()
-    # drive1.drive_for(REVERSE, 32, INCHES)
-    # wait(200, MSEC)
-    # drive1.turn_for(RIGHT, 190, DEGREES)
-    # drive1.drive_for(REVERSE, 14, INCHES)
-    # wait(200, MSEC)
-    # drive1.turn_for(LEFT, 185, DEGREES)
-    # drive1.drive_for(REVERSE, 22, INCHES)
+    # drive1.drive_for(REVERSE, 19, INCHES)
     # outtake2.spin(FORWARD)
 
-
-    # Skills Auton
-    # drive1.drive_for(FORWARD, 52, INCHES)
-    # wait(500, MSEC)
-    # drive1.turn_for(RIGHT, 189, DEGREES)
-    # wait(200, MSEC)
-    # drive1.drive_for(FORWARD, 17, INCHES)
-    # intake.spin(REVERSE)
-    # splitter.set(True)
-    # start_time = time.time()
-    # time_now = time.time()
-
-    # while(time_now < start_time + 4):
-    #     drive1.drive_for(FORWARD, 1, INCHES)
-    #     wait(20, MSEC)
-    #     time_now = time.time()
-    # drive1.drive_for(REVERSE, 32, INCHES)
-    # wait(200, MSEC)
-    # drive1.turn_for(RIGHT, 190, DEGREES)
-    # drive1.drive_for(REVERSE, 14, INCHES)
-    # wait(200, MSEC)
-    # drive1.turn_for(LEFT, 185, DEGREES)
-    # drive1.drive_for(REVERSE, 22, INCHES)
-    # outtake2.spin(FORWARD)
-    
-    
-    #drive1.turn_for(LEFT, 90, DEGREES)
-    #unloader.set(True)
-    #drive1.drive_straight(-1, 2, 2, False)
-    
-    #drive1.drive_for(REVERSE, 31.0, INCHES)
-    # drive1.turn_for(RIGHT, 90, DEGREES)
-    # drive1.drive_for(FORWARD, 6.0, INCHES)
-    # intake.spin(FORWARD)
-    # drive1.drive_for(REVERSE, 25.0, INCHES)
-    #drive1.drive_straight(31.0,)
-
-
-    # while(True):
-    #     # drive forward a little
-    #     drive1.drive_for(FORWARD, 6, INCHES)
-    #     # drive backward a little
-    #     drive1.drive_for(REVERSE, 6, INCHES)
-    #     wait(20, MSEC)
-    # if findcolor1() == Color.RED and findcolor2() == Color.RED:
-    #         found_colora = "Red"
-    #     elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
-    #         found_colora = "Blue"
-        
-    #     if found_colora == "Red":
-    #         last_seen_colora = "Red"
-    
-    #     elif found_colora == "Blue":
-    #         last_seen_colora = "Blue"
-    #     if last_seen_colora == "Red":
-    #         splitter.set(True)
-    #         wait(5, MSEC)
-    #     elif last_seen_colora == "Blue":
-    #         splitter.set(False)
-    #         wait(5, MSEC)
-    #     wait(20, MSEC)
 
 
 
@@ -861,7 +730,7 @@ def opcontrol():
     unloaderpos = "down"
     drive_mode = "TNK"
     splitterpos = "False"
-    onbackr.set_position(0, DEGREES)
+    linearr.set_position(0, DEGREES)
     while(True):
       # Drivetrain
       splitter.set(False)

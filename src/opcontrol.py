@@ -27,7 +27,7 @@ def opcontrol():
     unloaderpos = "down"
     drive_mode = "TNK"
     splitterpos = "False"
-    onbackr.set_position(0, DEGREES)
+    linearr.set_position(0, DEGREES)
     while(True):
       # Drivetrain
       splitter.set(False)

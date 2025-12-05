@@ -70,6 +70,11 @@ def vel_drive_r():
 def vel_drive_l():
     return drive_l.velocity(RPM) * DRIVE_REV_TO_IN
 
+def pos_odom_y():
+    return turnr.position(REV) * ODOM_WHEEL_CIRC
+def pos_odom_x():
+    return linearr.position(REV) * ODOM_WHEEL_CIRC
+
 def imu_rotation():
     return imu.rotation() * all_globals.imu_correction
 
@@ -127,7 +132,7 @@ def findcolor2():
     return optical2.color()
 
 def rotationalpos():
-    return onbackr.angle()
+    return linearr.angle()
 
 def turnpos():
     return turnr.angle()
