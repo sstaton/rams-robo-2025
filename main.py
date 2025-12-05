@@ -568,11 +568,8 @@ def autonomous():
     drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.drive_for(FORWARD, 22)
     lifter.set(True)
-    drive_l.spin(REVERSE)
-    drive_r.spin(FORWARD)
-    wait(530, MSEC)
-    drive_l.stop
-    drive_r.stop
+    drive_l.spin_for(REVERSE, 10)
+    drive_r.spin_for(FORWARD, 10)
     drivetrain.drive_for(FORWARD, 17)
     intakegroup.spin(REVERSE)
     # drivetrain.drive_for(FORWARD, 500)
