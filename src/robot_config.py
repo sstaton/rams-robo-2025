@@ -77,7 +77,7 @@ optical2 = Optical(Ports.PORT14)
 
 # Rotation Sensors
 turnr = Rotation(Ports.PORT12) 
-linearr= Rotation(Ports.PORT13) #Forward and back X
+linearr = Rotation(Ports.PORT13) #Forward and back X
 
 #global clock
 #clock = vex.Timer()
@@ -96,6 +96,6 @@ linearr= Rotation(Ports.PORT13) #Forward and back X
 
 # Globals
 global all_globals
-all_globals = TrackedGlobals(0, 10.75, (3600 / 3593.6))
+all_globals = TrackedGlobals(0, 12.50, (3600 / 3593.6))
 
 

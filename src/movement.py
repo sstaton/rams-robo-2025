@@ -65,17 +65,17 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         # adjustment_dir = pid_dir.adjust(all_globals.target_heading, avg_displacement)
 
         vel_rpm = ips / DRIVE_REV_TO_IN * 60
-        
+
+        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r, RPM)
+        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l, RPM)
+
         brain.screen.clear_row(2)
         brain.screen.set_cursor(2, 1)
         brain.screen.print(pos_start_x)
         brain.screen.clear_row(3)
         brain.screen.set_cursor(3, 1)
         brain.screen.print(pos_odom_x())
-
-        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r, RPM)
-        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l, RPM)
-
+        
         wait(MSEC_PER_TICK, MSEC)
         
     if do_decel:
@@ -108,16 +108,18 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     pos_start_l = pos_drive_l()
 
     # radius of turn
+    # Outer Currently 8.5in-10.5in unloader up, 12in-14in unloader down
     inner_radius = outer_radius - all_globals.wheel_to_wheel_dist
     radius_ratio = inner_radius / outer_radius
 
     dir_mod = 1 if degrees > 0 else -1
 
     while ips >= 0:
+        current_pos_y = pos_odom_y()
         # Find distance travelled since function call
         displacement_y = pos_odom_y() - pos_start_y
-        # displacement_r = pos_drive_r() - pos_start_r
-        # displacement_l = pos_drive_l() - pos_start_l
+        displacement_r = pos_drive_r() - pos_start_r
+        displacement_l = pos_drive_l() - pos_start_l
 
         # Degrees remaining to complete turn
         degrees_remaining = all_globals.target_heading - imu_rotation()
@@ -151,6 +153,13 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
 
             drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
             drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
+
+        brain.screen.clear_row(4)
+        brain.screen.set_cursor(4, 1)
+        brain.screen.print(pos_start_y)
+        brain.screen.clear_row(5)
+        brain.screen.set_cursor(5, 1)
+        brain.screen.print(pos_odom_y())
 
         # Exit loop if we're past the desired angle
         if degrees_remaining * dir_mod < 0:

@@ -19,9 +19,10 @@ def autonomous():
     optical2.set_light_power(100)
     drive1.set_drive_velocity(300, RPM)
     drive1.set_turn_velocity(300, RPM)
-    unloader.set(True)
+    unloader.set(False)
 
-    drive_straight(-27, 54, 40)
+    #drive_straight(-27, 54, 40)
+    drive_turn(90, 8.5, 7, 7, False)
     # Red Left Side
     # drive1.drive_for(FORWARD, 52, INCHES)
     # wait(500, MSEC)
