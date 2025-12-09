@@ -369,10 +369,10 @@ class Pid:
 
 # ./src/movement.py ---
 
+
 # takes inches, target inches per second (velocity),
 # inches per second squared (acceleration), and whether to decelerate
 def drive_straight(inches, target_ips, ipss, do_decel = True):
-    pos_start_x = pos_odom_x()
     # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
     MSEC_PER_TICK = 20   # ms per tick
@@ -398,6 +398,7 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
     ips = 0     # current speed in ips
     expected_displacement = 0     # inches travelled since function call
+    pos_start_x = pos_odom_x()
     pos_start_l = drive_l.position(REV)
     pos_start_r = drive_r.position(REV)
 
@@ -452,7 +453,6 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         drive_l.stop(COAST)
 
 def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
-    pos_start_y = pos_odom_y()
     # Loop wait times
     TICK_PER_SEC = 50
     MSEC_PER_TICK = 20
@@ -462,6 +462,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     DRIVE_KI = 0.00   
     DRIVE_KD = 1.9
 
+    imu.set_rotation(0, DEGREES)
     # Update robot's target heading
     all_globals.inc_target_heading(degrees)
 
@@ -470,11 +471,12 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     
     ips = 0
     outer_displacement = 0
+    pos_start_y = pos_odom_y()
     pos_start_r = pos_drive_r()
     pos_start_l = pos_drive_l()
-
+    
     # radius of turn
-    # Outer Currently 8.5in-10.5in unloader up, 12in-14in unloader down
+    # Width 12.5, Radius 6.25
     inner_radius = outer_radius - all_globals.wheel_to_wheel_dist
     radius_ratio = inner_radius / outer_radius
 
@@ -679,7 +681,7 @@ def autonomous():
     unloader.set(False)
 
     #drive_straight(-27, 54, 40)
-    drive_turn(90, 8.5, 7, 7, False)
+    drive_turn(90, 6.5, 7, 7, False)
     # Red Left Side
     # drive1.drive_for(FORWARD, 52, INCHES)
     # wait(500, MSEC)
