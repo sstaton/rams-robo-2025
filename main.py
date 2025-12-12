@@ -570,7 +570,7 @@ def autonomous():
     intakegroup.spin(REVERSE)
     drivetrain.drive_for(FORWARD, 45)
     intakegroup.stop
-    drivetrain.turn_for(RIGHT, 140)
+    drivetrain.turn_for(LEFT, 140)
     drivetrain.drive_for(REVERSE, 10)
     extake_4.spin(FORWARD)
     extake_5.spin(REVERSE)
@@ -634,28 +634,28 @@ def opcontrol():
         if btn_y():
             lifter.set(False)
         
-        # if detectcolor() == Color.BLUE:
-        #     block_sorter.spin(FORWARD, 100, PERCENT)
-        #     brain.screen.clear_row(3)
-        #     brain.screen.set_cursor(3, 4)
-        #     brain.screen.print("Blue Object")
-        #     wait(1200, MSEC)
-        # else:
-        #     block_sorter.stop()
-        #     brain.screen.clear_row(3)
-        #     brain.screen.set_cursor(3, 4)
-        #     brain.screen.print("No Blue Object")
-            
-        if detectcolor() == Color.RED:
+        if detectcolor() == Color.BLUE:
             block_sorter.spin(FORWARD, 100, PERCENT)
             brain.screen.clear_row(3)
-            brain.screen.set_cursor(3, 4) 
-            brain.screen.print("Red Object")
+            brain.screen.set_cursor(3, 4)
+            brain.screen.print("Blue Object")
+            wait(1200, MSEC)
         else:
             block_sorter.stop()
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
-            brain.screen.print("No Red Object")
+            brain.screen.print("No Blue Object")
+            
+        # if detectcolor() == Color.RED:
+        #     block_sorter.spin(FORWARD, 100, PERCENT)
+        #     brain.screen.clear_row(3)
+        #     brain.screen.set_cursor(3, 4) 
+        #     brain.screen.print("Red Object")
+        # else:
+        #     block_sorter.stop()
+        #     brain.screen.clear_row(3)
+        #     brain.screen.set_cursor(3, 4)
+        #     brain.screen.print("No Red Object")
         
         optical.set_light_power(100)
         brain.screen.clear_row(4)
