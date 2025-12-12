@@ -567,12 +567,14 @@ def autonomous():
     intakegroup.set_velocity(100, PERCENT)
     drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(100, PERCENT)
-    while: drivetrain.drive_for(FORWARD, 50)
-     intakegroup.spin(REVERSE)
-    drivetrain.turn_for(RIGHT, 180)
+    intakegroup.spin(REVERSE)
+    drivetrain.drive_for(FORWARD, 45)
+    intakegroup.stop
+    drivetrain.turn_for(RIGHT, 140)
+    drivetrain.drive_for(REVERSE, 10)
+    extake_4.spin(FORWARD)
+    extake_5.spin(REVERSE)
 # ./src/opcontrol.py ---
-
-# Constants
 TNK = 0
 TSA = 1
 OSA = 2
@@ -602,7 +604,7 @@ def opcontrol():
 
     while(True):
         # Drivetrain
-        opdrive(TSD, 1.0, SENSITIVITY)
+        opdrive(TSA, 1.0, SENSITIVITY)
 
         # # Elevation
         # RENAME_ME.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
