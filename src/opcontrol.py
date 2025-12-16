@@ -24,13 +24,17 @@ def opcontrol():
     brain.screen.print("opcontrol Start")
     found_color = "none"
     last_seen_color = "none"
-    unloaderpos = "down"
     drive_mode = "TNK"
+    unloaderpos = "down"
     splitterpos = "False"
+    descorerpos = "in"
     onbackr.set_position(0, DEGREES)
+    descorer_timer = 0
+    unloader_timer = 0
+    splitter_timer = 0
+    splitter.set(False)
+    descorer.set(True)
     while(True):
-      # Drivetrain
-      splitter.set(False)
 
       if btn_up():
         if drive_mode == "RTNK":
@@ -47,21 +51,42 @@ def opcontrol():
       brain.screen.clear_row(2)
       brain.screen.set_cursor(2, 1)
       brain.screen.print(drive_mode)
+
+      brain.screen.clear_row(3)
+      brain.screen.set_cursor(3, 1)
+      brain.screen.print(last_seen_color)
+
+      brain.screen.clear_row(4)
+      brain.screen.set_cursor(4, 1)
+      brain.screen.print(splitterpos)
+
       # Elevation NO HANG THIS YEAR
       #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
       #new_thang.spin(FORWARD, btn_right() * 100, PERCENT)
 
       if btn_left():
-        if unloaderpos == "up":
+        if unloaderpos == "up" and unloader_timer <= 0:
           unloaderpos = "down"
-        elif unloaderpos == "down":
+        elif unloaderpos == "down" and unloader_timer <= 0:
           unloaderpos = "up"
-        wait(250, MSEC)
+        unloader_timer = 250
       
       if unloaderpos == "up":
         unloader.set(False)
       elif unloaderpos == "down":
         unloader.set(True)
+
+      if btn_right():
+        if descorerpos == "in" and descorer_timer <= 0:
+          descorerpos = "out"
+        elif descorerpos == "out" and descorer_timer <= 0:
+          descorerpos = "in"
+        descorer_timer = 250
+      
+      if descorerpos == "in":
+        descorer.set(False)
+      elif descorerpos == "out":
+        descorer.set(True)
 
       if btn_l2():
         intake.spin(FORWARD, btn_l2() * 100, PERCENT)
@@ -96,8 +121,10 @@ def opcontrol():
       # Checks Optical values; Sets to a variable
       if findcolor1() == Color.RED and findcolor2() == Color.RED:
         found_color = "Red"
+        splitterpos = "True"
       elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
         found_color = "Blue"
+        splitterpos = "False"
        
       #found_color = findcolor()
     
@@ -106,35 +133,42 @@ def opcontrol():
         last_seen_color = "Red"
       elif found_color == "Blue":
         last_seen_color = "Blue"
-
-      # Moves Splitter pneumatic according to Optical variable
-      if last_seen_color == "Red":
-        splitter.set(True)
-        splitterpos = ("True")
-        wait(10, MSEC)
-      elif last_seen_color == "Blue":
-        splitter.set(False)
-        spltterpos = ("False")
-        wait(10, MSEC)
         
       if btn_x():
-        if splitterpos == "True":
-          optical1.set_light_power(0)
-          optical2.set_light_power(0)
-          splitter.set(False)
-          wait(1000, MSEC)
-          splitter.set(True)
-          optical1.set_light_power(100)
-          optical2.set_light_power(100)
-        elif splitterpos == "False":
-          optical1.set_light_power(0)
-          optical2.set_light_power(0)
-          splitter.set(True)
-          wait(1000, MSEC)
-          splitter.set(False)
-          optical1.set_light_power(100)
-          optical2.set_light_power(100)
+        if splitterpos == "True" and splitter_timer <= 0:
+          # optical1.set_light_power(0)
+          # optical2.set_light_power(0)
+          # splitter.set(False)
+          # splitter.set(True)
+          spltterpos = "False"
+          # optical1.set_light_power(100)
+          # optical2.set_light_power(100)
+        elif splitterpos == "False" and splitter_timer <= 0:
+          # optical1.set_light_power(0)
+          # optical2.set_light_power(0)
+          # splitter.set(True)
+          # splitter.set(False)
+          splitterpos = "True"
+          # optical1.set_light_power(100)
+          # optical2.set_light_power(100)
+      else:
+        # Moves Splitter pneumatic according to Optical variable
+        if last_seen_color == "Red":
+          # splitter.set(True)
+          splitterpos = "True"
+          wait(10, MSEC)
+        elif last_seen_color == "Blue":
+          # splitter.set(False)
+          spltterpos = "False"
+          wait(10, MSEC)
 
+        splitter_timer = 250
+
+      if splitterpos == "True":
+        splitter.set(True)
+      elif splitterpos == "False":
+        splitter.set(False)
+      
       rotpos = rotationalpos()
       turnrpos = turnpos()
       
@@ -181,6 +215,11 @@ def opcontrol():
       #     # Wings
       #     wing_l.set(wing_l_switch.is_redge(btn_l1()))
       #     wing_r.set(wing_r_switch.is_redge(btn_r1()))
+
+      # subtract ms from timers to allow buttons to be pressed again
+      unloader_timer -= 20
+      descorer_timer -= 20
+      splitter_timer -= 20
 
       wait(20, MSEC)
 

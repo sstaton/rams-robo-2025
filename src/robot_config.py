@@ -56,7 +56,7 @@ outtake2.set_velocity(400, RPM)
 
 
 # Pneumatic System
-pneum1 = DigitalOut(brain.three_wire_port.a)
+descorer = DigitalOut(brain.three_wire_port.a)
 unloader = DigitalOut(brain.three_wire_port.b)
 splitter = DigitalOut(brain.three_wire_port.c)
 # pneumenoultramicroscopicsillicavolcaniconiosis 
