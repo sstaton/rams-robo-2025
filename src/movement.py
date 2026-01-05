@@ -115,7 +115,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     inner_radius = outer_radius - all_globals.wheel_to_wheel_dist
     radius_ratio = inner_radius / outer_radius
 
-    dir_mod = 1 if degrees > 0 else -1
+    dir_mod = -1 if degrees > 0 else -1
 
     while ips >= 0:
         pos_current_y = pos_odom_y() * 9.5
@@ -125,7 +125,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
         displacement_l = pos_drive_l() - pos_start_l
         
         # Degrees remaining to complete turn
-        degrees_remaining = all_globals.target_heading - pos_current_y 
+        degrees_remaining = all_globals.target_heading - (pos_current_y * dir_mod)
 
         # Handles acceleration
         # radians remaining * inches per radian; in other words, inches remaining
@@ -144,12 +144,25 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
         inner_displacement = outer_displacement * radius_ratio
 
         # Get PID adjustments; move the drive
-        if (reversed and degrees > 0) or ((not reversed) and (not degrees > 0)):        # left is inner side
+        # if (reversed and degrees > 0) or ((not reversed) and (not degrees > 0)):        # left is inner side
+        #     adjustment_r = pid_drive_r.adjust(outer_displacement, displacement_r)
+        #     adjustment_l = -1 * pid_drive_l.adjust(inner_displacement, displacement_l)
+
+        #     drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
+        #     drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
+        # else:                                                                           # right is inner side
+        #     adjustment_r = -1 * pid_drive_r.adjust(inner_displacement, displacement_r)
+        #     adjustment_l = pid_drive_l.adjust(outer_displacement, displacement_l)
+
+        #     drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
+        #     drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
+
+        if degrees < 0:        # left is inner side
             adjustment_r = pid_drive_r.adjust(outer_displacement, displacement_r)
             adjustment_l = -1 * pid_drive_l.adjust(inner_displacement, displacement_l)
 
-            drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
-            drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
+            drive_r.spin(FORWARD, inner_vel_rpm + adjustment_r, RPM)
+            drive_l.spin(FORWARD, outer_vel_rpm + adjustment_l, RPM)
         else:                                                                           # right is inner side
             adjustment_r = -1 * pid_drive_r.adjust(inner_displacement, displacement_r)
             adjustment_l = pid_drive_l.adjust(outer_displacement, displacement_l)
@@ -167,8 +180,12 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
         brain.screen.print(degrees_remaining)
 
         # Exit loop if we're past the desired angle
-        if degrees_remaining * dir_mod <= 0:
-            break
+        if degrees > 0:
+            if degrees_remaining <= 0:
+                break
+        elif degrees < 0:
+            if degrees_remaining >= 0:
+                break
 
         wait(MSEC_PER_TICK, MSEC)
     drive_r.stop(BRAKE)
