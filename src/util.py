@@ -70,7 +70,6 @@ def vel_drive_r():
     return drive_r.velocity(RPM) * DRIVE_REV_TO_IN
 def vel_drive_l():
     return drive_l.velocity(RPM) * DRIVE_REV_TO_IN
-
 def pos_odom_y():
     return turnr.position(REV) * ODOM_WHEEL_CIRC
 def pos_odom_x():

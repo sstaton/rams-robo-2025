@@ -20,9 +20,9 @@ def autonomous():
     drive1.set_drive_velocity(300, RPM)
     drive1.set_turn_velocity(300, RPM)
     unloader.set(False)
-
+    
     #drive_straight(-27, 54, 40)
-    drive_turn(90, 6.5, 7, 7, False)
+    drive_turn(90, 5.5, 15, 15, False)
     # Red Left Side
     # drive1.drive_for(FORWARD, 52, INCHES)
     # wait(500, MSEC)

@@ -42,8 +42,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
     # While speed is positive and we haven't gone further than `inches`
     while ips >= 0:
-        current_pos_x = pos_odom_x()
-        if abs(current_pos_x - pos_start_x) >= abs(inches):
+        pos_current_x = pos_odom_x()
+        if abs(pos_current_x - pos_start_x) >= abs(inches):
             break
         # Handle acceleration
         if abs(expected_displacement) + stop_distance(ips, ipss) >= abs(inches) and do_decel:
@@ -110,7 +110,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     pos_start_r = pos_drive_r()
     pos_start_l = pos_drive_l()
     
-    # radius of turn
+    # Radius of turn
     # Width 12.5, Radius 6.25
     inner_radius = outer_radius - all_globals.wheel_to_wheel_dist
     radius_ratio = inner_radius / outer_radius
@@ -118,16 +118,16 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     dir_mod = 1 if degrees > 0 else -1
 
     while ips >= 0:
-        current_pos_y = pos_odom_y()
+        pos_current_y = pos_odom_y() * 9.5
         # Find distance travelled since function call
         displacement_y = pos_odom_y() - pos_start_y
         displacement_r = pos_drive_r() - pos_start_r
         displacement_l = pos_drive_l() - pos_start_l
-
+        
         # Degrees remaining to complete turn
-        degrees_remaining = all_globals.target_heading - imu_rotation()
+        degrees_remaining = all_globals.target_heading - pos_current_y 
 
-        # Handle acceleration
+        # Handles acceleration
         # radians remaining * inches per radian; in other words, inches remaining
         if abs(degrees_remaining / RAD_TO_DEG * outer_radius) - stop_distance(ips, ipss) <= 0:
             ips -= ipss / TICK_PER_SEC      # decel
@@ -159,13 +159,15 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
 
         brain.screen.clear_row(4)
         brain.screen.set_cursor(4, 1)
-        brain.screen.print(pos_start_y)
+        brain.screen.print(pos_current_y)
+        #brain.screen.print(imu_rotation())
         brain.screen.clear_row(5)
         brain.screen.set_cursor(5, 1)
-        brain.screen.print(pos_odom_y())
+        #brain.screen.print(pos_odom_y())
+        brain.screen.print(degrees_remaining)
 
         # Exit loop if we're past the desired angle
-        if degrees_remaining * dir_mod < 0:
+        if degrees_remaining * dir_mod <= 0:
             break
 
         wait(MSEC_PER_TICK, MSEC)
