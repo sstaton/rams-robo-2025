@@ -8,6 +8,7 @@ import vex
 # takes inches, target inches per second (velocity),
 # inches per second squared (acceleration), and whether to decelerate
 def drive_straight(inches, target_ips, ipss, do_decel = True):
+    linearr.set_position(0, DEGREES)
     # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
     MSEC_PER_TICK = 20   # ms per tick
@@ -88,6 +89,7 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         drive_l.stop(COAST)
 
 def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
+    turnr.set_position(0, DEGREES)
     # Loop wait times
     TICK_PER_SEC = 50
     MSEC_PER_TICK = 20
@@ -97,7 +99,9 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     DRIVE_KI = 0.00   
     DRIVE_KD = 1.9
 
+    turnr.set_position(0, DEGREES)
     imu.set_rotation(0, DEGREES)
+    all_globals.set_target_heading(0)
     # Update robot's target heading
     all_globals.inc_target_heading(degrees)
 
@@ -118,7 +122,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     dir_mod = -1 if degrees > 0 else -1
 
     while ips >= 0:
-        pos_current_y = pos_odom_y() * 9.5
+        pos_current_y = pos_odom_y() * 10.5
         # Find distance travelled since function call
         displacement_y = pos_odom_y() - pos_start_y
         displacement_r = pos_drive_r() - pos_start_r

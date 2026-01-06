@@ -372,6 +372,7 @@ class Pid:
 # takes inches, target inches per second (velocity),
 # inches per second squared (acceleration), and whether to decelerate
 def drive_straight(inches, target_ips, ipss, do_decel = True):
+    linearr.set_position(0, DEGREES)
     # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
     MSEC_PER_TICK = 20   # ms per tick
@@ -452,6 +453,7 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         drive_l.stop(COAST)
 
 def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
+    turnr.set_position(0, DEGREES)
     # Loop wait times
     TICK_PER_SEC = 50
     MSEC_PER_TICK = 20
@@ -461,7 +463,9 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     DRIVE_KI = 0.00   
     DRIVE_KD = 1.9
 
+    turnr.set_position(0, DEGREES)
     imu.set_rotation(0, DEGREES)
+    all_globals.set_target_heading(0)
     # Update robot's target heading
     all_globals.inc_target_heading(degrees)
 
@@ -482,7 +486,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     dir_mod = -1 if degrees > 0 else -1
 
     while ips >= 0:
-        pos_current_y = pos_odom_y() * 9.5
+        pos_current_y = pos_odom_y() * 10.5
         # Find distance travelled since function call
         displacement_y = pos_odom_y() - pos_start_y
         displacement_r = pos_drive_r() - pos_start_r
@@ -690,16 +694,35 @@ def autonomous():
     # NOT CORRECT
     # NVM
     imu.calibrate()
-    optical1.integration_time(20)
+    optical1.integration_time(10)
     optical1.set_light_power(100)
-    optical2.integration_time(20)
+    optical2.integration_time(10)
     optical2.set_light_power(100)
     drive1.set_drive_velocity(300, RPM)
     drive1.set_turn_velocity(300, RPM)
-    unloader.set(False)
+    unloader.set(True)
     
-    #drive_straight(-27, 54, 40)
-    drive_turn(90, 5.5, 15, 15, False)
+    drive_straight(-23, 54, 40)
+    wait(200, MSEC)
+    drive_turn(-90, 5.5, 30, 30, False)
+    wait(200, MSEC)
+    drive_straight(-9, 18, 18)
+    intake.spin(REVERSE)
+    splitter.set(True)
+    start_time = time.time()
+    time_now = time.time()
+    while(time_now < start_time + 4):
+        if findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+            found_colora = "Blue"
+        if found_colora == "Blue":
+            last_seen_colora = "Blue"
+        if last_seen_colora == "Blue":
+            splitter.set(False)
+            wait(50, MSEC)
+            #drive_straight(-3, 9, 9)
+        drive_straight(-2, 4, 4)
+        wait(20, MSEC)
+        time_now = time.time()
     # Red Left Side
     # drive1.drive_for(FORWARD, 52, INCHES)
     # wait(500, MSEC)

@@ -13,16 +13,35 @@ def autonomous():
     # NOT CORRECT
     # NVM
     imu.calibrate()
-    optical1.integration_time(20)
+    optical1.integration_time(10)
     optical1.set_light_power(100)
-    optical2.integration_time(20)
+    optical2.integration_time(10)
     optical2.set_light_power(100)
     drive1.set_drive_velocity(300, RPM)
     drive1.set_turn_velocity(300, RPM)
-    unloader.set(False)
+    unloader.set(True)
     
-    #drive_straight(-27, 54, 40)
-    drive_turn(90, 5.5, 15, 15, False)
+    drive_straight(-23, 54, 40)
+    wait(200, MSEC)
+    drive_turn(-90, 5.5, 30, 30, False)
+    wait(200, MSEC)
+    drive_straight(-9, 18, 18)
+    intake.spin(REVERSE)
+    splitter.set(True)
+    start_time = time.time()
+    time_now = time.time()
+    while(time_now < start_time + 4):
+        if findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
+            found_colora = "Blue"
+        if found_colora == "Blue":
+            last_seen_colora = "Blue"
+        if last_seen_colora == "Blue":
+            splitter.set(False)
+            wait(50, MSEC)
+            #drive_straight(-3, 9, 9)
+        drive_straight(-2, 4, 4)
+        wait(20, MSEC)
+        time_now = time.time()
     # Red Left Side
     # drive1.drive_for(FORWARD, 52, INCHES)
     # wait(500, MSEC)
