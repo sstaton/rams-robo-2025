@@ -633,6 +633,7 @@ def opcontrol():
         if btn_y():
             lifter.set(False)
         
+        
         # if detectcolor() == Color.BLUE:
         #     block_sorter.spin(FORWARD, 100, PERCENT)
         #     brain.screen.clear_row(3)
@@ -644,7 +645,7 @@ def opcontrol():
         #     brain.screen.clear_row(3)
         #     brain.screen.set_cursor(3, 4)
         #     brain.screen.print("No Blue Object")
-        
+         
         if detectcolor() == Color.BLUE:
             block_sorter.spin(REVERSE, 100, PERCENT)
             brain.screen.clear_row(3)
@@ -655,7 +656,7 @@ def opcontrol():
             block_sorter.stop()
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
-            brain.screen.print("No Blue Object")    
+            brain.screen.print("No Blue Object")
         
         if detectcolor() == Color.RED:
             block_sorter.spin(FORWARD, 100, PERCENT)
