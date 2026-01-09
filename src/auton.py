@@ -23,7 +23,7 @@ def autonomous():
     
     drive_straight(-23, 54, 40)
     wait(200, MSEC)
-    drive_turn(-90, 5.5, 30, 30, False)
+    drive_turn(-90, 5.5, 20, 20, False)
     wait(200, MSEC)
     drive_straight(-9, 18, 18)
     intake.spin(REVERSE)
