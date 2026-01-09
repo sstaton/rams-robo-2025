@@ -573,6 +573,7 @@ def autonomous():
     intake_1.stop()
     drivetrain.turn_for(LEFT, 20)
     drivetrain.drive_for(FORWARD, 10)
+    intake_1.spin(FORWARD)
 # ./src/opcontrol.py ---
 TNK = 0
 TSA = 1
@@ -604,6 +605,8 @@ def opcontrol():
     while(True):
         # Drivetrain
         opdrive(TSA, 1.0, SENSITIVITY)
+
+        optical.integration_time(10)
 
         # # Elevation
         # RENAME_ME.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
@@ -657,7 +660,7 @@ def opcontrol():
             brain.screen.clear_row(3)
             brain.screen.set_cursor(3, 4)
             brain.screen.print("No Blue Object")
-        
+      
         if detectcolor() == Color.RED:
             block_sorter.spin(FORWARD, 100, PERCENT)
             brain.screen.clear_row(3)
