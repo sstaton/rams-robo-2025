@@ -36,7 +36,7 @@ def opcontrol():
     descorer.set(True)
     while(True):
 
-      if btn_up():
+      if btn_y():
         if drive_mode == "RTNK":
           drive_mode = "TNK"
         elif drive_mode == "TNK":
@@ -64,7 +64,7 @@ def opcontrol():
       #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
       #new_thang.spin(FORWARD, btn_right() * 100, PERCENT)
 
-      if btn_left():
+      if btn_right():
         if unloaderpos == "up" and unloader_timer <= 0:
           unloaderpos = "down"
         elif unloaderpos == "down" and unloader_timer <= 0:
@@ -76,7 +76,7 @@ def opcontrol():
       elif unloaderpos == "down":
         unloader.set(True)
 
-      if btn_right():
+      if btn_down():
         if descorerpos == "in" and descorer_timer <= 0:
           descorerpos = "out"
         elif descorerpos == "out" and descorer_timer <= 0:
@@ -134,7 +134,7 @@ def opcontrol():
       elif found_color == "Blue":
         last_seen_color = "Blue"
         
-      if btn_x():
+      if btn_b():
         if splitterpos == "True" and splitter_timer <= 0:
           # optical1.set_light_power(0)
           # optical2.set_light_power(0)
