@@ -560,7 +560,7 @@ def preauton():
 
 # ./src/auton.py ---
 
-def autonomous():
+def autonomous_RED_LEFT():
     brain.screen.clear_row()
     extake_4.set_velocity(100, PERCENT)
     extake_5.set_velocity(100, PERCENT)
@@ -574,7 +574,28 @@ def autonomous():
     drivetrain.turn_for(LEFT, 20)
     drivetrain.drive_for(FORWARD, 10)
     intake_1.spin(FORWARD)
-# ./src/opcontrol.py ---
+
+def autonomous_BLUE_LEFT():
+    brain.screen.clear_row()
+    extake_4.set_velocity(100, PERCENT)
+    extake_5.set_velocity(100, PERCENT)
+    intake_1.set_velocity(100, PERCENT)
+    drivetrain.set_drive_velocity(75, PERCENT)
+    drivetrain.set_turn_velocity(100, PERCENT)
+    intake_1.spin(REVERSE)
+    drivetrain.drive_for(FORWARD, 45)
+    wait(4, SECONDS)
+    intake_1.stop()
+    drivetrain.turn_for(LEFT, 20)
+    drivetrain.drive_for(FORWARD, 10)
+    intake_1.spin(FORWARD)
+    
+def autonomous_RED_RIGHT():
+    brain.screen.clear_row()
+    
+def autonomous_BLUE_RIGHT():
+    brain.screen.clear_row()
+    
 TNK = 0
 TSA = 1
 OSA = 2
@@ -649,28 +670,17 @@ def opcontrol():
         #     brain.screen.set_cursor(3, 4)
         #     brain.screen.print("No Blue Object")
          
-        if detectcolor() == Color.BLUE:
-            block_sorter.spin(REVERSE, 100, PERCENT)
-            brain.screen.clear_row(3)
-            brain.screen.set_cursor(3, 4)
-            brain.screen.print("Blue Object")
+        if detectcolor() == GOOD_COLOR:
+            block_sorter.spin(FORWARD, 100, PERCENT)
             wait(1200, MSEC)
         else:
             block_sorter.stop()
-            brain.screen.clear_row(3)
-            brain.screen.set_cursor(3, 4)
-            brain.screen.print("No Blue Object")
+            
       
-        if detectcolor() == Color.RED:
-            block_sorter.spin(FORWARD, 100, PERCENT)
-            brain.screen.clear_row(3)
-            brain.screen.set_cursor(3, 4) 
-            brain.screen.print("Red Object")
+        if detectcolor() == BAD_COLOR:
+            block_sorter.spin(REVERSE, 100, PERCENT)
         else:
             block_sorter.stop()
-            brain.screen.clear_row(3)
-            brain.screen.set_cursor(3, 4)
-            brain.screen.print("No Red Object")
         
         
         optical.set_light_power(100)
@@ -739,8 +749,16 @@ def opdrive(control_scheme, speed_mod, turn_mod):
 preauton()
 
 do_testing = False
+
+team_color ="RED"
+field_side ="RIGHT"
+if team_color == "RED" and field_side == "RIGHT":
+    auton_function = autonomous_BLUE_LEFT
+    GOOD_COLOR = Color.BLUE
+    BAD_COLOR = Color.RED
+
 if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    field_controller = Competition(opcontrol, autonomous)
+    field_controller = Competition(opcontrol, auton_function)
