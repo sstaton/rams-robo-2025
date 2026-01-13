@@ -132,6 +132,8 @@ def rotationalpos():
 def turnpos():
     return turnr.angle()
 
+def pos_odom_x():
+    return linearr.angle()
 #def findrotations():
 #    return 
 
