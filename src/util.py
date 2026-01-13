@@ -59,7 +59,8 @@ def within_range(value, base_value, range):
 
 # SHORTHAND
 # global DRIVE_REV_TO_IN
-DRIVE_REV_TO_IN = MEDIUM_OMNI_CIRC * (36.0/48.0)
+DRIVE_REV_TO_IN = SMALL_OMNI_CIRC * (36.0/48.0)
+# 6.47953484803 X
 
 def pos_drive_r():
     return drive_r.position(REV) * DRIVE_REV_TO_IN
@@ -69,6 +70,10 @@ def vel_drive_r():
     return drive_r.velocity(RPM) * DRIVE_REV_TO_IN
 def vel_drive_l():
     return drive_l.velocity(RPM) * DRIVE_REV_TO_IN
+def pos_odom_y():
+    return turnr.position(REV) * ODOM_WHEEL_CIRC
+def pos_odom_x():
+    return linearr.position(REV) * ODOM_WHEEL_CIRC
 
 def imu_rotation():
     return imu.rotation() * all_globals.imu_correction
@@ -127,13 +132,11 @@ def findcolor2():
     return optical2.color()
 
 def rotationalpos():
-    return onbackr.angle()
+    return linearr.angle()
 
 def turnpos():
     return turnr.angle()
 
-def pos_odom_x():
-    return linearr.angle()
 #def findrotations():
 #    return 
 
