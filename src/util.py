@@ -60,7 +60,7 @@ def within_range(value, base_value, range):
 # SHORTHAND
 # global DRIVE_REV_TO_IN
 DRIVE_REV_TO_IN = SMALL_OMNI_CIRC * (36.0/48.0)
-# 6.47953484803
+# 6.47953484803 X
 
 def pos_drive_r():
     return drive_r.position(REV) * DRIVE_REV_TO_IN
