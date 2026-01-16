@@ -565,7 +565,7 @@ def autonomous_RED_LEFT():
     extake_4.set_velocity(100, PERCENT)
     extake_5.set_velocity(100, PERCENT)
     intake_1.set_velocity(100, PERCENT)
-    drivetrain.set_drive_velocity(75, PERCENT)
+    drivetrain.set_drive_velocity(75, PERCENT)        
     drivetrain.set_turn_velocity(100, PERCENT)
     intake_1.spin(REVERSE)
     drivetrain.drive_for(FORWARD, 45)
@@ -592,10 +592,34 @@ def autonomous_BLUE_LEFT():
     
 def autonomous_RED_RIGHT():
     brain.screen.clear_row()
+    extake_4.set_velocity(100, PERCENT)
+    extake_5.set_velocity(100, PERCENT)
+    intake_1.set_velocity(100, PERCENT)
+    drivetrain.set_drive_velocity(75, PERCENT)
+    drivetrain.set_turn_velocity(100, PERCENT)
+    intake_1.spin(REVERSE)
+    drivetrain.drive_for(FORWARD, 45)
+    wait(4, SECONDS)
+    intake_1.stop()
+    drivetrain.turn_for(LEFT, 20)
+    drivetrain.drive_for(FORWARD, 10)
+    intake_1.spin(FORWARD)
     
 def autonomous_BLUE_RIGHT():
     brain.screen.clear_row()
-    
+    extake_4.set_velocity(100, PERCENT)
+    extake_5.set_velocity(100, PERCENT)
+    intake_1.set_velocity(100, PERCENT)
+    drivetrain.set_drive_velocity(75, PERCENT)
+    drivetrain.set_turn_velocity(100, PERCENT)
+    intake_1.spin(REVERSE)
+    drivetrain.drive_for(FORWARD, 45)
+    wait(4, SECONDS)
+    intake_1.stop()
+    drivetrain.turn_for(LEFT, 20)
+    drivetrain.drive_for(FORWARD, 10)
+    intake_1.spin(FORWARD)
+
 TNK = 0
 TSA = 1
 OSA = 2
@@ -750,15 +774,17 @@ preauton()
 
 do_testing = False
 
-team_color ="RED"
-field_side ="RIGHT"
-if team_color == "RED" and field_side == "RIGHT":
-    auton_function = autonomous_BLUE_LEFT
-    GOOD_COLOR = Color.BLUE
-    BAD_COLOR = Color.RED
+def auton_function:
+    team_color = "RED"
+    field_side = "LEFT"
+    if team_color == "RED" and field_side == "LEFT":
+        auton_function = autonomous_RED_LEFT
+        GOOD_COLOR = Color.RED
+        BAD_COLOR = Color.BLUE
 
 if do_testing:
     print("do nothing")
 else:
     print("start of main program")
     field_controller = Competition(opcontrol, auton_function)
+  
