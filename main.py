@@ -774,21 +774,19 @@ preauton()
 
 do_testing = False
 
-team_color = "RED"
-field_side = "LEFT"
+team_color = "BLUE"
+field_side = "RIGHT"
 
 def auton_function():    
-    if team_color == "RED" and field_side == "LEFT":
-        auton_function = autonomous_RED_LEFT
+    if team_color == "BLUE" and field_side == "RIGHT":
+        auton_function = autonomous_BLUE_RIGHT
         global GOOD_COLOR, BAD_COLOR
-        GOOD_COLOR = Color.RED
-        BAD_COLOR = Color.BLUE
-        return autonomous_BLUE_LEFT
+        GOOD_COLOR = Color.BLUE
+        BAD_COLOR = Color.RED
+        return autonomous_BLUE_RIGHT
 if do_testing:
     print("do nothing")
 else:
     print("start of main program")
     selected_auton=auton_function()
     field_controller = Competition(opcontrol, selected_auton)
-else:
-    print("No autonomous function defined for this configuration")  

@@ -4,12 +4,12 @@
 		"json": 2
 	},
 	"project": {
-		"name": "RED LEFT",
+		"name": "BLUE RIGHT",
 		"description": "67104B",
 		"creationDate": "6/12/2025, 7:07:57 PM",
 		"platform": "V5",
 		"language": "python",
-		"slot": 4,
+		"slot": 1,
 		"sdkVersion": "V5_1_0_1_25",
 		"python": {
 			"main": "main.py"
