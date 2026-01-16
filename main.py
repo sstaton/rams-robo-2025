@@ -19,7 +19,7 @@ LARGE_OMNI_DIAM = 4.0
 # global MEDIUM_OMNI_DIAM
 MEDIUM_OMNI_DIAM = 3.25
 # global SMALL_OMNI_DIAM
-SMALL_OMNI_DIAM = 2.75
+SMALL_OMNI_DIAM = 2.50
 # global LARGE_WHEEL_DIAM
 LARGE_WHEEL_DIAM = 5.0
 # global MEDIUM_WHEEL_DIAM
@@ -135,14 +135,14 @@ splitter = DigitalOut(brain.three_wire_port.c)
 
 # Sensors
 global imu
-imu = Inertial(Ports.PORT20)
+imu = Inertial(Ports.PORT15)
 
 optical1 = Optical(Ports.PORT11)
 optical2 = Optical(Ports.PORT14)
 
 # Rotation Sensors
 turnr = Rotation(Ports.PORT12)
-onbackr= Rotation(Ports.PORT13)
+linearr= Rotation(Ports.PORT13)
 
 #global clock
 #clock = Timer()
@@ -227,7 +227,8 @@ def within_range(value, base_value, range):
 
 # SHORTHAND
 # global DRIVE_REV_TO_IN
-DRIVE_REV_TO_IN = MEDIUM_OMNI_CIRC * (36.0/48.0)
+DRIVE_REV_TO_IN = SMALL_OMNI_CIRC * (36.0/48.0)
+# 6.47953484803 X
 
 def pos_drive_r():
     return drive_r.position(REV) * DRIVE_REV_TO_IN
@@ -237,6 +238,10 @@ def vel_drive_r():
     return drive_r.velocity(RPM) * DRIVE_REV_TO_IN
 def vel_drive_l():
     return drive_l.velocity(RPM) * DRIVE_REV_TO_IN
+def pos_odom_y():
+    return turnr.position(REV) * ODOM_WHEEL_CIRC
+def pos_odom_x():
+    return linearr.position(REV) * ODOM_WHEEL_CIRC
 
 def imu_rotation():
     return imu.rotation() * all_globals.imu_correction
@@ -295,7 +300,7 @@ def findcolor2():
     return optical2.color()
 
 def rotationalpos():
-    return onbackr.angle()
+    return linearr.angle()
 
 def turnpos():
     return turnr.angle()
@@ -359,9 +364,11 @@ class Pid:
 
 # ./src/movement.py ---
 
+
 # takes inches, target inches per second (velocity),
 # inches per second squared (acceleration), and whether to decelerate
 def drive_straight(inches, target_ips, ipss, do_decel = True):
+    linearr.set_position(0, DEGREES)
     # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
     MSEC_PER_TICK = 20   # ms per tick
@@ -378,8 +385,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     MULTIPLIER = 1.2        # not sure why I need this, but it makes it so that
     inches *= MULTIPLIER    # passing 4 inches actually moves 4 inches
 
-    drive_r.stop(COAST)
-    drive_l.stop(COAST)
+    drive_r.stop(BRAKE)
+    drive_l.stop(BRAKE)
 
     pid_drive_r = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
     pid_drive_l = Pid(DRIVE_KP, DRIVE_KI, DRIVE_KD)
@@ -387,6 +394,7 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
     ips = 0     # current speed in ips
     expected_displacement = 0     # inches travelled since function call
+    pos_start_x = pos_odom_x()
     pos_start_l = drive_l.position(REV)
     pos_start_r = drive_r.position(REV)
 
@@ -394,7 +402,10 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     dir_mod = 1 if inches < 0 else -1
 
     # While speed is positive and we haven't gone further than `inches`
-    while ips >= 0 and abs(pos_drive_l() - pos_start_l) < abs(inches):
+    while ips >= 0:
+        pos_current_x = pos_odom_x()
+        if abs(pos_current_x - pos_start_x) >= abs(inches):
+            break
         # Handle acceleration
         if abs(expected_displacement) + stop_distance(ips, ipss) >= abs(inches) and do_decel:
             ips -= ipss / TICK_PER_SEC           # decel
@@ -407,18 +418,27 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         expected_displacement += ips / TICK_PER_SEC * dir_mod      # dir_mod adjusts for moving fwd/bwd
 
         # Find actual position
-        displacement_l = pos_drive_l() - pos_start_l
-        displacement_r = pos_drive_r() - pos_start_r
+        displacement_x = pos_odom_x() - pos_start_x
+        # displacement_l = pos_drive_l() - pos_start_l
+        # displacement_r = pos_drive_r() - pos_start_r
 
-        adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_r)
-        adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_l)
-        adjustment_dir = pid_dir.adjust(all_globals.target_heading, displacement_l)
+        adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_x)
+        adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_x)
+        avg_displacement = displacement_x
+        # adjustment_dir = pid_dir.adjust(all_globals.target_heading, avg_displacement)
 
         vel_rpm = ips / DRIVE_REV_TO_IN * 60
-        
-        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r - adjustment_dir, RPM)
-        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l + adjustment_dir, RPM)
 
+        drive_r.spin(FORWARD, dir_mod * vel_rpm + adjustment_r, RPM)
+        drive_l.spin(FORWARD, dir_mod * vel_rpm + adjustment_l, RPM)
+
+        brain.screen.clear_row(2)
+        brain.screen.set_cursor(2, 1)
+        brain.screen.print(pos_start_x)
+        brain.screen.clear_row(3)
+        brain.screen.set_cursor(3, 1)
+        brain.screen.print(pos_odom_x())
+        
         wait(MSEC_PER_TICK, MSEC)
         
     if do_decel:
@@ -429,6 +449,7 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
         drive_l.stop(COAST)
 
 def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
+    turnr.set_position(0, DEGREES)
     # Loop wait times
     TICK_PER_SEC = 50
     MSEC_PER_TICK = 20
@@ -438,6 +459,9 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     DRIVE_KI = 0.00   
     DRIVE_KD = 1.9
 
+    turnr.set_position(0, DEGREES)
+    imu.set_rotation(0, DEGREES)
+    all_globals.set_target_heading(0)
     # Update robot's target heading
     all_globals.inc_target_heading(degrees)
 
@@ -446,24 +470,28 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     
     ips = 0
     outer_displacement = 0
+    pos_start_y = pos_odom_y()
     pos_start_r = pos_drive_r()
     pos_start_l = pos_drive_l()
-
-    # radius of turn
+    
+    # Radius of turn
+    # Width 12.5, Radius 6.25
     inner_radius = outer_radius - all_globals.wheel_to_wheel_dist
     radius_ratio = inner_radius / outer_radius
 
-    dir_mod = 1 if degrees > 0 else -1
+    dir_mod = -1 if degrees > 0 else -1
 
     while ips >= 0:
+        pos_current_y = pos_odom_y() * 10.5
         # Find distance travelled since function call
+        displacement_y = pos_odom_y() - pos_start_y
         displacement_r = pos_drive_r() - pos_start_r
         displacement_l = pos_drive_l() - pos_start_l
-
+        
         # Degrees remaining to complete turn
-        degrees_remaining = all_globals.target_heading - imu_rotation()
+        degrees_remaining = all_globals.target_heading - (pos_current_y * dir_mod)
 
-        # Handle acceleration
+        # Handles acceleration
         # radians remaining * inches per radian; in other words, inches remaining
         if abs(degrees_remaining / RAD_TO_DEG * outer_radius) - stop_distance(ips, ipss) <= 0:
             ips -= ipss / TICK_PER_SEC      # decel
@@ -480,12 +508,25 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
         inner_displacement = outer_displacement * radius_ratio
 
         # Get PID adjustments; move the drive
-        if (reversed and degrees > 0) or ((not reversed) and (not degrees > 0)):        # left is inner side
+        # if (reversed and degrees > 0) or ((not reversed) and (not degrees > 0)):        # left is inner side
+        #     adjustment_r = pid_drive_r.adjust(outer_displacement, displacement_r)
+        #     adjustment_l = -1 * pid_drive_l.adjust(inner_displacement, displacement_l)
+
+        #     drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
+        #     drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
+        # else:                                                                           # right is inner side
+        #     adjustment_r = -1 * pid_drive_r.adjust(inner_displacement, displacement_r)
+        #     adjustment_l = pid_drive_l.adjust(outer_displacement, displacement_l)
+
+        #     drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
+        #     drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
+
+        if degrees < 0:        # left is inner side
             adjustment_r = pid_drive_r.adjust(outer_displacement, displacement_r)
             adjustment_l = -1 * pid_drive_l.adjust(inner_displacement, displacement_l)
 
-            drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
-            drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
+            drive_r.spin(FORWARD, inner_vel_rpm + adjustment_r, RPM)
+            drive_l.spin(FORWARD, outer_vel_rpm + adjustment_l, RPM)
         else:                                                                           # right is inner side
             adjustment_r = -1 * pid_drive_r.adjust(inner_displacement, displacement_r)
             adjustment_l = pid_drive_l.adjust(outer_displacement, displacement_l)
@@ -493,9 +534,22 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
             drive_r.spin(FORWARD, outer_vel_rpm + adjustment_r, RPM)
             drive_l.spin(FORWARD, inner_vel_rpm + adjustment_l, RPM)
 
+        brain.screen.clear_row(4)
+        brain.screen.set_cursor(4, 1)
+        brain.screen.print(pos_current_y)
+        #brain.screen.print(imu_rotation())
+        brain.screen.clear_row(5)
+        brain.screen.set_cursor(5, 1)
+        #brain.screen.print(pos_odom_y())
+        brain.screen.print(degrees_remaining)
+
         # Exit loop if we're past the desired angle
-        if degrees_remaining * dir_mod < 0:
-            break
+        if degrees > 0:
+            if degrees_remaining <= 0:
+                break
+        elif degrees < 0:
+            if degrees_remaining >= 0:
+                break
 
         wait(MSEC_PER_TICK, MSEC)
     drive_r.stop(BRAKE)
@@ -706,9 +760,9 @@ def opcontrol():
     last_seen_color = "none"
     drive_mode = "TNK"
     unloaderpos = "down"
-    splitterpos = "False"
+    splitterpos = "True"
     descorerpos = "in"
-    onbackr.set_position(0, DEGREES)
+    linearr.set_position(0, DEGREES)
     descorer_timer = 0
     unloader_timer = 0
     splitter_timer = 0
@@ -716,7 +770,7 @@ def opcontrol():
     descorer.set(True)
     while(True):
 
-      if btn_up():
+      if btn_y():
         if drive_mode == "RTNK":
           drive_mode = "TNK"
         elif drive_mode == "TNK":
@@ -744,7 +798,7 @@ def opcontrol():
       #hang.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
       #new_thang.spin(FORWARD, btn_right() * 100, PERCENT)
 
-      if btn_left():
+      if btn_right():
         if unloaderpos == "up" and unloader_timer <= 0:
           unloaderpos = "down"
         elif unloaderpos == "down" and unloader_timer <= 0:
@@ -756,7 +810,7 @@ def opcontrol():
       elif unloaderpos == "down":
         unloader.set(True)
 
-      if btn_right():
+      if btn_down():
         if descorerpos == "in" and descorer_timer <= 0:
           descorerpos = "out"
         elif descorerpos == "out" and descorer_timer <= 0:
@@ -804,7 +858,7 @@ def opcontrol():
         splitterpos = "True"
       elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
         found_color = "Blue"
-        splitterpos = "False"
+        splitterpos = "True"
        
       #found_color = findcolor()
     
@@ -814,35 +868,28 @@ def opcontrol():
       elif found_color == "Blue":
         last_seen_color = "Blue"
         
-      if btn_x():
+      if btn_b():
         if splitterpos == "True" and splitter_timer <= 0:
           # optical1.set_light_power(0)
           # optical2.set_light_power(0)
-          # splitter.set(False)
+          splitterpos = "False"
+          splitter_timer = 240
+          # wait(1000, MSEC)
           # splitter.set(True)
-          spltterpos = "False"
           # optical1.set_light_power(100)
           # optical2.set_light_power(100)
         elif splitterpos == "False" and splitter_timer <= 0:
           # optical1.set_light_power(0)
           # optical2.set_light_power(0)
-          # splitter.set(True)
-          # splitter.set(False)
           splitterpos = "True"
+          splitter_timer = 240
+          # wait(1000, MSEC)
+          # splitter.set(False)
           # optical1.set_light_power(100)
           # optical2.set_light_power(100)
-      else:
-        # Moves Splitter pneumatic according to Optical variable
-        if last_seen_color == "Red":
-          # splitter.set(True)
-          splitterpos = "True"
-          wait(10, MSEC)
-        elif last_seen_color == "Blue":
-          # splitter.set(False)
-          spltterpos = "False"
-          wait(10, MSEC)
+      
 
-        splitter_timer = 250
+        
 
       if splitterpos == "True":
         splitter.set(True)

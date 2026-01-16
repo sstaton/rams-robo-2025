@@ -28,7 +28,7 @@ def opcontrol():
     unloaderpos = "down"
     splitterpos = "False"
     descorerpos = "in"
-    onbackr.set_position(0, DEGREES)
+    linearr.set_position(0, DEGREES)
     descorer_timer = 0
     unloader_timer = 0
     splitter_timer = 0
@@ -138,31 +138,24 @@ def opcontrol():
         if splitterpos == "True" and splitter_timer <= 0:
           # optical1.set_light_power(0)
           # optical2.set_light_power(0)
-          # splitter.set(False)
+          splitterpos = "False"
+          splitter_timer = 240
+          # wait(1000, MSEC)
           # splitter.set(True)
-          spltterpos = "False"
           # optical1.set_light_power(100)
           # optical2.set_light_power(100)
         elif splitterpos == "False" and splitter_timer <= 0:
           # optical1.set_light_power(0)
           # optical2.set_light_power(0)
-          # splitter.set(True)
-          # splitter.set(False)
           splitterpos = "True"
+          splitter_timer = 240
+          # wait(1000, MSEC)
+          # splitter.set(False)
           # optical1.set_light_power(100)
           # optical2.set_light_power(100)
-      else:
-        # Moves Splitter pneumatic according to Optical variable
-        if last_seen_color == "Red":
-          # splitter.set(True)
-          splitterpos = "True"
-          wait(10, MSEC)
-        elif last_seen_color == "Blue":
-          # splitter.set(False)
-          spltterpos = "False"
-          wait(10, MSEC)
+      
 
-        splitter_timer = 250
+        
 
       if splitterpos == "True":
         splitter.set(True)
