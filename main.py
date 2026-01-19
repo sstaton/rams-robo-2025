@@ -565,15 +565,9 @@ def autonomous_RED_LEFT():
     extake_4.set_velocity(100, PERCENT)
     extake_5.set_velocity(100, PERCENT)
     intake_1.set_velocity(100, PERCENT)
-    drivetrain.set_drive_velocity(75, PERCENT)        
+    drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(100, PERCENT)
-    intake_1.spin(REVERSE)
-    drivetrain.drive_for(FORWARD, 45)
-    wait(4, SECONDS)
-    intake_1.stop()
-    drivetrain.turn_for(LEFT, 20)
-    drivetrain.drive_for(FORWARD, 10)
-    intake_1.spin(FORWARD)
+    
 
 def autonomous_BLUE_LEFT():
     brain.screen.clear_row()
@@ -582,13 +576,8 @@ def autonomous_BLUE_LEFT():
     intake_1.set_velocity(100, PERCENT)
     drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(100, PERCENT)
-    intake_1.spin(REVERSE)
     drivetrain.drive_for(FORWARD, 45)
-    wait(4, SECONDS)
-    intake_1.stop()
-    drivetrain.turn_for(LEFT, 20)
-    drivetrain.drive_for(FORWARD, 10)
-    intake_1.spin(FORWARD)
+    
     
 def autonomous_RED_RIGHT():
     brain.screen.clear_row()
@@ -706,6 +695,7 @@ def opcontrol():
         else:
             block_sorter.stop()
         
+        block_sorter.spin(REVERSE, 100, PERCENT)
         
         optical.set_light_power(100)
         brain.screen.clear_row(4)
@@ -789,4 +779,4 @@ if do_testing:
 else:
     print("start of main program")
     selected_auton=auton_function()
-    field_controller = Competition(opcontrol, selected_auton)
+    field_controller = Competition(opcontrol, opcontrol)
