@@ -562,7 +562,12 @@ def autonomous_RED_LEFT():
     intake_1.set_velocity(100, PERCENT)        
     drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(100, PERCENT)
-    
+    intake_1.spin(REVERSE)
+    drivetrain.drive_for(FORWARD, 45)
+    drivetrain.turn_for(LEFT, 77)
+    drivetrain.drive_for(REVERSE, 7)
+    extake_4.spin(FORWARD)
+    extake_5.spin(REVERSE)
 
 def autonomous_BLUE_LEFT():
     brain.screen.clear_row()
@@ -573,7 +578,8 @@ def autonomous_BLUE_LEFT():
     drivetrain.set_turn_velocity(100, PERCENT)
     intake_1.spin(REVERSE)
     drivetrain.drive_for(FORWARD, 45)
-    drivetrain.turn_for(RIGHT, 8)
+    drivetrain.turn_for(LEFT, 77)
+    drivetrain.drive_for(REVERSE, 7)
     extake_4.spin(FORWARD)
     extake_5.spin(REVERSE)
     
@@ -682,14 +688,14 @@ def opcontrol():
         #     brain.screen.print("No Blue Object")
          
         if detectcolor() == GOOD_COLOR:
-            block_sorter.spin(FORWARD, 100, PERCENT)
+            block_sorter.spin(REVERSE, 100, PERCENT)
             wait(1200, MSEC)
         else:
             block_sorter.stop()
             
       
         if detectcolor() == BAD_COLOR:
-            block_sorter.spin(REVERSE, 100, PERCENT)
+            block_sorter.spin(FORWARD, 100, PERCENT)
         else:
             block_sorter.stop()
         
@@ -762,16 +768,16 @@ preauton()
 
 do_testing = False
 
-team_color = "BLUE"
+team_color = "RED"
 field_side = "LEFT"
 
 def auton_function():    
-    if team_color == "BLUE" and field_side == "LEFT":
-        auton_function = autonomous_BLUE_LEFT
+    if team_color == "RED" and field_side == "LEFT":
+        auton_function = autonomous_RED_LEFT
         global GOOD_COLOR, BAD_COLOR
-        GOOD_COLOR = Color.BLUE
-        BAD_COLOR = Color.RED
-        return autonomous_BLUE_LEFT
+        GOOD_COLOR = Color.RED
+        BAD_COLOR = Color.BLUE
+        return autonomous_RED_LEFT
 if do_testing:
     print("do nothing")
 else:
