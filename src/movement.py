@@ -92,7 +92,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     turnr.set_position(0, DEGREES)
     # Loop wait times
     TICK_PER_SEC = 50
-    MSEC_PER_TICK = 20
+    MSEC_PER_TICK = 10
 
     # PID constants
     DRIVE_KP = 0.005   
@@ -122,7 +122,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     dir_mod = -1 if degrees > 0 else -1
 
     while ips >= 0:
-        pos_current_y = pos_odom_y() * 10.5
+        pos_current_y = pos_odom_y() * 12
         # Find distance travelled since function call
         displacement_y = pos_odom_y() - pos_start_y
         displacement_r = pos_drive_r() - pos_start_r

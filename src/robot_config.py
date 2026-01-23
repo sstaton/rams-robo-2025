@@ -77,7 +77,7 @@ optical2 = Optical(Ports.PORT14)
 
 # Rotation Sensors
 turnr = Rotation(Ports.PORT12)
-linearr= Rotation(Ports.PORT13)
+linearr = Rotation(Ports.PORT13)
 
 #global clock
 #clock = vex.Timer()

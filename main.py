@@ -28,6 +28,8 @@ MEDIUM_WHEEL_DIAM = 4.0
 SMALL_WHEEL_DIAM = 2.75
 # global TRACT_WHEEL_DIAM
 TRACT_WHEEL_DIAM = 3.25
+# global ODOM_WHEEL_DIAM
+ODOM_WHEEL_DIAM = 2.0
 
 # global LARGE_OMNI_CIRC
 LARGE_OMNI_CIRC = LARGE_OMNI_DIAM * math.pi
@@ -43,6 +45,8 @@ MEDIUM_WHEEL_CIRC = MEDIUM_WHEEL_DIAM * math.pi
 SMALL_WHEEL_CIRC = SMALL_WHEEL_DIAM * math.pi
 # global TRACT_WHEEL_CIRC
 TRACT_WHEEL_CIRC = TRACT_WHEEL_DIAM * math.pi
+# global ODOM_WHEEL_CIRC
+ODOM_WHEEL_CIRC = ODOM_WHEEL_DIAM * math.pi
 
 # Unit shorthand
 # global REV
@@ -142,7 +146,7 @@ optical2 = Optical(Ports.PORT14)
 
 # Rotation Sensors
 turnr = Rotation(Ports.PORT12)
-linearr= Rotation(Ports.PORT13)
+linearr = Rotation(Ports.PORT13)
 
 #global clock
 #clock = Timer()
@@ -452,7 +456,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     turnr.set_position(0, DEGREES)
     # Loop wait times
     TICK_PER_SEC = 50
-    MSEC_PER_TICK = 20
+    MSEC_PER_TICK = 10
 
     # PID constants
     DRIVE_KP = 0.005   
@@ -482,7 +486,7 @@ def drive_turn(degrees, outer_radius, target_ips, ipss, reversed):
     dir_mod = -1 if degrees > 0 else -1
 
     while ips >= 0:
-        pos_current_y = pos_odom_y() * 10.5
+        pos_current_y = pos_odom_y() * 12
         # Find distance travelled since function call
         displacement_y = pos_odom_y() - pos_start_y
         displacement_r = pos_drive_r() - pos_start_r
@@ -689,48 +693,46 @@ def autonomous():
     # NOT CORRECT
     # NVM
     imu.calibrate()
-    onbackr.set_position(0, DEGREES)
-    turnr.set_position(0, DEGREES)
-    optical1.integration_time(10)
+    optical1.integration_time(20)
     optical1.set_light_power(100)
-    optical2.integration_time(110)
+    optical2.integration_time(20)
     optical2.set_light_power(100)
     drive1.set_drive_velocity(300, RPM)
     drive1.set_turn_velocity(300, RPM)
     unloader.set(True)
-
-    # Red Left Side
-    drive1.drive_for(FORWARD, 52, INCHES)
-    wait(500, MSEC)
-    drive1.turn_for(RIGHT, 199, DEGREES)
+    
+    drive_straight(-23, 68, 40)
     wait(200, MSEC)
-    drive1.drive_for(FORWARD, 17, INCHES)
+    drive_turn(-90, 5.5, 45, 45, False)
+    wait(200, MSEC)
+    drive_straight(-9, 30, 30)
     intake.spin(REVERSE)
     splitter.set(True)
     start_time = time.time()
     time_now = time.time()
-    while(time_now < start_time + 4):
+    while(time_now < start_time + 3):
         if findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
             found_colora = "Blue"
-        if found_colora == "Blue":
-            last_seen_colora = "Blue"
-        if last_seen_colora == "Blue":
             splitter.set(False)
             wait(50, MSEC)
-        drive1.drive_for(FORWARD, 1, INCHES)
+        # if found_colora == "Blue":
+        #     splitter.set(False)
+        #     wait(50, MSEC)
+        # if found_colora == "Blue":
+        #     last_seen_colora = "Blue"
+        # if last_seen_colora == "Blue":
+        #     splitter.set(False)
+        #     wait(50, MSEC)
+            #drive_straight(-3, 9, 9)
+        drive_straight(-2, 4, 4)
         wait(20, MSEC)
         time_now = time.time()
-    drive1.drive_for(REVERSE, 32, INCHES)
-    wait(200, MSEC)
-    drive1.turn_for(RIGHT, 190, DEGREES)
-    wait(200, MSEC)
-    drive1.drive_for(REVERSE, 15, INCHES)
-    wait(200, MSEC)
-    drive1.turn_for(LEFT, 189, DEGREES)
-    wait(200, MSEC)
-    drive1.drive_for(REVERSE, 19, INCHES)
+    drive_straight(10, 25, 20)
+    drive_turn(-90, 5.5, 30, 30, False)
+    drive_straight(5, 10, 10)
+    drive_turn(90, 5.5, 30, 30, False)
+    drive_straight(20, 40, 30)
     outtake2.spin(FORWARD)
-
 
 
 
@@ -760,7 +762,7 @@ def opcontrol():
     last_seen_color = "none"
     drive_mode = "TNK"
     unloaderpos = "down"
-    splitterpos = "True"
+    splitterpos = "False"
     descorerpos = "in"
     linearr.set_position(0, DEGREES)
     descorer_timer = 0
@@ -858,7 +860,7 @@ def opcontrol():
         splitterpos = "True"
       elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
         found_color = "Blue"
-        splitterpos = "True"
+        splitterpos = "False"
        
       #found_color = findcolor()
     
