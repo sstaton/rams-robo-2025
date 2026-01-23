@@ -573,7 +573,7 @@ def autonomous_BLUE_LEFT():
     drivetrain.set_turn_velocity(100, PERCENT)
     intake_1.spin(REVERSE)
     drivetrain.drive_for(FORWARD, 45)
-    drivetrain.trun_for(RIGHT, 8)
+    drivetrain.turn_for(RIGHT, 8)
     extake_4.spin(FORWARD)
     extake_5.spin(REVERSE)
     
@@ -777,4 +777,4 @@ if do_testing:
 else:
     print("start of main program")
     selected_auton=auton_function()
-    field_controller = Competition(opcontrol, auton_function)
+    field_controller = Competition(opcontrol, selected_auton)
