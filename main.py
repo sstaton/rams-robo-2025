@@ -555,16 +555,11 @@ def preauton():
     while imu.is_calibrating():
         wait(20, TimeUnits.MSEC)
 
-
-
-
-# ./src/auton.py ---
-
 def autonomous_RED_LEFT():
     brain.screen.clear_row()
-    extake_4.set_velocity(100, PERCENT)
+    extake_4.set_velocity(100, PERCENT)        
     extake_5.set_velocity(100, PERCENT)
-    intake_1.set_velocity(100, PERCENT)
+    intake_1.set_velocity(100, PERCENT)        
     drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(100, PERCENT)
     
@@ -576,8 +571,11 @@ def autonomous_BLUE_LEFT():
     intake_1.set_velocity(100, PERCENT)
     drivetrain.set_drive_velocity(75, PERCENT)
     drivetrain.set_turn_velocity(100, PERCENT)
+    intake_1.spin(REVERSE)
     drivetrain.drive_for(FORWARD, 45)
-    
+    drivetrain.trun_for(RIGHT, 8)
+    extake_4.spin(FORWARD)
+    extake_5.spin(REVERSE)
     
 def autonomous_RED_RIGHT():
     brain.screen.clear_row()
@@ -695,7 +693,7 @@ def opcontrol():
         else:
             block_sorter.stop()
         
-        block_sorter.spin(REVERSE, 100, PERCENT)
+        # block_sorter.spin(REVERSE, 100, PERCENT)
         
         optical.set_light_power(100)
         brain.screen.clear_row(4)
@@ -765,18 +763,18 @@ preauton()
 do_testing = False
 
 team_color = "BLUE"
-field_side = "RIGHT"
+field_side = "LEFT"
 
 def auton_function():    
-    if team_color == "BLUE" and field_side == "RIGHT":
-        auton_function = autonomous_BLUE_RIGHT
+    if team_color == "BLUE" and field_side == "LEFT":
+        auton_function = autonomous_BLUE_LEFT
         global GOOD_COLOR, BAD_COLOR
         GOOD_COLOR = Color.BLUE
         BAD_COLOR = Color.RED
-        return autonomous_BLUE_RIGHT
+        return autonomous_BLUE_LEFT
 if do_testing:
     print("do nothing")
 else:
     print("start of main program")
     selected_auton=auton_function()
-    field_controller = Competition(opcontrol, opcontrol)
+    field_controller = Competition(opcontrol, auton_function)
