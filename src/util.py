@@ -123,12 +123,12 @@ def btn_down():
 
 def findcolor1():
     optical1.integration_time(20)
-    optical1.set_light_power(100)
+    optical1.set_light_power(80)
     return optical1.color()
 
 def findcolor2():
     optical2.integration_time(20)
-    optical2.set_light_power(100)
+    optical2.set_light_power(80)
     return optical2.color()
 
 def rotationalpos():
