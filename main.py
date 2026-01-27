@@ -91,6 +91,8 @@ drive_l = MotorGroup(drive_l1, drive_l2)
 # global drive_l
 drivetrain = DriveTrain(drive_l, drive_r)
 
+drivetrain.set_turn_velocity(70, PERCENT)
+
 # Subsystem 3
 
 intake_1 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False)
@@ -653,7 +655,7 @@ def opcontrol():
 
         intakegroup.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         
-        extake_5.spin(FORWARD, (btn_l1() - btn_l2()) * 100, PERCENT)
+        extake_5.spin(FORWARD, (btn_l1() - btn_l2()) * 70, PERCENT)
         
         if btn_a():
            run_extake = True
@@ -662,11 +664,11 @@ def opcontrol():
             run_extake = False
         
         if run_extake:
-            extake_4.spin(FORWARD, 100, PERCENT)
+            extake_4.spin(FORWARD, 85, PERCENT)
         else:
             extake_4.stop()
         
-        if btn_right():
+        if btn_up():
             puncher.set(True)
         if btn_left():
             puncher.set(False)
@@ -676,21 +678,11 @@ def opcontrol():
         if btn_y():
             lifter.set(False)
             
-        if btn_    
-        
-        
-        # if detectcolor() == Color.BLUE:
-        #     block_sorter.spin(FORWARD, 100, PERCENT)
-        #     brain.screen.clear_row(3)
-        #     brain.screen.set_cursor(3, 4)
-        #     brain.screen.print("Blue Object")
-        #     wait(1200, MSEC)
-        # else:
-        #     block_sorter.stop()
-        #     brain.screen.clear_row(3)
-        #     brain.screen.set_cursor(3, 4)
-        #     brain.screen.print("No Blue Object")
-         
+        if btn_right():
+            block_sorter.spin(REVERSE, 100, PERCENT)
+        if btn_down():
+            block_sorter.stop()    
+               
         # if detectcolor() == GOOD_COLOR:
         #     block_sorter.spin(REVERSE, 100, PERCENT)
         #     wait(1200, MSEC)
@@ -786,5 +778,5 @@ if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    selected_auton=auton_function()
+    # selected_auton=auton_function()
     field_controller = Competition(opcontrol, opcontrol)
