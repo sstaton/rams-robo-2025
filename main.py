@@ -110,6 +110,8 @@ optical = Optical(Ports.PORT1)
 lifter = DigitalOut(brain.three_wire_port.a)
 puncher = DigitalOut(brain.three_wire_port.b)
 
+
+
 # global wing_l
 #wing_l = DigitalOut(brain.three_wire_port.b)
 # global intake_fold
@@ -592,9 +594,9 @@ def autonomous_RED_RIGHT():
     drivetrain.set_turn_velocity(100, PERCENT)
     intake_1.spin(REVERSE)
     drivetrain.drive_for(FORWARD, 45)
-    wait(4, SECONDS)
+    wait(3, SECONDS)
     intake_1.stop()
-    drivetrain.turn_for(LEFT, 20)
+    drivetrain.turn_for(LEFT, 24)
     drivetrain.drive_for(FORWARD, 10)
     intake_1.spin(FORWARD)
     
