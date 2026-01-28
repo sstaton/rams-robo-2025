@@ -598,7 +598,7 @@ def autonomous_RED_RIGHT():
     drivetrain.drive_for(FORWARD, 45)
     wait(2, SECONDS)
     intakegroup.stop()
-    drivetrain.turn_for(LEFT, 24)
+    drivetrain.turn_for(LEFT, 30)
     drivetrain.drive_for(FORWARD, 10)
     intakegroup.spin(FORWARD)
     
@@ -683,17 +683,17 @@ def opcontrol():
         if btn_down():
             block_sorter.stop()    
                
-        # if detectcolor() == GOOD_COLOR:
-        #     block_sorter.spin(REVERSE, 100, PERCENT)
-        #     wait(1200, MSEC)
-        # else:
-        #     block_sorter.stop()
+        if detectcolor() == GOOD_COLOR:
+            block_sorter.spin(REVERSE, 100, PERCENT)
+            wait(1200, MSEC)
+        else:
+            block_sorter.stop()
             
       
-        # if detectcolor() == BAD_COLOR:
-        #     block_sorter.spin(FORWARD, 100, PERCENT)
-        # else:
-        #     block_sorter.stop()
+        if detectcolor() == BAD_COLOR:
+            block_sorter.spin(FORWARD, 100, PERCENT)
+        else:
+            block_sorter.stop()
         
         # block_sorter.spin(REVERSE, 100, PERCENT)
         
@@ -764,19 +764,19 @@ preauton()
 
 do_testing = False
 
-# team_color = "RED"
-# field_side = "RIGHT"
+team_color = "RED"
+field_side = "RIGHT"
 
-# def auton_function():    
-#     if team_color == "RED" and field_side == "RIGHT":
-#         auton_function = autonomous_RED_RIGHT
-#         global GOOD_COLOR, BAD_COLOR
-#         GOOD_COLOR = Color.RED
-#         BAD_COLOR = Color.BLUE
-#         return autonomous_RED_RIGHT
+def auton_function():    
+    if team_color == "RED" and field_side == "RIGHT":
+        auton_function = autonomous_RED_RIGHT
+        global GOOD_COLOR, BAD_COLOR
+        GOOD_COLOR = Color.RED
+        BAD_COLOR = Color.BLUE
+        return autonomous_RED_RIGHT
 if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    # selected_auton=auton_function()
-    field_controller = Competition(opcontrol, opcontrol)
+    selected_auton=auton_function()
+    field_controller = Competition(opcontrol, selected_auton)
