@@ -678,10 +678,10 @@ def opcontrol():
         if btn_y():
             lifter.set(False)
             
-        if btn_right():
-            block_sorter.spin(REVERSE, 100, PERCENT)
-        if btn_down():
-            block_sorter.stop()    
+        # if btn_right():
+        #     block_sorter.spin(REVERSE, 100, PERCENT)
+        # if btn_down():
+        #     block_sorter.stop()    
                
         if detectcolor() == GOOD_COLOR:
             block_sorter.spin(REVERSE, 100, PERCENT)
@@ -695,7 +695,7 @@ def opcontrol():
         else:
             block_sorter.stop()
         
-        # block_sorter.spin(REVERSE, 100, PERCENT)
+        block_sorter.spin(REVERSE, 100, PERCENT)
         
         optical.set_light_power(100)
         brain.screen.clear_row(4)
