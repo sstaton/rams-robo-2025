@@ -599,23 +599,23 @@ def autonomous_RED_RIGHT():
     wait(1.5, SECONDS)
     intakegroup.stop()
     drivetrain.turn_for(LEFT, 30)
-    drivetrain.drive_for(FORWARD, 10)
+    drivetrain.drive_for(FORWARD, 12)
     intakegroup.spin(FORWARD)
     
 def autonomous_BLUE_RIGHT():
     brain.screen.clear_row()
     extake_4.set_velocity(100, PERCENT)
     extake_5.set_velocity(100, PERCENT)
-    intake_1.set_velocity(100, PERCENT)
-    drivetrain.set_drive_velocity(75, PERCENT)
-    drivetrain.set_turn_velocity(100, PERCENT)
-    intake_1.spin(REVERSE)
-    drivetrain.drive_for(FORWARD, 45)
-    wait(4, SECONDS)
-    intake_1.stop()
-    drivetrain.turn_for(LEFT, 20)
-    drivetrain.drive_for(FORWARD, 10)
-    intake_1.spin(FORWARD)
+    intake_1.set_velocity(70, PERCENT)
+    drivetrain.set_drive_velocity(60, PERCENT)
+    drivetrain.set_turn_velocity(60, PERCENT)
+    intakegroup.spin(REVERSE)
+    drivetrain.drive_for(FORWARD, 48)
+    wait(1.5, SECONDS)
+    intakegroup.stop()
+    drivetrain.turn_for(LEFT, 30)
+    drivetrain.drive_for(FORWARD, 12)
+    intakegroup.spin(FORWARD)
     
 TNK = 0
 TSA = 1
@@ -758,16 +758,16 @@ preauton()
 
 do_testing = False
 
-team_color = "RED"
+team_color = "BLUE"
 field_side = "RIGHT"
 
 def auton_function():    
-    if team_color == "RED" and field_side == "RIGHT":
-        auton_function = autonomous_RED_RIGHT
+    if team_color == "BLUE" and field_side == "RIGHT":
+        auton_function = autonomous_BLUE_RIGHT
         global GOOD_COLOR, BAD_COLOR
-        GOOD_COLOR = Color.RED
-        BAD_COLOR = Color.BLUE
-        return autonomous_RED_RIGHT
+        GOOD_COLOR = Color.BLUE
+        BAD_COLOR = Color.RED
+        return autonomous_BLUE_RIGHT
 if do_testing:
     print("do nothing")
 else:
