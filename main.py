@@ -591,12 +591,12 @@ def autonomous_RED_RIGHT():
     brain.screen.clear_row()
     extake_4.set_velocity(100, PERCENT)
     extake_5.set_velocity(100, PERCENT)
-    intake_1.set_velocity(100, PERCENT)
+    intake_1.set_velocity(70, PERCENT)
     drivetrain.set_drive_velocity(60, PERCENT)
     drivetrain.set_turn_velocity(60, PERCENT)
     intakegroup.spin(REVERSE)
     drivetrain.drive_for(FORWARD, 48)
-    wait(2, SECONDS)
+    wait(1.5, SECONDS)
     intakegroup.stop()
     drivetrain.turn_for(LEFT, 30)
     drivetrain.drive_for(FORWARD, 10)
@@ -685,11 +685,7 @@ def opcontrol():
                
         if detectcolor() == GOOD_COLOR:
             block_sorter.spin(REVERSE, 100, PERCENT)
-        else:
-            block_sorter.stop()
-            
-      
-        if detectcolor() == BAD_COLOR:
+        elif detectcolor() == BAD_COLOR:
             block_sorter.spin(FORWARD, 100, PERCENT)
         else:
             block_sorter.stop()
