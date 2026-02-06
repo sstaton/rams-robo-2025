@@ -21,9 +21,9 @@ def autonomous():
     # drive1.drive_for(FORWARD, 30, INCHES)
     # intake.spin(REVERSE)
     # outtake2.spin(FORWARD)
-    drive_straight(-22, 68, 40)
+    drive_straight(-23, 68, 40)
     wait(200, MSEC)
-    drive_turn(-80, 5.5, 50, 50, False)
+    drive_turn(80, 5.5, 50, 50, False)
     wait(200, MSEC)
     drive_straight(-11, 30, 30)
     intake.spin(REVERSE)
@@ -45,7 +45,7 @@ def autonomous():
         brain.screen.clear_row(9)
         brain.screen.set_cursor(9, 1)
         brain.screen.print("Looking for", Color.BLUE)
-        if found_color1 == Color.BLUE and found_color2 == Color.BLUE:
+        if found_color1 == Color.RED and found_color2 == Color.RED:
             found_colora = "Blue"
         if found_colora == "Blue":
             last_seen_colora = "Blue"
@@ -60,6 +60,6 @@ def autonomous():
     drive_straight(10, 25, 20)
     drive_turn(-90, 5.5, 40, 30, False)
     drive_straight(5, 20, 10)
-    drive_turn(90, 5.5, 45, 45, False)
+    drive_turn(85, 5.5, 45, 45, False)
     drive_straight(16, 50, 40)
     outtake2.spin(FORWARD)

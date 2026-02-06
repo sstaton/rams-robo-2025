@@ -121,10 +121,10 @@ def opcontrol():
       # Checks Optical values; Sets to a variable
       if findcolor1() == Color.RED and findcolor2() == Color.RED:
         found_color = "Red"
-        splitterpos = "True"
+        splitterpos = "False"
       elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
         found_color = "Blue"
-        splitterpos = "False"
+        splitterpos = "True"
        
       #found_color = findcolor()
     
