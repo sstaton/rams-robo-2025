@@ -112,7 +112,7 @@ optical = Optical(Ports.PORT1)
 lifter = DigitalOut(brain.three_wire_port.a)
 puncher = DigitalOut(brain.three_wire_port.b)
 
-
+extake = MotorGroup(extake_4, extake_5)
 
 # global wing_l
 #wing_l = DigitalOut(brain.three_wire_port.b)
@@ -561,31 +561,33 @@ def preauton():
 
 def autonomous_RED_LEFT():
     brain.screen.clear_row()
-    extake_4.set_velocity(100, PERCENT)        
+    extake_4.set_velocity(100, PERCENT)
     extake_5.set_velocity(100, PERCENT)
-    intake_1.set_velocity(100, PERCENT)        
-    drivetrain.set_drive_velocity(75, PERCENT)
-    drivetrain.set_turn_velocity(100, PERCENT)
-    intake_1.spin(REVERSE)
-    drivetrain.drive_for(FORWARD, 45)
-    drivetrain.turn_for(LEFT, 77)
-    drivetrain.drive_for(REVERSE, 7)
-    extake_4.spin(FORWARD)
-    extake_5.spin(REVERSE)
+    intake_1.set_velocity(70, PERCENT)
+    drivetrain.set_drive_velocity(60, PERCENT)
+    drivetrain.set_turn_velocity(60, PERCENT)
+    intakegroup.spin(REVERSE)
+    drivetrain.drive_for(FORWARD, 48)
+    wait(1.5, SECONDS)
+    intakegroup.stop()
+    drivetrain.turn_for(LEFT, 130)
+    drivetrain.drive_for(REVERSE, 12)
+    extake.spin(FORWARD)
 
 def autonomous_BLUE_LEFT():
     brain.screen.clear_row()
     extake_4.set_velocity(100, PERCENT)
     extake_5.set_velocity(100, PERCENT)
-    intake_1.set_velocity(100, PERCENT)
-    drivetrain.set_drive_velocity(75, PERCENT)
-    drivetrain.set_turn_velocity(100, PERCENT)
-    intake_1.spin(REVERSE)
-    drivetrain.drive_for(FORWARD, 45)
-    drivetrain.turn_for(LEFT, 77)
-    drivetrain.drive_for(REVERSE, 7)
-    extake_4.spin(FORWARD)
-    extake_5.spin(REVERSE)
+    intake_1.set_velocity(70, PERCENT)
+    drivetrain.set_drive_velocity(60, PERCENT)
+    drivetrain.set_turn_velocity(60, PERCENT)
+    intakegroup.spin(REVERSE)
+    drivetrain.drive_for(FORWARD, 48)
+    wait(1.5, SECONDS)
+    intakegroup.stop()
+    drivetrain.turn_for(LEFT, 130)
+    drivetrain.drive_for(REVERSE, 12)
+    extake.spin(FORWARD)
     
 def autonomous_RED_RIGHT():
     brain.screen.clear_row()
@@ -655,8 +657,26 @@ def opcontrol():
 
         intakegroup.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         
-        extake_5.spin(FORWARD, (btn_l1() - btn_l2()) * 70, PERCENT)
+        extake.spin(FORWARD, (btn_l1() - btn_l2()) * 70, PERCENT)
         
+        # if btn_l1():
+        #     extake_4.set_velocity(100, PERCENT)
+        #     extake_5.set_velocity(100, PERCENT)
+        #     extake_4.spin(REVERSE)
+        #     extake_5.spin(FORWARD)
+        # else:
+        #     extake_4.stop
+        #     extake_5.stop
+            
+        # if btn_l2():
+        #     extake_4.set_velocity(100, PERCENT)
+        #     extake_5.set_velocity(100, PERCENT)
+        #     extake_4.spin(FORWARD)
+        #     extake_5.spin(REVERSE)
+        # else:
+        #     extake_4.stop
+        #     extake_5.stop
+            
         if btn_a():
            run_extake = True
            
@@ -667,6 +687,8 @@ def opcontrol():
             extake_4.spin(FORWARD, 85, PERCENT)
         else:
             extake_4.stop()
+        
+        
         
         if btn_up():
             puncher.set(True)
@@ -759,15 +781,15 @@ preauton()
 do_testing = False
 
 team_color = "BLUE"
-field_side = "RIGHT"
+field_side = "LEFT"
 
 def auton_function():    
-    if team_color == "BLUE" and field_side == "RIGHT":
-        auton_function = autonomous_BLUE_RIGHT
+    if team_color == "BLUE" and field_side == "LEFT":
+        auton_function = autonomous_BLUE_LEFT
         global GOOD_COLOR, BAD_COLOR
         GOOD_COLOR = Color.BLUE
         BAD_COLOR = Color.RED
-        return autonomous_BLUE_RIGHT
+        return autonomous_BLUE_LEFT
 if do_testing:
     print("do nothing")
 else:
