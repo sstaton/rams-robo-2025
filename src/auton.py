@@ -17,15 +17,14 @@ def autonomous():
     drive1.set_turn_velocity(300, RPM)
     unloader.set(True)
 
-    # drive1.drive_for(REVERSE, 10, INCHES)
-    # drive1.drive_for(FORWARD, 30, INCHES)
+
     # intake.spin(REVERSE)
     # outtake2.spin(FORWARD)
-    drive_straight(-23, 68, 40)
-    wait(200, MSEC)
-    drive_turn(80, 5.5, 50, 50, False)
-    wait(200, MSEC)
-    drive_straight(-11, 30, 30)
+    drive_straight(-46, 68, 50)
+    # wait(200, MSEC)
+    drive_turn(-80, 5.5, 50, 50, False)
+    # wait(200, MSEC)
+    drive_straight(-12, 30, 30)
     intake.spin(REVERSE)
     splitter.set(True)
     start_time = time.time()
@@ -45,7 +44,7 @@ def autonomous():
         brain.screen.clear_row(9)
         brain.screen.set_cursor(9, 1)
         brain.screen.print("Looking for", Color.BLUE)
-        if found_color1 == Color.RED and found_color2 == Color.RED:
+        if found_color1 == Color.BLUE and found_color2 == Color.BLUE:
             found_colora = "Blue"
         if found_colora == "Blue":
             last_seen_colora = "Blue"
@@ -57,9 +56,12 @@ def autonomous():
         # drive_straight(-2, 4, 4)
         wait(10, MSEC)
         time_now = time.time()
-    drive_straight(10, 25, 20)
-    drive_turn(-90, 5.5, 40, 30, False)
-    drive_straight(5, 20, 10)
-    drive_turn(85, 5.5, 45, 45, False)
-    drive_straight(16, 50, 40)
+    drive_turn(-1, 5.5, 10, 20, False)
+    drive_straight(48, 68, 50)
     outtake2.spin(FORWARD)
+    # drive_straight(20, 40, 40)
+    # drive_turn(-90, 5.5, 40, 30, False)
+    # drive_straight(10, 20, 10)
+    # drive_turn(85, 5.5, 45, 45, False)
+    # drive_straight(28, 50, 40)
+    # outtake2.spin(FORWARD)

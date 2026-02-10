@@ -32,7 +32,7 @@ def opcontrol():
     descorer_timer = 0
     unloader_timer = 0
     splitter_timer = 0
-    splitter.set(False)
+    splitter.set(True)
     descorer.set(True)
     while(True):
 
@@ -69,7 +69,7 @@ def opcontrol():
           unloaderpos = "down"
         elif unloaderpos == "down" and unloader_timer <= 0:
           unloaderpos = "up"
-        unloader_timer = 250
+        unloader_timer = 240
       
       if unloaderpos == "up":
         unloader.set(False)
@@ -81,7 +81,7 @@ def opcontrol():
           descorerpos = "out"
         elif descorerpos == "out" and descorer_timer <= 0:
           descorerpos = "in"
-        descorer_timer = 250
+        descorer_timer = 240
       
       if descorerpos == "in":
         descorer.set(False)
@@ -121,10 +121,10 @@ def opcontrol():
       # Checks Optical values; Sets to a variable
       if findcolor1() == Color.RED and findcolor2() == Color.RED:
         found_color = "Red"
-        splitterpos = "False"
+        splitterpos = "True"
       elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
         found_color = "Blue"
-        splitterpos = "True"
+        splitterpos = "False"
        
       #found_color = findcolor()
     

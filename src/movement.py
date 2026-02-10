@@ -11,8 +11,9 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
     linearr.set_position(0, DEGREES)
     # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
-    MSEC_PER_TICK = 20   # ms per tick
-
+    MSEC_PER_TICK = 10   # ms per tick
+    # TICK_PER_SEC = 1000 / MSEC_PER_TICK
+    
     # PID constants
     DRIVE_KP = 0.005
     DRIVE_KI = 0.00
