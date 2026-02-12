@@ -97,13 +97,13 @@ drivetrain.set_turn_velocity(70, PERCENT)
 
 intake_1 = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False)
 
-intake_2 = Motor(Ports.PORT7, GearSetting.RATIO_18_1, True)
+intake_2 = Motor(Ports.PORT7, GearSetting.RATIO_6_1, True)
 
-block_sorter = Motor(Ports.PORT13, GearSetting.RATIO_6_1, False)
+block_sorter = Motor(Ports.PORT13, GearSetting.RATIO_18_1, False)
 
-extake_4 = Motor(Ports.PORT12, GearSetting.RATIO_6_1, True)
+extake_4 = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
 
-extake_5 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
+extake_5 = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 
 intakegroup = MotorGroup(intake_1, intake_2,)
 
@@ -657,7 +657,14 @@ def opcontrol():
 
         intakegroup.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         
-        extake.spin(FORWARD, (btn_l1() - btn_l2()) * 70, PERCENT)
+        extake.spin(FORWARD, (btn_l2() - btn_l1()) * 70, PERCENT)
+        
+        extake_4.spin(FORWARD, (btn_l1() - btn_l2()) * 70, PERCENT)
+        
+        if btn_l2():
+            extake_4.set_reversed(False)
+        if btn_l1():
+            extake_4.set_reversed(True)
         
         # if btn_l1():
         #     extake_4.set_velocity(100, PERCENT)
@@ -677,17 +684,16 @@ def opcontrol():
         #     extake_4.stop
         #     extake_5.stop
             
-        if btn_a():
-           run_extake = True
+        # if btn_a():
+        #    run_extake = True
            
-        if btn_b():
-            run_extake = False
+        # if btn_b():
+        #     run_extake = False
         
-        if run_extake:
-            extake_4.spin(FORWARD, 85, PERCENT)
-        else:
-            extake_4.stop()
-        
+        # if run_extake:
+        #     extake_4.spin(FORWARD, 100, PERCENT)
+        # else:
+        #     extake_4.stop()
         
         
         if btn_up():
@@ -781,18 +787,18 @@ preauton()
 do_testing = False
 
 team_color = "BLUE"
-field_side = "LEFT"
+field_side = "RIGHT"
 
 def auton_function():    
-    if team_color == "BLUE" and field_side == "LEFT":
-        auton_function = autonomous_BLUE_LEFT
+    if team_color == "BLUE" and field_side == "RIGHT":
+        auton_function = autonomous_BLUE_RIGHT
         global GOOD_COLOR, BAD_COLOR
         GOOD_COLOR = Color.BLUE
         BAD_COLOR = Color.RED
-        return autonomous_BLUE_LEFT
+        return autonomous_BLUE_RIGHT
 if do_testing:
     print("do nothing")
 else:
     print("start of main program")
     selected_auton=auton_function()
-    field_controller = Competition(opcontrol, selected_auton)
+    field_controller = Competition(opcontrol, auton_function)
