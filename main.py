@@ -657,9 +657,11 @@ def opcontrol():
 
         intakegroup.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         
+        block_sorter.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+        
         extake.spin(FORWARD, (btn_l2() - btn_l1()) * 100, PERCENT)
         
-        extake_4.spin(FORWARD, (btn_l2()) * 100, PERCENT)
+        
         
         extake_4.spin(REVERSE, (btn_l1()) * 100, PERCENT)
         
@@ -710,17 +712,14 @@ def opcontrol():
         # if btn_down():
         #     block_sorter.stop()    
                
-        if detectcolor() == GOOD_COLOR:
-            block_sorter.spin(REVERSE, 100, PERCENT)
-        elif detectcolor() == BAD_COLOR:
-            block_sorter.spin(FORWARD, 100, PERCENT)
-        else:
-            block_sorter.stop()
+        # if detectcolor() == GOOD_COLOR:
+        #     block_sorter.spin(REVERSE, 100, PERCENT)
+        # elif detectcolor() == BAD_COLOR:
+        #     block_sorter.spin(FORWARD, 100, PERCENT)
+        # else:
+        #     block_sorter.stop()
         
-        if btn_r2():
-            block_sorter.spin(REVERSE, 100, PERCENT)
-        if btn_r1():
-            block_sorter.spin(FORWARD, 100, PERCENT)
+        
         
         optical.set_light_power(100)
         brain.screen.clear_row(4)
@@ -789,19 +788,19 @@ preauton()
 
 do_testing = False
 
-team_color = "RED"
-field_side = "RIGHT"
+# team_color = "RED"
+# field_side = "RIGHT"
 
-def auton_function():    
-    if team_color == "RED" and field_side == "RIGHT":
-        auton_function = autonomous_RED_RIGHT
-        global GOOD_COLOR, BAD_COLOR
-        GOOD_COLOR = Color.RED
-        BAD_COLOR = Color.BLUE
-        return autonomous_RED_RIGHT
+# def auton_function():    
+#     if team_color == "RED" and field_side == "RIGHT":
+#         auton_function = autonomous_RED_RIGHT
+#         global GOOD_COLOR, BAD_COLOR
+#         GOOD_COLOR = Color.RED
+#         BAD_COLOR = Color.BLUE
+#         return autonomous_RED_RIGHT
 if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    selected_auton=auton_function()
-    field_controller = Competition(opcontrol, auton_function)
+    # selected_auton=auton_function()
+    field_controller = Competition(opcontrol, opcontrol)
