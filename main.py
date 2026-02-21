@@ -559,6 +559,19 @@ def preauton():
     while imu.is_calibrating():
         wait(20, TimeUnits.MSEC)
 
+
+# def autonomous_BLUE_LEFT():
+    # drivetrain.drive_for(FORWARD, 2)
+
+
+
+
+
+
+
+
+
+
 def autonomous_RED_LEFT():
     brain.screen.clear_row()
     extake_4.set_velocity(70, PERCENT)
@@ -658,13 +671,15 @@ def opcontrol():
 
         intakegroup.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         
-        block_sorter.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+        # block_sorter.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
         
         extake.spin(FORWARD, (btn_l2() - btn_l1()) * 100, PERCENT)
         
-        
-        
         extake_4.spin(REVERSE, (btn_l1()) * 100, PERCENT)
+        
+        # extake_5.spin(FORWARD, (btn_l1()) * 100, PERCENT)
+        
+        # extake_4.spin(REVERSE, (btn_l1()) * 100, PERCENT)
         
         # block_sorter.spin(REVERSE, (btn_r1() - btn_r2()) * 100, PERCENT)
         
@@ -789,16 +804,16 @@ preauton()
 
 do_testing = False
 
-team_color = "RED"
+team_color = "BLUE"
 field_side = "LEFT"
 
 def auton_function():    
-    if team_color == "RED" and field_side == "LEFT":
-        auton_function = autonomous_RED_LEFT
+    if team_color == "BLUE" and field_side == "LEFT":
+        auton_function = autonomous_BLUE_LEFT
         global GOOD_COLOR, BAD_COLOR
-        GOOD_COLOR = Color.RED
-        BAD_COLOR = Color.BLUE
-        return autonomous_RED_LEFT
+        GOOD_COLOR = Color.BLUE
+        BAD_COLOR = Color.RED
+        return autonomous_BLUE_LEFT
 if do_testing:
     print("do nothing")
 else:
