@@ -59,6 +59,7 @@ outtake2.set_velocity(400, RPM)
 descorer = DigitalOut(brain.three_wire_port.a)
 unloader = DigitalOut(brain.three_wire_port.b)
 splitter = DigitalOut(brain.three_wire_port.c)
+aligner = DigitalOut(brain.three_wire_port.d)
 # pneumenoultramicroscopicsillicavolcaniconiosis 
 # Cylinders
 #global wing_r

@@ -67,8 +67,10 @@ def opcontrol():
       if btn_right():
         if unloaderpos == "up" and unloader_timer <= 0:
           unloaderpos = "down"
+          aligner.set(False) 
         elif unloaderpos == "down" and unloader_timer <= 0:
           unloaderpos = "up"
+          aligner.set(True) 
         unloader_timer = 240
       
       if unloaderpos == "up":

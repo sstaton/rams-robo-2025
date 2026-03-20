@@ -21,9 +21,9 @@ def autonomous():
 
     # intake.spin(REVERSE)
     # outtake2.spin(FORWARD)
-    drive_straight(-46, 68, 50)
+    drive_straight(-45, 68, 50)
     # wait(200, MSEC)
-    drive_turn(-80, 5.5, 20, 30, False)
+    drive_turn(80, 5.5, 20, 30, False)
     # wait(200, MSEC)
 
     drive_straight(-12, 10, 20) # slowed speed down some so we don't hit wall so hard
@@ -32,7 +32,7 @@ def autonomous():
     splitter.set(True)
     start_time = time.time()
     time_now = time.time()
-    while(time_now < start_time + 1):
+    while(time_now < start_time + 1.0):
         # brain.screen.clear_row(6)
         # brain.screen.set_cursor(6, 1)
         brain.screen.print("Loop started")
@@ -60,7 +60,10 @@ def autonomous():
         wait(10, MSEC)
         time_now = time.time()
     drive_straight(2, 4, 4)
-    drive_turn(-5, 5.5, 3, 10, False)
+    wait(200,MSEC)
+    drive_turn(-0.05, 3.5, 3, 10, False)
+    aligner.set(True)
+    unloader.set(False)
     drive_straight(43, 68, 50)
     outtake2.spin(FORWARD)
     descorer.set(True)
@@ -70,7 +73,7 @@ def autonomous():
 
     # line up
     drive_straight(29, 25, 40)
-    drive_turn(-84, 5.5, 10, 20, False)
+    drive_turn(-85, 5.5, 10, 20, False)
 
     drive_straight(32, 26, 50) # push em to the middle
 
