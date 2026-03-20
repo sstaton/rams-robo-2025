@@ -24,4 +24,4 @@ if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    field_controller = Competition(opcontrol, autonomous)
+    field_controller = Competition(opcontrol, autonomousredleft)
