@@ -1140,12 +1140,12 @@ def opcontrol():
       #   brain.screen.print("Both optical Blue")
 
       # Checks Optical values; Sets to a variable
-      if findcolor1() == Color.RED and findcolor2() == Color.RED:
+      if findcolor1() == Color.RED and findcolor2() == Color.RED and splitter_timer <= 0:
         found_color = "Red"
-        splitterpos = "False"
-      elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE:
-        found_color = "Blue"
         splitterpos = "True"
+      elif findcolor1() == Color.BLUE and findcolor2() == Color.BLUE and splitter_timer <= 0:
+        found_color = "Blue"
+        splitterpos = "False"
        
       #found_color = findcolor()
     
@@ -1279,5 +1279,5 @@ if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    field_controller = Competition(opcontrol, autonomousblueright)
+    field_controller = Competition(opcontrol, autonomousredright)
 
