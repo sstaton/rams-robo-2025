@@ -1,6 +1,6 @@
 from vex import *
 import math
-
+import time
 
 
 # ./src/stddefs.py ---
@@ -72,7 +72,7 @@ master = Controller()
 # global drive_r1
 
 drive_r1 = Motor(Ports.PORT12, GearSetting.RATIO_6_1, False)
-drive_r2 = Motor(Ports.PORT13, GearSetting.RATIO_6_1, True)
+drive_r2 = Motor(Ports.PORT13, GearSetting.RATIO_6_1, False)
 # global drive_r
 drive_r = MotorGroup(drive_r1, drive_r2) 
 # Left Drive
@@ -87,8 +87,8 @@ drive_l = MotorGroup(drive_l1, drive_l2)
 
 drivetrain = DriveTrain(drive_l, drive_r, 219.44, 279.4, 317.5, 1)
 # Set drive velocity to 100% and turn velocity to 100%
-drivetrain.set_drive_velocity(1000, PERCENT)
-drivetrain.set_turn_velocity(1000, PERCENT)
+drivetrain.set_drive_velocity(100, PERCENT)
+drivetrain.set_turn_velocity(100, PERCENT)
 
 # Subsystem 3
 # global intake
@@ -107,9 +107,17 @@ def spin_guide(value, *args):
         guide.spin(FORWARD, value, PERCENT)
     else:
         guide.spin(FORWARD, value, RPM)
+# Descorer
+descorer = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
+def spin_descorer(value, *args):
+    # Accepts percentage (-100..100) or RPM (larger magnitudes); additional args ignored for compatibility
+    if abs(value) <= 100:
+        descorer.spin(FORWARD, value, PERCENT)
+    else:
+        descorer.spin(FORWARD, value, RPM)
 
-def stop_guide(brake_mode=BRAKE):
-    guide.stop(brake_mode)
+def stop_descorer(brake_mode=BRAKE):
+    descorer.stop(brake_mode)
 
 # Helper functions for intake used by autonomous routines
 def spin_intake(value, *args):
@@ -123,9 +131,6 @@ def stop_intake(brake_mode=BRAKE):
     intake.stop(brake_mode)
 
 
-
-
-
 # Cylinders
 # global wing_r
 # This is the pneumatic 
@@ -134,7 +139,7 @@ pneum1 = DigitalOut(brain.three_wire_port.a)
 #wing_l = DigitalOut(brain.three_wire_port.b)
 # global intake_fold
 #intake_fold = DigitalOut(brain.three_wire_port.c)
-
+pneum2 = DigitalOut(brain.three_wire_port.b)
 # Sensors
 # global imu
 imu = Inertial(Ports.PORT7)
@@ -550,8 +555,8 @@ def turn_pid(degrees, radius_ratio, direction):
         elif speed_r < -100 * abs(radius_ratio):
             speed_r = -100 * abs(radius_ratio)
 
-        drive_r.spin(FORWARD, speed_l, PERCENT)
-        drive_r.spin(FORWARD, speed_l, PERCENT)
+        drive_l.spin(FORWARD, speed_l, PERCENT)
+        drive_r.spin(FORWARD, speed_r, PERCENT)
         wait(MSEC_PER_TICK, MSEC)
 
 # Same idea as turn_pid(), but for drive_straight()
@@ -570,20 +575,57 @@ def preauton():
         wait(20, TimeUnits.MSEC)
 
  # baseline the target heading to the current IMU reading, then add 50°
-    all_globals.set_target_heading(imu_rotation())
+    # all_globals.set_target_heading(imu_rotation())
 
 # ./src/auton.py ---
 
 def autonomous():
     brain.screen.clear_screen()
+    imu.calibrate()
 
-    #Test Code
-    spin_intake(100)
-    drive_straight(24, 100, 100)
+
+
+    # # Auton to use in competition if work slot 3
+    drivetrain.set_drive_velocity(50, PERCENT)
+    drivetrain.set_turn_velocity(40, PERCENT)
+    drivetrain.set_stopping(BRAKE)
+    guide.set_velocity(100, PERCENT)
+    intake.set_velocity(100, PERCENT)
+    pneum1.set(False)
+    pneum2.set(True)
+    intake.spin(REVERSE)
+    drivetrain.drive_for(REVERSE, 52, INCHES)
+    drivetrain.stop()
+    drivetrain.turn_for(RIGHT, 65, DEGREES)
+    drivetrain.stop()
+    drivetrain.set_drive_velocity(30, PERCENT)
+    drivetrain.drive_for(REVERSE, 19, INCHES)
+    drivetrain.drive_for(FORWARD, 2, INCHES)
+    drivetrain.drive_for(REVERSE, 2, INCHES)
+    drivetrain.drive_for(FORWARD, 2, INCHES)
+    drivetrain.drive_for(REVERSE, 2, INCHES) 
+    drivetrain.drive_for(FORWARD, 2, INCHES)
+    wait(1500, MSEC)
+    drivetrain.stop()
+    drivetrain.set_drive_velocity(50, PERCENT)
+    drivetrain.drive_for(FORWARD, 36, INCHES)
+    drivetrain.stop()
+    guide.spin(FORWARD)
+    wait(2000, MSEC)
     stop_intake()
-    # drive_turn(100, -15, 100, 100, True)
-    turn_pid(100, 1, 1)
+    guide.stop()
 
+
+    # # Slot 3, 15 Pts
+    # drivetrain.drive_for(FORWARD, 2, INCHES)
+
+    # Slot 4, 20 Pts
+    # drivetrain.set_drive_velocity(50, PERCENT)
+    # drivetrain.drive_for(FORWARD, 20, INCHES)
+    # drivetrain.stop()
+    # pneum2.set(True)
+    # drivetrain.set_drive_velocity(300, PERCENT)
+    # drivetrain.drive_for(REVERSE, 85, INCHES)
 
 
 # ./src/opcontrol.py ---
@@ -604,7 +646,7 @@ def opcontrol():
     # Reset drive velocity
     drive_l.stop(COAST)
     drive_r.stop(COAST)
-
+    # Robotdown=False
     while(True):
         # Drivetrain
         opdrive(TSA, 1.0, SENSITIVITY)
@@ -614,24 +656,47 @@ def opcontrol():
 
         # Set a "shift" key
         # shifted = btn_l2()
-        
+
         # Pneumatics code; should work I believe
         # Replace btn_xxx() with actual buttons 
-        if btn_l2():
+        if btn_b():
             pneum1.set(True)
-        elif btn_l1():
+            # Robotdown=False
+        elif btn_x():
             pneum1.set(False)
-
+            # Robotdown=True
+        # if btn_y():
+        #     pneum2.set(True)
+        if btn_a():
+            pneum2.set(False)
+            pneum1.set(False)
+        if btn_b():
+            # Robotdown=False
+            pneum2.set(False)
+        elif btn_x():
+            pneum2.set(True)
+            # Robotdown=True
+        # Intake
         intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-        if btn_x():
+        if btn_l1():
             spin_guide(100, PERCENT)
-        elif btn_b():
+        elif btn_l2():
             spin_guide(-100, PERCENT)
-        else:
-            stop_guide()
+        else:guide.stop()
         wait(20, MSEC)
 
+        if btn_y():
+            spin_descorer(100, PERCENT)
+            wait(250, MSEC)
+            stop_descorer()
+        elif btn_a():
+            spin_descorer(-100, PERCENT)
+        else:descorer.stop()
+        wait(20, MSEC)
 
+        #  Brain Screen Sets
+        brain.screen.set_cursor(1,1)
+        brain.screen.print("Pneum 1: OUT ")
 def opdrive(control_scheme, speed_mod, turn_mod):
     # Tank drive
     if control_scheme == TNK:
@@ -639,14 +704,14 @@ def opdrive(control_scheme, speed_mod, turn_mod):
         drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
     # Two stick arcade
     elif control_scheme == TSA:
-        drive_r.spin(FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
-        drive_l.spin(FORWARD, (axis_lx() + axis_rx() * turn_mod) * speed_mod, PERCENT)
+        drive_l.spin(REVERSE, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
+        drive_r.spin(REVERSE, (axis_lx() + axis_rx() * turn_mod) * speed_mod, PERCENT)
     # One stick arcade
     elif control_scheme == OSA:
         drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
         drive_l.spin(FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, PERCENT)
        
-
+            
 # ./src/main0.py ---
 # ---------------------------------------------------------------------------- #
 #                                                                              #
