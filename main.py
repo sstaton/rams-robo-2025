@@ -2,7 +2,6 @@ from vex import *
 import math
 import time
 
-
 # ./src/stddefs.py ---
 # Transferred from stddefs.h, so incomplete. I've not made shorthand for every
 # unit or unit conversion
@@ -134,7 +133,7 @@ def stop_intake(brake_mode=BRAKE):
 # Cylinders
 # global wing_r
 # This is the pneumatic 
-pneum1 = DigitalOut(brain.three_wire_port.a)
+pneum1 = DigitalOut(brain.three_wire_port.c)
 # global wing_l
 #wing_l = DigitalOut(brain.three_wire_port.b)
 # global intake_fold
@@ -541,8 +540,7 @@ def turn_pid(degrees, radius_ratio, direction):
             time_still += 20
         else:
             time_still = 0
-
-        # Find new speed of drive
+#         # Find new speed of drive
         speed_r = drive_pid.adjust(all_globals.target_heading, imu_rotation()) * direction
         speed_l = speed_r * radius_ratio
 
@@ -659,28 +657,22 @@ def opcontrol():
 
         # Pneumatics code; should work I believe
         # Replace btn_xxx() with actual buttons 
-        if btn_b():
-            pneum1.set(True)
-            # Robotdown=False
-        elif btn_x():
-            pneum1.set(False)
-            # Robotdown=True
         # if btn_y():
         #     pneum2.set(True)
-        if btn_a():
+
+        if btn_l1():
+            pneum1.set(True)
             pneum2.set(False)
+        elif btn_l2():
             pneum1.set(False)
-        if btn_b():
-            # Robotdown=False
-            pneum2.set(False)
-        elif btn_x():
             pneum2.set(True)
-            # Robotdown=True
+
+        
         # Intake
         intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-        if btn_l1():
+        if btn_x():
             spin_guide(100, PERCENT)
-        elif btn_l2():
+        elif btn_b():
             spin_guide(-100, PERCENT)
         else:guide.stop()
         wait(20, MSEC)
@@ -694,6 +686,13 @@ def opcontrol():
         else:descorer.stop()
         wait(20, MSEC)
 
+        if btn_x():
+            spin_guide(100, PERCENT)
+        elif btn_b():
+            spin_guide(-100, PERCENT)
+        else:guide.stop()
+        wait(20, MSEC)
+
         #  Brain Screen Sets
         brain.screen.set_cursor(1,1)
         brain.screen.print("Pneum 1: OUT ")
@@ -704,8 +703,8 @@ def opdrive(control_scheme, speed_mod, turn_mod):
         drive_l.spin(FORWARD, axis_lx() * speed_mod, PERCENT)
     # Two stick arcade
     elif control_scheme == TSA:
-        drive_l.spin(REVERSE, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
-        drive_r.spin(REVERSE, (axis_lx() + axis_rx() * turn_mod) * speed_mod, PERCENT)
+        drive_r.spin(FORWARD, (axis_lx() - axis_rx() * turn_mod) * speed_mod, PERCENT)
+        drive_l.spin(FORWARD, (axis_lx() + axis_rx() * turn_mod) * speed_mod, PERCENT)
     # One stick arcade
     elif control_scheme == OSA:
         drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
