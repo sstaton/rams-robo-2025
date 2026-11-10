@@ -2,6 +2,7 @@ from robot_config import *
 from pid import Pid
 from util import *
 import vex
+from stddefs import *
 
 # takes inches, target inches per second (velocity),
 # inches per second squared (acceleration), and whether to decelerate

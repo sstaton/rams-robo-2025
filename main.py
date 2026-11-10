@@ -2,49 +2,51 @@ from vex import *
 import math
 import time
 
+
+
 # ./src/stddefs.py ---
 # Transferred from stddefs.h, so incomplete. I've not made shorthand for every
 # unit or unit conversion
 
 # Conversions
-# global RAD_TO_DEG
+global RAD_TO_DEG
 RAD_TO_DEG = 57.29578
 
 # Wheel sizes
-# global LARGE_OMNI_DIAM
+global LARGE_OMNI_DIAM
 LARGE_OMNI_DIAM = 4.0
-# global MEDIUM_OMNI_DIAM
+global MEDIUM_OMNI_DIAM
 MEDIUM_OMNI_DIAM = 3.25
-# global SMALL_OMNI_DIAM
+global SMALL_OMNI_DIAM
 SMALL_OMNI_DIAM = 2.75
-# global LARGE_WHEEL_DIAM
+global LARGE_WHEEL_DIAM
 LARGE_WHEEL_DIAM = 5.0
-# global MEDIUM_WHEEL_DIAM
+global MEDIUM_WHEEL_DIAM
 MEDIUM_WHEEL_DIAM = 4.0
-# global SMALL_WHEEL_DIAM
+global SMALL_WHEEL_DIAM
 SMALL_WHEEL_DIAM = 2.75
-# global TRACT_WHEEL_DIAM
+global TRACT_WHEEL_DIAM
 TRACT_WHEEL_DIAM = 3.25
 
-# global LARGE_OMNI_CIRC
+global LARGE_OMNI_CIRC
 LARGE_OMNI_CIRC = LARGE_OMNI_DIAM * math.pi
-# global MEDIUM_OMNI_CIRC
+global MEDIUM_OMNI_CIRC
 MEDIUM_OMNI_CIRC = MEDIUM_OMNI_DIAM * math.pi
-# global SMALL_OMNI_CIRC
+global SMALL_OMNI_CIRC
 SMALL_OMNI_CIRC = SMALL_OMNI_DIAM * math.pi
-# global LARGE_WHEEL_CIRC
+global LARGE_WHEEL_CIRC
 LARGE_WHEEL_CIRC = LARGE_WHEEL_DIAM * math.pi
-# global MEDIUM_WHEEL_CIRC
+global MEDIUM_WHEEL_CIRC
 MEDIUM_WHEEL_CIRC = MEDIUM_WHEEL_DIAM * math.pi
-# global SMALL_WHEEL_CIRC
+global SMALL_WHEEL_CIRC
 SMALL_WHEEL_CIRC = SMALL_WHEEL_DIAM * math.pi
-# global TRACT_WHEEL_CIRC
+global TRACT_WHEEL_CIRC
 TRACT_WHEEL_CIRC = TRACT_WHEEL_DIAM * math.pi
 
 # Unit shorthand
-# global REV
+global REV
 REV = RotationUnits.REV
-# global DEG
+global DEG
 DEG = RotationUnits.DEG
 
 # Globally tracked things
@@ -60,103 +62,125 @@ class TrackedGlobals:
 
 
 
+
 # ./src/robot_config.py ---
 
-# global brain
+global brain
 brain = Brain()
-# global master
+global master
 master = Controller()
-
+global drive_r2
 # Right Drive
-# global drive_r1
+global drive_r1
+drive_r1 = Motor(Ports.PORT1, GearSetting.RATIO_6_1, False)
+drive_r2 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, False)
 
-drive_r1 = Motor(Ports.PORT12, GearSetting.RATIO_6_1, False)
-drive_r2 = Motor(Ports.PORT13, GearSetting.RATIO_6_1, False)
-# global drive_r
-drive_r = MotorGroup(drive_r1, drive_r2) 
+# drive_r2 = Motor(Ports.PORT6, GearSetting.RATIO_6_1, False)
+
+global drive_r
+drive_r = MotorGroup(drive_r1, drive_r2)
+global drive_l2
 # Left Drive
-# global drive_l1
+global drive_l1
+drive_l1 = Motor(Ports.PORT5, GearSetting.RATIO_6_1, True)
+drive_l2 = Motor(Ports.PORT6, GearSetting.RATIO_6_1, True)
 
-drive_l1 = Motor(Ports.PORT19, GearSetting.RATIO_6_1, True)
 
-drive_l2 = Motor(Ports.PORT20, GearSetting.RATIO_6_1, True)
-
-# global drive_l
+global drive_l
 drive_l = MotorGroup(drive_l1, drive_l2)
 
-drivetrain = DriveTrain(drive_l, drive_r, 219.44, 279.4, 317.5, 1)
-# Set drive velocity to 100% and turn velocity to 100%
-drivetrain.set_drive_velocity(100, PERCENT)
-drivetrain.set_turn_velocity(100, PERCENT)
-
-# Subsystem 3
+global arm
+arm1 = Motor(Ports.PORT9, GearSetting.RATIO_18_1, False)
+arm2 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, True)
+arm = MotorGroup(arm1, arm2)
+# # Subsystem 3
 # global intake
-intake1 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
+# intake = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
+# # global hang
+# # hang = Motor(Ports.PORT7, GearSetting.RATIO_36_1, False)
 
-intake2 = Motor(Ports.PORT1, GearSetting.RATIO_18_1, True)
-
-intake = MotorGroup(intake1, intake2)
-intake.set_velocity(1200, RPM)
-
-# Guide to help score better in the goals
-guide = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
-def spin_guide(value, *args):
-    # Accepts percentage (-100..100) or RPM (larger magnitudes); additional args ignored for compatibility
-    if abs(value) <= 100:
-        guide.spin(FORWARD, value, PERCENT)
-    else:
-        guide.spin(FORWARD, value, RPM)
-# Descorer
-descorer = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
-def spin_descorer(value, *args):
-    # Accepts percentage (-100..100) or RPM (larger magnitudes); additional args ignored for compatibility
-    if abs(value) <= 100:
-        descorer.spin(FORWARD, value, PERCENT)
-    else:
-        descorer.spin(FORWARD, value, RPM)
-
-def stop_descorer(brake_mode=BRAKE):
-    descorer.stop(brake_mode)
-
-# Helper functions for intake used by autonomous routines
-def spin_intake(value, *args):
-    # Accepts percentage (-100..100) or RPM (larger magnitudes); additional args ignored for compatibility
-    if abs(value) <= 100:
-        intake.spin(FORWARD, value, PERCENT)
-    else:
-        intake.spin(FORWARD, value, RPM)
-
-def stop_intake(brake_mode=BRAKE):
-    intake.stop(brake_mode)
-
-
-# Cylinders
+# # Cylindersik = 8/
 # global wing_r
-# This is the pneumatic 
-pneum1 = DigitalOut(brain.three_wire_port.c)
+# wing_r = DigitalOut(brain.three_wire_port.a)
 # global wing_l
-#wing_l = DigitalOut(brain.three_wire_port.b)
+# wing_l = DigitalOut(brain.three_wire_port.b)
 # global intake_fold
-#intake_fold = DigitalOut(brain.three_wire_port.c)
-pneum2 = DigitalOut(brain.three_wire_port.b)
-# Sensors
-# global imu
-imu = Inertial(Ports.PORT7)
+# intake_fold = DigitalOut(brain.three_wire_port.c)
+
+# # Sensors
+global imu
+imu = Inertial(Ports.PORT20)
 # global clock
-clock = Timer()
-# global auton_selector
-# auton_selector = DigitalIn(brain.three_wire_port.h)
+# clock = Timer()
+# # global auton_selector
+# # auton_selector = DigitalIn(brain.three_wire_port.h)
 
 # Globals
-# global all_globals
+global all_globals
 all_globals = TrackedGlobals(0, 10.75, (3600 / 3593.6))
+# Initialize motors on ports 1 and 10
+# global left_motor
+# global right_motor
+# left_motor = Motor(Ports.PORT1)
+# right_motor = Motor(Ports.PORT10)
+
+# global drivetrain
+# # Create a drivetrain object
+# drivetrain = DriveTrain(left_motor, right_motor)
+
+# # Drive forward for 500 mm
+# drivetrain.drive_for("FORWARD", 500, MM)
+
+# # Turn right 90 degrees
+# drivetrain.turn_for("RIGHT", 90, "degrees")
+
+# # Stop the drivetrain
+# drivetrain.stop()
+# # from simple_drivetrain import Drivetrain
+
+# # Define drivetrain with motors on ports 1 and 10
+# # drivetrain = DriveTrain(left_motor_port=1, right_motor_port=10)
+
+# # Drive forward at 50% speed for 2 seconds
+# drivetrain.drive(speed=50, duration=2)
+
+# # Rotate in place to the right
+# drivetrain.turn(direction="right", speed=30, duration=1)
+
+# # Stop the drivetrain
+# drivetrain.stop()
+# import time
+
+# class Motor:
+#     def __init__(self, port):
+#         self.port = port
+
+#     def set_speed(self, speed):
+#         print(f"Motor on port {self.port} set to speed {speed}")
+
+#     def stop(self):
+#         print(f"Motor on port {self.port} stopped")
+
+# # Initialize motors
+# left_motor = Motor(1)
+# right_motor = Motor(10)
+
+# # Drive forward
+# left_motor.set_speed(50)
+# right_motor.set_speed(50)
+# time.sleep(2)  # Drive for 2 seconds
+
+# # Stop motors
+# left_motor.stop()
+# right_motor.stop()
+
 
 
 # ./src/util.py ---
 
 # Top of file is new functions
 # Bottom of file is making shorthand for long function names, like:
-# src.robot_config.drive_r.position(vex.RotationUnits.REV)
+# src.robot_config.drive_r.position(RotationUnits.REV)
 
 # UTILITY FUNCTIONS
 
@@ -204,12 +228,10 @@ def handle_acceleration(position, distance, velocity, max_velocity, acceleration
     return max_velocity
 
 def within_range(value, base_value, range):
-    if value <= base_value + range and value >= base_value - range:
-        return True
-    return False
+    return value <= base_value + range and value >= base_value - range
 
 # SHORTHAND
-# global DRIVE_REV_TO_IN
+global DRIVE_REV_TO_IN
 DRIVE_REV_TO_IN = MEDIUM_OMNI_CIRC * (36.0/48.0)
 
 def pos_drive_r():
@@ -265,6 +287,7 @@ def btn_down():
 
 
 
+
 # ./src/pid.py ---
 
 class Pid:
@@ -287,13 +310,13 @@ class Pid:
     def tune_ki(self, value, mod):
         self.ki += value * mod
         print("ki: " + self.ki + "")
-        brain.screen.set_cursor(3, 4)
+        brain.screen.set_cursor(5, 4)
         brain.screen.print("ki: " + self.ki + "")
 
     def tune_kd(self, value, mod):
         self.kd += value * mod
         print("kd: " + self.kd + "")
-        brain.screen.set_cursor(3, 4)
+        brain.screen.set_cursor(7, 4)
         brain.screen.print("kd: " + self.kd + "")
 
     def adjust(self, setpoint, sensor_value):
@@ -312,6 +335,7 @@ class Pid:
 
 
 
+
 # ./src/movement.py ---
 
 # takes inches, target inches per second (velocity),
@@ -319,7 +343,7 @@ class Pid:
 def drive_straight(inches, target_ips, ipss, do_decel = True):
     # Loop wait times
     TICK_PER_SEC = 50    # tick per sec
-    MSEC_PER_TICK = 20   # ms per tick
+    MSEC_PER_TICK = 1000 / 20   # ms per tick
 
     # PID constants
     DRIVE_KP = 0.005
@@ -367,7 +391,7 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
         adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_r)
         adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_l)
-        adjustment_dir = pid_dir.adjust(all_globals.target_heading, displacement_l)
+        adjustment_dir = pid_dir.adjust(all_globals.target_heading, imu_rotation)
 
         vel_rpm = ips / DRIVE_REV_TO_IN * 60
         
@@ -540,7 +564,8 @@ def turn_pid(degrees, radius_ratio, direction):
             time_still += 20
         else:
             time_still = 0
-#         # Find new speed of drive
+
+        # Find new speed of drive
         speed_r = drive_pid.adjust(all_globals.target_heading, imu_rotation()) * direction
         speed_l = speed_r * radius_ratio
 
@@ -553,13 +578,14 @@ def turn_pid(degrees, radius_ratio, direction):
         elif speed_r < -100 * abs(radius_ratio):
             speed_r = -100 * abs(radius_ratio)
 
-        drive_l.spin(FORWARD, speed_l, PERCENT)
-        drive_r.spin(FORWARD, speed_r, PERCENT)
+        drive_r.spin(FORWARD, speed_l, PERCENT)
+        drive_r.spin(FORWARD, speed_l, PERCENT)
         wait(MSEC_PER_TICK, MSEC)
 
 # Same idea as turn_pid(), but for drive_straight()
 def straight_pid(dist):
     print("WIP")
+
 
 
 
@@ -572,58 +598,54 @@ def preauton():
     while imu.is_calibrating():
         wait(20, TimeUnits.MSEC)
 
- # baseline the target heading to the current IMU reading, then add 50°
-    # all_globals.set_target_heading(imu_rotation())
+
+
 
 # ./src/auton.py ---
 
 def autonomous():
     brain.screen.clear_screen()
-    imu.calibrate()
+
+    # Drive forward for 500 mm
+    drive_straight(20, 50, 50)
+
+    # Turn right 90 degrees
+    drive_turn(90, 3, 50, 50, True)
 
 
 
-    # # Auton to use in competition if work slot 3
-    drivetrain.set_drive_velocity(50, PERCENT)
-    drivetrain.set_turn_velocity(40, PERCENT)
-    drivetrain.set_stopping(BRAKE)
-    guide.set_velocity(100, PERCENT)
-    intake.set_velocity(100, PERCENT)
-    pneum1.set(False)
-    pneum2.set(True)
-    intake.spin(REVERSE)
-    drivetrain.drive_for(REVERSE, 52, INCHES)
-    drivetrain.stop()
-    drivetrain.turn_for(RIGHT, 65, DEGREES)
-    drivetrain.stop()
-    drivetrain.set_drive_velocity(30, PERCENT)
-    drivetrain.drive_for(REVERSE, 19, INCHES)
-    drivetrain.drive_for(FORWARD, 2, INCHES)
-    drivetrain.drive_for(REVERSE, 2, INCHES)
-    drivetrain.drive_for(FORWARD, 2, INCHES)
-    drivetrain.drive_for(REVERSE, 2, INCHES) 
-    drivetrain.drive_for(FORWARD, 2, INCHES)
-    wait(1500, MSEC)
-    drivetrain.stop()
-    drivetrain.set_drive_velocity(50, PERCENT)
-    drivetrain.drive_for(FORWARD, 36, INCHES)
-    drivetrain.stop()
-    guide.spin(FORWARD)
-    wait(2000, MSEC)
-    stop_intake()
-    guide.stop()
+    # Drive forward at 50% speed for 2 seconds
+    drive_straight(20, 50, 50)
 
+    # Rotate in place to the right
+    drive_turn(90, 3, 50, 50, False)
 
-    # # Slot 3, 15 Pts
-    # drivetrain.drive_for(FORWARD, 2, INCHES)
+    # # Stop the drivetrain
+    # import time
 
-    # Slot 4, 20 Pts
-    # drivetrain.set_drive_velocity(50, PERCENT)
-    # drivetrain.drive_for(FORWARD, 20, INCHES)
-    # drivetrain.stop()
-    # pneum2.set(True)
-    # drivetrain.set_drive_velocity(300, PERCENT)
-    # drivetrain.drive_for(REVERSE, 85, INCHES)
+    # class Motor:
+    #     def __init__(self, port):
+    #         self.port = port
+
+    #     def set_speed(self, speed):
+    #         print(f"Motor on port {self.port} set to speed {speed}")
+
+    #     def stop(self):
+    #         print(f"Motor on port {self.port} stopped")
+
+    # # Initialize motors
+    # left_motor = Motor(1)
+    # right_motor = Motor(10)
+
+    # # Drive forward
+    # left_motor.set_speed(50)
+    # right_motor.set_speed(50)
+    # time.sleep(2)  # Drive for 2 seconds
+
+    # # Stop motors
+    # left_motor.stop()
+    # right_motor.stop()
+
 
 
 # ./src/opcontrol.py ---
@@ -644,58 +666,37 @@ def opcontrol():
     # Reset drive velocity
     drive_l.stop(COAST)
     drive_r.stop(COAST)
-    # Robotdown=False
+
     while(True):
         # Drivetrain
         opdrive(TSA, 1.0, SENSITIVITY)
 
         # Elevation
-        # ramp.spin(FORWARD, (btn_right() - btn_y()) * 100, PERCENT)
 
         # Set a "shift" key
-        # shifted = btn_l2()
+        shifted = btn_l2()
 
-        # Pneumatics code; should work I believe
-        # Replace btn_xxx() with actual buttons 
-        # if btn_y():
-        #     pneum2.set(True)
+        # Base layer
+        # if not shifted:
+            # # Intake
+            # intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
+            # # Change intake height
+            # intake_fold.set(fold_switch.is_redge(btn_l1()))
 
-        if btn_l1():
-            pneum1.set(True)
-            pneum2.set(False)
-        elif btn_l2():
-            pneum1.set(False)
-            pneum2.set(True)
+        # Shifted layer
+        # if shifted:
+            # Wings
+            # wing_l.set(wing_l_switch.is_redge(btn_l1()))
+            # wing_r.set(wing_r_switch.is_redge(btn_r1()))
 
-        
-        # Intake
-        intake.spin(FORWARD, (btn_r1() - btn_r2()) * 100, PERCENT)
-        if btn_x():
-            spin_guide(100, PERCENT)
-        elif btn_b():
-            spin_guide(-100, PERCENT)
-        else:guide.stop()
-        wait(20, MSEC)
+        # wait(20, MSEC)
+        if btn_r2():
+            arm.spin(FORWARD, 100, PERCENT)
+        elif btn_r1():
+            arm.spin(REVERSE, 100, PERCENT)
+        else:
+            arm.stop()
 
-        if btn_y():
-            spin_descorer(100, PERCENT)
-            wait(250, MSEC)
-            stop_descorer()
-        elif btn_a():
-            spin_descorer(-100, PERCENT)
-        else:descorer.stop()
-        wait(20, MSEC)
-
-        if btn_x():
-            spin_guide(100, PERCENT)
-        elif btn_b():
-            spin_guide(-100, PERCENT)
-        else:guide.stop()
-        wait(20, MSEC)
-
-        #  Brain Screen Sets
-        brain.screen.set_cursor(1,1)
-        brain.screen.print("Pneum 1: OUT ")
 def opdrive(control_scheme, speed_mod, turn_mod):
     # Tank drive
     if control_scheme == TNK:
@@ -709,8 +710,10 @@ def opdrive(control_scheme, speed_mod, turn_mod):
     elif control_scheme == OSA:
         drive_r.spin(FORWARD, (axis_ly() - axis_lx() * turn_mod) * speed_mod, PERCENT)
         drive_l.spin(FORWARD, (axis_ly() + axis_lx() * turn_mod) * speed_mod, PERCENT)
-       
-            
+
+
+
+
 # ./src/main0.py ---
 # ---------------------------------------------------------------------------- #
 #                                                                              #
@@ -719,11 +722,11 @@ def opdrive(control_scheme, speed_mod, turn_mod):
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 
-#  Library imports
-#  from vex import
+# Library imports
+# from vex import *
 
-#  from robot_config import
-#  import auton
+# from robot_config import *
+# import auton
 
 preauton()
 
@@ -732,5 +735,5 @@ if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    field_controller = Competition(opcontrol, autonomous)
-   
+    field_controller = Competition(opcontrol, opcontrol)
+
