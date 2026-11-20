@@ -72,7 +72,7 @@ master = Controller()
 global drive_r2
 # Right Drive
 global drive_r1
-drive_r1 = Motor(Ports.PORT1, GearSetting.RATIO_6_1, False)
+drive_r1 = Motor(Ports.PORT5, GearSetting.RATIO_6_1, False)
 drive_r2 = Motor(Ports.PORT4, GearSetting.RATIO_6_1, False)
 
 # drive_r2 = Motor(Ports.PORT6, GearSetting.RATIO_6_1, False)
@@ -82,7 +82,7 @@ drive_r = MotorGroup(drive_r1, drive_r2)
 global drive_l2
 # Left Drive
 global drive_l1
-drive_l1 = Motor(Ports.PORT5, GearSetting.RATIO_6_1, True)
+drive_l1 = Motor(Ports.PORT9, GearSetting.RATIO_6_1, True)
 drive_l2 = Motor(Ports.PORT6, GearSetting.RATIO_6_1, True)
 
 
@@ -90,8 +90,8 @@ global drive_l
 drive_l = MotorGroup(drive_l1, drive_l2)
 
 global arm
-arm1 = Motor(Ports.PORT9, GearSetting.RATIO_18_1, False)
-arm2 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, True)
+arm1 = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
+arm2 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
 arm = MotorGroup(arm1, arm2)
 # # Subsystem 3
 # global intake
@@ -99,17 +99,17 @@ arm = MotorGroup(arm1, arm2)
 # # global hang
 # # hang = Motor(Ports.PORT7, GearSetting.RATIO_36_1, False)
 
-# # Cylindersik = 8/
-# global wing_r
-# wing_r = DigitalOut(brain.three_wire_port.a)
-# global wing_l
-# wing_l = DigitalOut(brain.three_wire_port.b)
+# Cylindersik = 8/
+global pneum_r
+pneum_r = DigitalOut(brain.three_wire_port.a)
+global pneum_l
+pneum_l = DigitalOut(brain.three_wire_port.b)
 # global intake_fold
 # intake_fold = DigitalOut(brain.three_wire_port.c)
 
 # # Sensors
 global imu
-imu = Inertial(Ports.PORT20)
+imu = Inertial(Ports.PORT11)
 # global clock
 # clock = Timer()
 # # global auton_selector
@@ -605,46 +605,56 @@ def preauton():
 
 def autonomous():
     brain.screen.clear_screen()
+    if brain.timer.time() < 15000:
+        # Drive forward for 500 mm
+        # THIS LINE IS NOT WORKING
+        # drive_straight(20, 50, 50)
 
-    # Drive forward for 500 mm
-    drive_straight(20, 50, 50)
-
-    # Turn right 90 degrees
-    drive_turn(90, 3, 50, 50, True)
+        # Turn right 90 degrees
+        # drive_turn(90, 3, 50, 50, True)
 
 
 
-    # Drive forward at 50% speed for 2 seconds
-    drive_straight(20, 50, 50)
+        # # Drive forward at 50% speed for 2 seconds
+        # drive_straight(20, 50, 50)
 
-    # Rotate in place to the right
-    drive_turn(90, 3, 50, 50, False)
+        # # Rotate in place to the right
+        # drive_turn(90, 3, 50, 50, False)
 
-    # # Stop the drivetrain
-    # import time
+        # # Stop the drivetrain
+        # import time
 
-    # class Motor:
-    #     def __init__(self, port):
-    #         self.port = port
+        # class Motor:
+        #     def __init__(self, port):
+        #         self.port = port
 
-    #     def set_speed(self, speed):
-    #         print(f"Motor on port {self.port} set to speed {speed}")
+        #     def set_speed(self, speed):
+        #         print(f"Motor on port {self.port} set to speed {speed}")
 
-    #     def stop(self):
-    #         print(f"Motor on port {self.port} stopped")
+        #     def stop(self):
+        #         print(f"Motor on port {self.port} stopped")
 
-    # # Initialize motors
-    # left_motor = Motor(1)
-    # right_motor = Motor(10)
+        # # Initialize motors
+        # left_motor = Motor(1)
+        # right_motor = Motor(10)
 
-    # # Drive forward
-    # left_motor.set_speed(50)
-    # right_motor.set_speed(50)
-    # time.sleep(2)  # Drive for 2 seconds
+        # # Drive forward
+        # left_motor.set_speed(50)
+        # right_motor.set_speed(50)
+        # time.sleep(2)  # Drive for 2 seconds
 
-    # # Stop motors
-    # left_motor.stop()
-    # right_motor.stop()
+        # # Stop motors
+        # left_motor.stop()
+        # right_motor.stop()
+        pneum_l.set(False)
+        pneum_r.set(False)
+        drive_straight(12, 50, 100)
+        drive_turn(90, 3, 50, 50, True)
+        arm.spin_for(FORWARD, 720)
+        drive_straight(12, 50, 100)
+        arm.spin_for(REVERSE, 720)
+        pneum_l.set(True)
+        pneum_r.set(True)
 
 
 
@@ -688,7 +698,13 @@ def opcontrol():
             # Wings
             # wing_l.set(wing_l_switch.is_redge(btn_l1()))
             # wing_r.set(wing_r_switch.is_redge(btn_r1()))
-
+        if btn_l2():
+            pneum_r.set(True)
+            pneum_l.set(True)
+        elif btn_l1():
+            pneum_l.set(False)
+            pneum_r.set(False)
+   
         # wait(20, MSEC)
         if btn_r2():
             arm.spin(FORWARD, 100, PERCENT)
@@ -735,5 +751,7 @@ if do_testing:
     print("do nothing")
 else:
     print("start of main program")
-    field_controller = Competition(opcontrol, opcontrol)
+    brain.timer.reset()
+    field_controller = Competition(opcontrol, autonomous)
+
 

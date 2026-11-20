@@ -40,7 +40,13 @@ def opcontrol():
             # Wings
             # wing_l.set(wing_l_switch.is_redge(btn_l1()))
             # wing_r.set(wing_r_switch.is_redge(btn_r1()))
-
+        if btn_l2():
+            pneum_r.set(True)
+            pneum_l.set(True)
+        elif btn_l1():
+            pneum_l.set(False)
+            pneum_r.set(False)
+   
         # vex.wait(20, vex.MSEC)
         if btn_r2():
             arm.spin(FORWARD, 100, PERCENT)

@@ -8,7 +8,7 @@ master = vex.Controller()
 global drive_r2
 # Right Drive
 global drive_r1
-drive_r1 = vex.Motor(vex.Ports.PORT1, vex.GearSetting.RATIO_6_1, False)
+drive_r1 = vex.Motor(vex.Ports.PORT5, vex.GearSetting.RATIO_6_1, False)
 drive_r2 = vex.Motor(vex.Ports.PORT4, vex.GearSetting.RATIO_6_1, False)
 
 # drive_r2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, False)
@@ -18,7 +18,7 @@ drive_r = vex.MotorGroup(drive_r1, drive_r2)
 global drive_l2
 # Left Drive
 global drive_l1
-drive_l1 = vex.Motor(vex.Ports.PORT5, vex.GearSetting.RATIO_6_1, True)
+drive_l1 = vex.Motor(vex.Ports.PORT9, vex.GearSetting.RATIO_6_1, True)
 drive_l2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, True)
 
 
@@ -26,8 +26,8 @@ global drive_l
 drive_l = vex.MotorGroup(drive_l1, drive_l2)
 
 global arm
-arm1 = Motor(Ports.PORT9, GearSetting.RATIO_18_1, False)
-arm2 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, True)
+arm1 = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
+arm2 = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
 arm = MotorGroup(arm1, arm2)
 # # Subsystem 3
 # global intake
@@ -35,17 +35,17 @@ arm = MotorGroup(arm1, arm2)
 # # global hang
 # # hang = vex.Motor(vex.Ports.PORT7, vex.GearSetting.RATIO_36_1, False)
 
-# # Cylindersik = 8/
-# global wing_r
-# wing_r = vex.DigitalOut(brain.three_wire_port.a)
-# global wing_l
-# wing_l = vex.DigitalOut(brain.three_wire_port.b)
+# Cylindersik = 8/
+global pneum_r
+pneum_r = vex.DigitalOut(brain.three_wire_port.a)
+global pneum_l
+pneum_l = vex.DigitalOut(brain.three_wire_port.b)
 # global intake_fold
 # intake_fold = vex.DigitalOut(brain.three_wire_port.c)
 
 # # Sensors
 global imu
-imu = vex.Inertial(Ports.PORT20)
+imu = vex.Inertial(Ports.PORT11)
 # global clock
 # clock = vex.Timer()
 # # global auton_selector
