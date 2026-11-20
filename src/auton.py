@@ -49,9 +49,10 @@ def autonomous():
         pneum_l.set(False)
         pneum_r.set(False)
         drive_straight(12, 50, 100)
-        drive_turn(90, 3, 50, 50, True)
-        arm.spin_for(FORWARD, 720)
-        drive_straight(12, 50, 100)
+        drive_l.spin_for(FORWARD, 720)
+        # drive_turn(-9, 12, 10, 10, True) # NOT WORKING
         arm.spin_for(REVERSE, 720)
+        drive_straight(12, 20, 20)
+        arm.spin_for(FORWARD, 720)
         pneum_l.set(True)
         pneum_r.set(True)

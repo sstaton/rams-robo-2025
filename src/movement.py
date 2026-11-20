@@ -57,7 +57,7 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
         adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_r)
         adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_l)
-        adjustment_dir = pid_dir.adjust(all_globals.target_heading, imu_rotation)
+        adjustment_dir = pid_dir.adjust(all_globals.target_heading, imu_rotation())
 
         vel_rpm = ips / DRIVE_REV_TO_IN * 60
         

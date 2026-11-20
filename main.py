@@ -82,7 +82,7 @@ drive_r = MotorGroup(drive_r1, drive_r2)
 global drive_l2
 # Left Drive
 global drive_l1
-drive_l1 = Motor(Ports.PORT9, GearSetting.RATIO_6_1, True)
+drive_l1 = Motor(Ports.PORT1, GearSetting.RATIO_6_1, True)
 drive_l2 = Motor(Ports.PORT6, GearSetting.RATIO_6_1, True)
 
 
@@ -391,7 +391,7 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
         adjustment_r = pid_drive_r.adjust(expected_displacement, displacement_r)
         adjustment_l = pid_drive_l.adjust(expected_displacement, displacement_l)
-        adjustment_dir = pid_dir.adjust(all_globals.target_heading, imu_rotation)
+        adjustment_dir = pid_dir.adjust(all_globals.target_heading, imu_rotation())
 
         vel_rpm = ips / DRIVE_REV_TO_IN * 60
         
@@ -649,10 +649,11 @@ def autonomous():
         pneum_l.set(False)
         pneum_r.set(False)
         drive_straight(12, 50, 100)
-        drive_turn(90, 3, 50, 50, True)
-        arm.spin_for(FORWARD, 720)
-        drive_straight(12, 50, 100)
+        drive_l.spin_for(FORWARD, 720)
+        # drive_turn(-9, 12, 10, 10, True) # NOT WORKING
         arm.spin_for(REVERSE, 720)
+        drive_straight(12, 20, 20)
+        arm.spin_for(FORWARD, 720)
         pneum_l.set(True)
         pneum_r.set(True)
 

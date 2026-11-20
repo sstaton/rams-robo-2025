@@ -18,7 +18,7 @@ drive_r = vex.MotorGroup(drive_r1, drive_r2)
 global drive_l2
 # Left Drive
 global drive_l1
-drive_l1 = vex.Motor(vex.Ports.PORT9, vex.GearSetting.RATIO_6_1, True)
+drive_l1 = vex.Motor(vex.Ports.PORT1, vex.GearSetting.RATIO_6_1, True)
 drive_l2 = vex.Motor(vex.Ports.PORT6, vex.GearSetting.RATIO_6_1, True)
 
 
