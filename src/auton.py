@@ -48,11 +48,16 @@ def autonomous():
         # right_motor.stop()
         pneum_l.set(False)
         pneum_r.set(False)
-        drive_straight(12, 50, 100)
-        drive_l.spin_for(FORWARD, 720)
-        # drive_turn(-9, 12, 10, 10, True) # NOT WORKING
+        # drive_straight(36, 50, 100)
+        # drive_l.spin_for(FORWARD, 720)
+        # # drive_turn(-9, 12, 10, 10, True) # NOT WORKING
         arm.spin_for(REVERSE, 720)
-        drive_straight(12, 20, 20)
+        drive_straight(16, 50, 100)
+        # drive_straight(10, 50, 100)
+        # drive_straight(3, 50, 100)
         arm.spin_for(FORWARD, 720)
         pneum_l.set(True)
         pneum_r.set(True)
+        wait(0.2, SECONDS)
+        drive_straight(-6, 50, 100)
+        drive_turn(10, 12, 50, 50, True) # STILL NOT WORKING

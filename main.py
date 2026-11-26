@@ -366,8 +366,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
     ips = 0     # current speed in ips
     expected_displacement = 0     # inches travelled since function call
-    pos_start_l = drive_l.position(REV)
-    pos_start_r = drive_r.position(REV)
+    pos_start_l = pos_drive_l()
+    pos_start_r = pos_drive_r()
 
     # adjusts velocity for positive/negative distances
     dir_mod = 1 if inches < 0 else -1
@@ -604,8 +604,8 @@ def preauton():
 # ./src/auton.py ---
 
 def autonomous():
-    brain.screen.clear_screen()
-    if brain.timer.time() < 15000:
+#     brain.screen.clear_screen()                                         dont need it
+    # if brain.timer.time() < 15000:                                      dont need it
         # Drive forward for 500 mm
         # THIS LINE IS NOT WORKING
         # drive_straight(20, 50, 50)
@@ -648,14 +648,19 @@ def autonomous():
         # right_motor.stop()
         pneum_l.set(False)
         pneum_r.set(False)
-        drive_straight(12, 50, 100)
-        drive_l.spin_for(FORWARD, 720)
-        # drive_turn(-9, 12, 10, 10, True) # NOT WORKING
+        # drive_straight(36, 50, 100)
+        # drive_l.spin_for(FORWARD, 720)
+        # # drive_turn(-9, 12, 10, 10, True) # NOT WORKING
         arm.spin_for(REVERSE, 720)
-        drive_straight(12, 20, 20)
+        drive_straight(16, 50, 100)
+        # drive_straight(10, 50, 100)
+        # drive_straight(3, 50, 100)
         arm.spin_for(FORWARD, 720)
         pneum_l.set(True)
         pneum_r.set(True)
+        wait(1, SECONDS)
+        drive_straight(-6, 50, 100)
+        # drive_turn(0.375, 12, 50, 50, True) # STILL NOT WORKING
 
 
 
