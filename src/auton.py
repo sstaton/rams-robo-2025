@@ -60,4 +60,4 @@ def autonomous():
         pneum_r.set(True)
         wait(0.2, SECONDS)
         drive_straight(-6, 50, 100)
-        drive_turn(10, 12, 50, 50, True) # STILL NOT WORKING
+        # drive_turn(10, 12, 50, 50, True) # STILL NOT WORKING

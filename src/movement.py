@@ -32,8 +32,8 @@ def drive_straight(inches, target_ips, ipss, do_decel = True):
 
     ips = 0     # current speed in ips
     expected_displacement = 0     # inches travelled since function call
-    pos_start_l = drive_l.position(REV)
-    pos_start_r = drive_r.position(REV)
+    pos_start_l = pos_drive_l()
+    pos_start_r = pos_drive_r()
 
     # adjusts velocity for positive/negative distances
     dir_mod = 1 if inches < 0 else -1

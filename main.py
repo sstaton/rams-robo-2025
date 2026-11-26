@@ -604,8 +604,8 @@ def preauton():
 # ./src/auton.py ---
 
 def autonomous():
-#     brain.screen.clear_screen()                                         dont need it
-    # if brain.timer.time() < 15000:                                      dont need it
+    brain.screen.clear_screen()
+    if brain.timer.time() < 15000:
         # Drive forward for 500 mm
         # THIS LINE IS NOT WORKING
         # drive_straight(20, 50, 50)
@@ -658,9 +658,9 @@ def autonomous():
         arm.spin_for(FORWARD, 720)
         pneum_l.set(True)
         pneum_r.set(True)
-        wait(1, SECONDS)
+        wait(0.2, SECONDS)
         drive_straight(-6, 50, 100)
-        # drive_turn(0.375, 12, 50, 50, True) # STILL NOT WORKING
+        # drive_turn(10, 12, 50, 50, True) # STILL NOT WORKING
 
 
 
